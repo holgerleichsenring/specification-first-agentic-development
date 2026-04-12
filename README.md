@@ -1,8 +1,8 @@
 # Specification-First Agentic Development
 
-A methodology for AI-assisted software development where **specifications drive implementation**, not the other way around.
+A methodology for AI-assisted software development where **specifications drive implementation**.
 
-This prevents ["The why never gets written down."](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/) and creates a straight forward, stable and traceable pattern for implementations with every available AI. 
+It creates a straight forward, stable and traceable pattern for implementations with every available coding agent. 
 
 ## The Problem
 
