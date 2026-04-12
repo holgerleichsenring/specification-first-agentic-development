@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=context.schema.json
+#
+# This is an extract from the Agent Smith project — a real .NET 8 AI orchestration
+# framework built entirely with specification-first agentic development across 70+ phases.
+#
+meta:
+  project: agent-smith
+  version: 1.0.0
+  type: [agent, pipeline]
+  purpose: "Self-hosted AI orchestration framework: code, legal, security, workflows."
+
+stack:
+  runtime: .NET 8
+  lang: C#
+  infra: [Docker, K8s, Redis]
+  testing: [xUnit, Moq, FluentAssertions]
+  sdks: [Anthropic, OpenAI, Google-Gemini, Octokit, LibGit2Sharp, YamlDotNet]
+
+arch:
+  style: [CleanArch]
+  patterns: [Command/Handler, Pipeline, Factory, Strategy, Adapter]
+  layers:
+    - Domain          # entities, value objects — no deps
+    - Contracts       # interfaces, DTOs, config models
+    - Application     # handlers, pipeline executor, use cases
+    - Infrastructure  # AI providers, git, tickets, Redis bus
+    - Cli             # CLI entry point, DI wiring
+    - Server          # Slack gateway, job spawning, intent routing
+
+behavior:
+  pipelines:
+    fix-bug:
+      trigger: [cli, slack, webhook]
+      steps: [FetchTicket, CheckoutSource, BootstrapProject, LoadCodeMap,
+              LoadDomainRules, LoadContext, AnalyzeCode, Triage, GeneratePlan,
+              Approve, AgenticExecute, Test, WriteRunResult, CommitAndPR]
+      error: stop-on-first-failure
+    security-scan:
+      trigger: [cli, slack, webhook]
+      steps: [CheckoutSource, BootstrapProject, LoadDomainRules, AnalyzeCode,
+              Triage, ConvergenceCheck, CompileDiscussion, DeliverOutput]
+
+quality:
+  lang: english-only
+  limits: { method-lines: 20, class-lines: 120, types-per-file: 1 }
+  principles: [SOLID, DRY, GuardClauses, FailFast]
+  csharp: [file-scoped-ns, sealed-default, primary-constructors, records-for-DTOs]
+  naming:
+    classes: PascalCase
+    booleans: Is/Has/Can-prefix
+    async: Async-suffix
+    fields: _camelCase
+    interfaces: I-prefix
+  testing: { style: AAA, naming: "{Method}_{Scenario}_{Expected}" }
+
+state:
+  done:
+    p01: "Solution structure, domain entities, contracts, YAML config loader"
+    p02: "Command/Handler pattern: 9 context records, 9 handler stubs, CommandExecutor"
+    p03: "Providers: AzureDevOps+GitHub tickets, Local+GitHub source, Claude agentic loop"
+    # ... 60+ more phases ...
+    p58: "Interactive dialogue: DialogQuestion/DialogAnswer, RedisDialogueTransport, Slack Block Kit"
+    p59: "PR comment webhook: CommentIntentParser, GitHubPrCommentWebhookHandler"
+    p69: "Project rename: Host -> Cli, Dispatcher -> Server"
+  active: {}
+  planned:
+    p23: "Multi-repo support"
+    p25: "PR review iteration"

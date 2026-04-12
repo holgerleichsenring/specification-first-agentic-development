@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=context.schema.json
+meta:
+  project: your-project-name
+  version: 0.1.0
+  type: [app]                         # app, api, library, agent, pipeline, ...
+  purpose: "One-line description of what this project does."
+
+stack:
+  runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...
+  lang: C#                            # TypeScript, Python, Go, Rust, ...
+  infra: [Docker]                     # K8s, Redis, PostgreSQL, ...
+  testing: [xUnit, FluentAssertions]  # Jest, pytest, go test, ...
+  sdks: []                            # Octokit, Stripe, AWS SDK, ...
+
+arch:
+  style: [CleanArch]                  # Hexagonal, Layered, Microservices, ...
+  patterns: [Command/Handler]         # CQRS, Repository, Factory, Strategy, ...
+  layers:
+    - Domain                          # entities, value objects
+    - Application                     # use cases, handlers
+    - Infrastructure                  # external integrations
+    - Host                            # entry point, DI wiring
+
+quality:
+  lang: english-only
+  limits:
+    method-lines: 20
+    class-lines: 120
+    types-per-file: 1
+  principles: [SOLID, DRY, GuardClauses, FailFast]
+  naming:
+    classes: PascalCase
+    booleans: Is/Has/Can-prefix
+    async: Async-suffix
+  testing:
+    style: AAA
+    naming: "{Method}_{Scenario}_{Expected}"
+
+# Phase tracking -- the AI reads this to know what exists and what's next.
+# Move entries between sections as work progresses.
+state:
+  done:
+    # p01: "Foundation: solution structure, domain entities, config loader"
+  active: {}
+  planned:
+    # p02: "Feature X -> .yourproject/phases/planned/p02-feature-x.md"
