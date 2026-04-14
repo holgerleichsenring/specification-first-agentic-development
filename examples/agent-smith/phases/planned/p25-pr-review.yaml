@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=../../../../templates/phase-spec.schema.json
+phase: p25
+goal: "PR review iteration — agent reads comments, makes changes, pushes commits until approved"
+
+requires: ["p59"]
+
+decisions:
+  - key: "never force-push — always add commits to preserve review history"
+  - key: "max 3 review iterations (configurable) — prevents infinite loops"
+  - key: "only act on authorized reviewer comments (configurable list)"
+
+steps:
+  - id: review-listener
+    action: "Add PR review reading to source providers"
+    new:
+      - "ReviewComment: record { Id, Author, Body, FilePath?, LineNumber?, CreatedAt }"
+    modify:
+      - "ISourceProvider: add GetPullRequestReviewsAsync, ReplyToReviewAsync"
+  - id: review-pipeline
+    action: "Mini-pipeline: FetchReviews → AnalyzeReviews → PlanRevisions → Execute → Test → PushCommit → ReplyToReviews"
+    new:
+      - "IReviewAnalyzer: classifies comments (actionable/question/approval/nit)"
+      - "ReviewPipelineExecutor: reuses existing Execute/Test steps"
+  - id: triggers
+    action:
+      - "Webhook: pull_request_review event → review pipeline"
+      - "Slack: 'fix PR comments on #58' → review pipeline"
+      - "Polling fallback: configurable interval"
+  - id: guardrails
+    action: "Max iterations, authorized reviewers, skip approvals/emoji, ask clarification if unclear"
+
+done:
+  - "Read PR reviews from GitHub, GitLab, Azure DevOps"
+  - "Classify review comments"
+  - "Push new commits to existing PR branch"
+  - "Reply to review comments with explanation"
+  - "Webhook + Slack triggers"
+  - "Max iteration guardrail"
+  - "Unit tests for review classification"

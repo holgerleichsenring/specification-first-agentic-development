@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=phase-spec.schema.json
+phase: p00
+goal: "One line — what we're building and why"
+
+requires: ["p00"]  # phase IDs or free-text preconditions (optional)
+
+decisions:
+  - key: "what — why (only non-obvious choices)"
+
+steps:
+  - id: step-name
+    action: "imperative, single line"
+    new:
+      - "TypeName: description or { Field:type, ... }"
+    modify:
+      - "TypeName: what changes"
+    path: "project or folder hint"
+
+tests:
+  - "Method_Scenario_Expected"
+
+done:
+  - "verifiable completion criterion"

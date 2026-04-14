@@ -198,7 +198,8 @@ Don't invent conventions — extract them from what's already here.
 | `context.yaml` | Project metadata, architecture, phase tracking |
 | `prompt.md` | AI agent instructions and workflow |
 | `coding-principles.md` | Code quality rules and conventions |
-| `phase-spec.md` | Template for a new phase specification |
+| `phase-spec.yaml` | Template for a new phase specification |
+| `phase-spec.schema.json` | JSON Schema for phase specs (IDE autocompletion) |
 | `decisions.md` | Decision log starter |
 
 ---

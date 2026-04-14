@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../../../../templates/phase-spec.schema.json
+phase: p59
+goal: "PR comments as pipeline inputs — /agent-smith commands + dialogue answers via GitHub webhooks"
+
+decisions:
+  - key: "GitHub only for MVP — GitLab (p59b) and AzDO (p59c) deferred"
+  - key: "regex-based CommentIntentParser — no LLM needed for /command parsing"
+  - key: "author_association guard — OWNER/MEMBER/COLLABORATOR/CONTRIBUTOR only"
+  - key: "pipeline allowlist — only fix-bug, security-scan, pr-review allowed from comments"
+
+steps:
+  - id: parser
+    action: "Create regex-based comment intent parser"
+    new:
+      - "CommentIntentParser: handles /agent-smith <cmd>, /approve, /reject [reason]"
+  - id: webhook-handler
+    action: "Handle issue_comment + pull_request_review_comment events"
+    new:
+      - "GitHubPrCommentWebhookHandler: Scenario A (new job) + Scenario B (dialogue answer)"
+  - id: reply-service
+    action: "Post agent replies to PR comments via Octokit"
+    new:
+      - "GitHubPrCommentReplyService: posts replies to originating PR"
+  - id: conversation-lookup
+    action: "Route dialogue answers to running jobs"
+    new:
+      - "IConversationLookup: finds active job by platform+repo+PR"
+
+tests:
+  - "CommentIntentParser — 16 tests (command variants, edge cases)"
+  - "GitHubPrCommentWebhookHandler — 10 tests (both scenarios)"
+
+done:
+  - "CommentIntentParser handles all command variants"
+  - "Both scenarios (new job + dialogue answer) working"
+  - "Access control via author_association"
+  - "Pipeline allowlist guard"
+  - "749 tests green"
