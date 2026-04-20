@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=../../../templates/phase-spec.schema.json
+phase: p27
+goal: "Extract notification logic from OrderService into dedicated NotificationService — OrderService exceeds 120-line limit"
+
+requires: ["p26"]
+
+decisions:
+  - key: "Strategy pattern for notification channels — email, SMS, push all implement INotificationChannel"
+  - key: "Fire-and-forget for non-critical notifications — order confirmation is critical (await), marketing is not"
+
+steps:
+  - id: contracts
+    action: "Create notification interfaces and models"
+    new:
+      - "INotificationService: SendAsync(Notification)"
+      - "INotificationChannel: SendAsync(message, recipient)"
+      - "Notification: { Type, Recipient, Subject, Body, IsCritical }"
+
+  - id: implementation
+    action: "Implement NotificationService with channel strategy"
+    new:
+      - "NotificationService: routes to channels based on type, awaits critical only"
+      - "EmailChannel: INotificationChannel via SMTP"
+      - "PushChannel: INotificationChannel via Firebase"
+    modify:
+      - "OrderService: remove all notification logic, inject INotificationService"
+
+  - id: cleanup
+    action: "Remove dead code from OrderService"
+    delete:
+      - "OrderService.SendConfirmationEmail (extracted)"
+      - "OrderService.NotifyWarehouse (extracted)"
+    modify:
+      - "OrderService: verify under 120 lines after extraction"
+
+  - id: wiring
+    action: "Update DI registration for new services"
+    modify:
+      - "ServiceCollectionExtensions: register NotificationService, channels"
+
+  - id: tests
+    action: "Add notification tests, verify OrderService tests still pass"
+    new:
+      - "NotificationServiceTests"
+      - "EmailChannelTests"
+    modify:
+      - "OrderServiceTests: update to mock INotificationService instead of inline assertions"
+
+tests:
+  - "Send_CriticalNotification_AwaitsDelivery"
+  - "Send_NonCriticalNotification_FiresAndForgets"
+  - "Send_EmailChannel_FormatsCorrectly"
+  - "PlaceOrder_Valid_DelegatesToNotificationService"
+
+done:
+  - "OrderService is under 120 lines"
+  - "All notification logic lives in NotificationService"
+  - "Existing OrderService tests pass with INotificationService mock"
+  - "New notification tests pass"
+  - "No behavioral changes — same notifications sent as before"

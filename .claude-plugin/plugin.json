@@ -1,0 +1,10 @@
+{
+  "name": "spec-first",
+  "version": "1.0.0",
+  "description": "Specification-First Agentic Development — structured AI-assisted development with context persistence, phase specs, and decision capture.",
+  "author": {
+    "name": "Holger Leichsenring",
+    "url": "https://codingsoul.org"
+  },
+  "skills": "./skills/"
+}

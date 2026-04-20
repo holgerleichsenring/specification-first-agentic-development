@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../../templates/phase-spec.schema.json
+phase: p12
+goal: "Add user profile page with avatar upload and bio editing"
+
+decisions:
+  - key: "Client-side image resize before upload — saves bandwidth, S3 storage costs negligible either way"
+  - key: "Bio field max 500 chars, stored as plain text — markdown adds complexity for minimal value"
+
+steps:
+  - id: contracts
+    action: "Create UserProfile model and IProfileRepository interface"
+    new:
+      - "UserProfile: { Id, DisplayName, Bio, AvatarUrl, UpdatedAt }"
+      - "IProfileRepository: GetByUserIdAsync, UpdateAsync"
+
+  - id: implementation
+    action: "Implement ProfileRepository and ProfileService"
+    new:
+      - "ProfileRepository: EF Core implementation of IProfileRepository"
+      - "ProfileService: orchestrates profile updates, avatar upload to S3"
+
+  - id: api
+    action: "Add profile endpoints to API controller"
+    new:
+      - "ProfileController: GET /profile/{id}, PUT /profile, POST /profile/avatar"
+    modify:
+      - "DI registration: wire ProfileService and ProfileRepository"
+
+  - id: frontend
+    action: "Build profile page component with avatar upload"
+    new:
+      - "ProfilePage: form with bio editor and avatar upload"
+      - "AvatarUpload: client-side resize, preview, upload component"
+
+  - id: tests
+    action: "Unit tests for ProfileService, integration test for upload flow"
+    new:
+      - "ProfileServiceTests"
+      - "ProfileControllerIntegrationTests"
+
+tests:
+  - "UpdateProfile_ValidBio_PersistsChanges"
+  - "UpdateProfile_BioTooLong_ReturnsValidationError"
+  - "UploadAvatar_ValidImage_ResizesAndStores"
+  - "UploadAvatar_InvalidMimeType_RejectsUpload"
+  - "GetProfile_ExistingUser_ReturnsProfile"
+  - "GetProfile_UnknownUser_Returns404"
+
+done:
+  - "Profile page renders with current user data"
+  - "Avatar upload resizes client-side and stores in S3"
+  - "Bio editing with 500-char limit works end-to-end"
+  - "All 6 tests pass"
+  - "Decisions logged in decisions.md"
