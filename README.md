@@ -13,13 +13,17 @@ A lightweight structure for AI-assisted development that eliminates context amne
 
 The fastest way to get started is the Claude Code plugin. Install it and you get 6 skills that guide you through the entire methodology:
 
+> **Official marketplace listing**: submitted, pending approval by Anthropic. Once approved, install will be a single command: `/plugin install spec-first`
+
+**Until then — install via custom marketplace:**
+
 ```bash
 # In Claude Code — add the marketplace and install:
 /plugin marketplace add holgerleichsenring/specification-first-agentic-development
 /plugin install spec-first@specification-first-agentic-development
 ```
 
-**Alternative: local development install**
+**Alternative: local install**
 
 ```bash
 git clone https://github.com/holgerleichsenring/specification-first-agentic-development.git

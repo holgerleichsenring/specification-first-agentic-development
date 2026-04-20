@@ -2,7 +2,7 @@
   "name": "specification-first-agentic-development",
   "owner": {
     "name": "Holger Leichsenring",
-    "email": "holger@codingsoul.org"
+    "email": "mail@holger-leichsenring.de"
   },
   "metadata": {
     "description": "Specification-First Agentic Development — structured AI-assisted development with context persistence, phase specs, and decision capture.",
@@ -11,7 +11,10 @@
   "plugins": [
     {
       "name": "spec-first",
-      "source": ".",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/holgerleichsenring/specification-first-agentic-development.git"
+      },
       "description": "6 skills for the Spec-First methodology: bootstrap projects, create phases, execute phases, log decisions, sync methodology updates.",
       "version": "1.0.0",
       "author": {
