@@ -14,10 +14,15 @@ A lightweight structure for AI-assisted development that eliminates context amne
 The fastest way to get started is the Claude Code plugin. Install it and you get 6 skills that guide you through the entire methodology:
 
 ```bash
-# Clone the repo
-git clone https://github.com/holgerleichsenring/specification-first-agentic-development.git
+# In Claude Code — add the marketplace and install:
+/plugin marketplace add holgerleichsenring/specification-first-agentic-development
+/plugin install spec-first@specification-first-agentic-development
+```
 
-# Use the plugin in any project
+**Alternative: local development install**
+
+```bash
+git clone https://github.com/holgerleichsenring/specification-first-agentic-development.git
 claude --plugin-dir /path/to/specification-first-agentic-development
 ```
 
