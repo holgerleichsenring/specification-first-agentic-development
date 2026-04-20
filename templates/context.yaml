@@ -5,6 +5,9 @@ meta:
   type: [app]                         # app, api, library, agent, pipeline, ...
   purpose: "One-line description of what this project does."
 
+methodology:
+  version: "1.0.0"                    # Spec-First methodology version (used by update-project)
+
 stack:
   runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...
   lang: C#                            # TypeScript, Python, Go, Rust, ...

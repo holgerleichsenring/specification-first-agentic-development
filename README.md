@@ -9,6 +9,38 @@ A lightweight structure for AI-assisted development that eliminates context amne
 
 ---
 
+## Quick Start: Claude Code Plugin
+
+The fastest way to get started is the Claude Code plugin. Install it and you get 6 skills that guide you through the entire methodology:
+
+```bash
+# In Claude Code — add the marketplace and install:
+/plugin marketplace add holgerleichsenring/specification-first-agentic-development
+/plugin install spec-first@specification-first-agentic-development
+```
+
+**Alternative: local development install**
+
+```bash
+git clone https://github.com/holgerleichsenring/specification-first-agentic-development.git
+claude --plugin-dir /path/to/specification-first-agentic-development
+```
+
+Then in Claude Code:
+
+| Skill | What it does |
+|-------|-------------|
+| `/spec-first:bootstrap-project` | Set up the methodology in your project |
+| `/spec-first:create-phase` | Plan a new feature or task |
+| `/spec-first:execute-phase` | Implement the active phase |
+| `/spec-first:log-decision` | Record an architectural decision |
+| `/spec-first:update-project` | Sync with newer methodology versions |
+| `/spec-first:spec-first-workflow` | Overview of the full methodology |
+
+No framework required. The plugin is an optional convenience layer — the methodology works with any AI agent, the plugin just makes it easier with Claude Code.
+
+---
+
 ## The Problem
 
 When working with AI coding agents, three things go wrong repeatedly:
