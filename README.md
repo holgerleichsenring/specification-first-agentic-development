@@ -5,7 +5,9 @@
 
 A lightweight structure for AI-assisted development that eliminates context amnesia, architectural drift, and vanishing decision rationale. Battle-tested across **70+ phases** on a real production project.
 
-📖 **[Read the full rationale: The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/)**
+**Read the articles and thoughts behind**
+**[Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)**
+**[The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/)**
 
 ---
 
@@ -34,12 +36,12 @@ Then in Claude Code:
 
 | Skill | What it does |
 |-------|-------------|
-| `/spec-first:bootstrap-project` | Set up the methodology in your project |
-| `/spec-first:create-phase` | Plan a new feature or task |
-| `/spec-first:execute-phase` | Implement the active phase |
-| `/spec-first:log-decision` | Record an architectural decision |
-| `/spec-first:update-project` | Sync with newer methodology versions |
-| `/spec-first:spec-first-workflow` | Overview of the full methodology |
+| `/bootstrap-project` | Set up the methodology in your project |
+| `/create-phase` | Plan a new feature or task |
+| `/execute-phase` | Implement the active phase |
+| `/log-decision` | Record an architectural decision |
+| `/update-project` | Sync with newer methodology versions |
+| `/spec-first-workflow` | Overview of the full methodology |
 
 No framework required. The plugin is an optional convenience layer — the methodology works with any AI agent, the plugin just makes it easier with Claude Code.
 
@@ -79,19 +81,32 @@ The `examples/agent-smith/` directory contains real artifacts from [Agent Smith]
 
 ### 1. Specification Before Code
 
-Every unit of work (called a **phase**) starts as a markdown file:
+Every unit of work (called a **phase**) starts as a YAML file (schema-validated, IDE-autocompleted):
 
-```markdown
-## Goal
-What we're building and why
+```yaml
+# yaml-language-server: $schema=phase-spec.schema.json
+phase: p03
+goal: "Add ticket providers so pipelines can pull work from GitHub/Jira"
 
-## Scope
-Exactly what's in and out
+requires: ["p02"]
 
-## Definition of Done
-- [ ] Feature works end-to-end
-- [ ] Tests pass
-- [ ] Decisions logged
+decisions:
+  - key: "Adapter pattern over repository — read-mostly data, no need for UoW"
+
+steps:
+  - id: contracts
+    action: "Define ITicketProvider and TicketDto in Contracts layer"
+    new:
+      - "ITicketProvider: { GetOpenAsync, GetByIdAsync }"
+      - "TicketDto: { Id, Title, Body, Labels }"
+    path: "src/Contracts"
+
+tests:
+  - "GitHubProvider_GetOpen_ReturnsMappedTickets"
+
+done:
+  - "GitHub provider returns tickets end-to-end"
+  - "All tests green"
 ```
 
 No code is written until the spec exists. The spec is the contract between human and AI.
@@ -179,11 +194,11 @@ planned/  →  active/  →  done/
   decisions.md              # decision log — the why, not the what
   phases/
     planned/                # upcoming specs
-      p{NN}-feature-slug.md
+      p{NN}-feature-slug.yaml
     active/                 # current work (max 1)
-      p{NN}-feature-slug.md
+      p{NN}-feature-slug.yaml
     done/                   # completed phases (historical reference)
-      p{NN}-feature-slug.md
+      p{NN}-feature-slug.yaml
   runs/                     # execution logs (optional, for automated agents)
 ```
 
