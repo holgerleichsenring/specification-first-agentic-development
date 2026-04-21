@@ -7,9 +7,8 @@ A lightweight structure for AI-assisted development that eliminates context amne
 
 **Read the articles and thoughts behind**
 
-**[Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)**
-
-**[The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/)**
+- [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
+- [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/)
 
 
 ---
