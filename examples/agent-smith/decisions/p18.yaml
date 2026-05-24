@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../decision.schema.json
+phase: p18
+
+decisions:
+  - category: Architecture
+    chose: "Redis Streams as message bus with persistent consumer groups"
+    over: "In-process events or a heavyweight broker (RabbitMQ, Kafka)"
+    reason: |
+      Decouples the agent from the dispatcher, enables multi-platform
+      routing (Slack, Teams, web UI), and survives restarts via
+      consumer-group offsets. Redis is already in the stack for caching
+      and pipeline storage; piggybacking on it avoids an additional
+      operational surface.
+
+  - category: Architecture
+    chose: "Separate IProgressReporter implementations: Console for CLI, Redis for K8s"
+    reason: |
+      Single interface, pluggable output. Console-mode runs print
+      progress to stdout; K8s pods stream into Redis so the dispatcher
+      can fan them out to the user's chat session.

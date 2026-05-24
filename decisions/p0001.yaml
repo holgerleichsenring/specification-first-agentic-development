@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p0001
+
+decisions:
+  - category: Architecture
+    chose: "contexts/<name>/ directory replaces flat .{project}/context.yaml"
+    over: "Keeping flat root context.yaml for single-stack, only nesting for monorepo"
+    reason: |
+      Single discovery mechanism for single-stack and monorepo projects.
+      Consumers glob `contexts/*/context.yaml` and get one stack per hit.
+      The single-stack default is `contexts/default/`. Monorepos add
+      siblings (`contexts/server/`, `contexts/client/`, ...). The
+      alternative — special-case root file for single-stack, nested
+      layout for monorepo — forces every consuming agent to know two
+      layouts and pick the right code path.
+    alternatives:
+      - "Scatter .{project}/ across sub-packages — rejected: hard to find, scattered commits, mixed history"
+      - "Single context.yaml with stacks: list inside — rejected: monolithic file, merge-conflict prone"
+
+  - category: Tooling
+    chose: "Structured YAML, one file per phase, filename = <phase-id>.yaml"
+    over: "Flat append-only decisions.md with category-tagged bullets"
+    reason: |
+      YAML produces shorter, more grep-able structures than Markdown
+      bullets. File-per-phase replaces section-scanning in a multi-MB
+      Markdown blob (the dogfood project's decisions.md was 497 KB
+      before v2.0). The filename IS the phase ID; all decisions for a
+      phase live in one file's `decisions:` array. Glob `p0042.yaml`
+      to open every decision for a phase; cat `decisions/*.yaml` to
+      dump everything.
+
+      Originally specced as one-file-per-decision; corrected to
+      one-file-per-phase in v2.0.1 after operator pushback
+      ("1000 yaml files? das macht doch keinen sinn. eine phase ein
+      decision yaml file").
+    alternatives:
+      - "Single YAML file with a project-wide decisions: array — rejected, same monolithic-file problem decisions.md had"
+      - "One file per individual decision — rejected, filesystem flood (1000+ files in dogfood) and harder semantic grep"
+
+  - category: TradeOff
+    chose: "Phase-spec applies_to: is free text, not an enum"
+    over: "Discrete stacks: [server, client] enum constrained to the project's context names"
+    reason: |
+      Bikeshedding avoidance. A discrete enum invites "is this a server or
+      an api?" debates every time a phase touches a slice that doesn't fit
+      the existing labels. Free text lets the operator describe scope in
+      the project's own vocabulary ("server + docs", "everything", "the
+      observability slice"). The directory structure under contexts/ is
+      already the structured-truth source; applies_to: is documentation,
+      not validation.
+
+      Decisions inherit applies_to via their phase ID prefix, so the
+      field lives once per phase, not once per decision.
+
+  - category: Implementation
+    chose: "Big-bang v1 → v2 migration in update-project"
+    over: "Staged dual-write or backwards-compat shim that accepts both layouts"
+    reason: |
+      Structural change only — files move, formats convert, no semantic
+      content rewrites. A staged migration would force every spec-first
+      consumer (Agent Smith and any other adopter) to handle both layouts
+      simultaneously, doubling code paths for no operator benefit. Git is
+      the safety net; if the migration goes wrong, `git diff` shows
+      exactly what changed and the operator reverts.
+
+  - category: TradeOff
+    chose: "Notes/ and concepts/ directories are NOT auto-migrated; operator decides per file"
+    over: "Move them automatically into decisions/ or phases/done/"
+    reason: |
+      Per the dogfood project's operator: "für mich sind das keine
+      decisions. das sind die konzepte die zu phasen führen und dann
+      hinterher decisions ableiten" — these are conceptual exploration
+      that precedes phases, not the structured artifacts that follow
+      them. Automated placement would either misclassify them as
+      decisions (wrong category) or as phases (wrong lifecycle).
+
+      The migration emits a warning listing each file and recommends two
+      legitimate operator actions: (a) copy out of .{project}/ entirely
+      (they're scratch material), or (b) rename to
+      phases/done/p{NN}-base-concept-{topic}.yaml with a reserved ID
+      range. Either is fine — depends on the file's content.

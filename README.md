@@ -142,33 +142,40 @@ The AI knows what exists, what's being built, and what's coming without re-readi
 
 ### 3. Decision Capture
 
-Every phase produces one YAML file per decision in `decisions/`:
+Every phase produces **one YAML file**, holding all of that phase's decisions in a list:
 
 ```
 decisions/
-  p03-adapter-pattern-for-providers.yaml
-  p03-no-sdk-for-github.yaml
-  p03-rejected-repository-pattern.yaml
+  p03.yaml       # every decision made within p03
+  p04.yaml
+  ...
+  r07.yaml       # run-attached decisions
 ```
 
 Each file is structured:
 
 ```yaml
 phase: p03
-category: Architecture
-chose: "Adapter pattern for ticket providers"
-over: "Direct SDK coupling per provider"
-reason: |
-  Lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider without
-  touching application logic. Each SDK surface stays isolated in
-  Infrastructure; the rest of the codebase sees only the contract.
-alternatives:
-  - "Repository pattern — rejected, overkill for read-mostly ticket data"
+
+decisions:
+  - category: Architecture
+    chose: "Adapter pattern for ticket providers"
+    over: "Direct SDK coupling per provider"
+    reason: |
+      Lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider without
+      touching application logic. Each SDK surface stays isolated in
+      Infrastructure; the rest of the codebase sees only the contract.
+    alternatives:
+      - "Repository pattern — rejected, overkill for read-mostly ticket data"
+
+  - category: TradeOff
+    chose: "Raw HttpClient for GitHub API"
+    over: "Octokit SDK"
+    reason: |
+      Octokit adds 3 MB of transitive deps for 4 API calls we actually need.
 ```
 
-Glob `decisions/p03-*.yaml` to list every decision for that phase. This
-transforms implicit tribal knowledge into explicit, searchable, structured
-history — one decision per file, attached to a phase or run by filename.
+`cat decisions/p03.yaml` shows every decision for that phase; `cat decisions/*.yaml` dumps everything. This transforms implicit tribal knowledge into explicit, searchable, structured history — one file per phase, decisions list inside.
 
 ### 4. Phase Workflow
 
@@ -213,9 +220,9 @@ planned/  →  active/  →  done/
     # server/    { context.yaml (workdir: src/Server), coding-principles.md }
     # client/    { context.yaml (workdir: client),     coding-principles.md }
     # docs/      { context.yaml (workdir: docs),       coding-principles.md }
-  decisions/                # one YAML per decision; filename = <phase-id-or-run-id>-<slug>.yaml
-    p{NN}-{slug}.yaml
-    r{NN}-{slug}.yaml
+  decisions/                # one YAML per phase; all decisions for that phase inside
+    p{NN}.yaml
+    r{NN}.yaml              # run-attached decisions
   phases/
     planned/                # upcoming specs
       p{NN}-feature-slug.yaml
@@ -247,12 +254,12 @@ I want to set up specification-first agentic development for this project.
    - contexts/default/coding-principles.md: extract the actual conventions from the
      existing code (language, limits, naming, patterns, testing style). For monorepos,
      each contexts/<stack>/coding-principles.md is self-contained for its stack.
-   - decisions/: empty directory; one YAML per decision is written here during execution.
+   - decisions/: empty directory; one YAML per phase is written here during execution (all of that phase's decisions in a list inside).
    - phases/planned/, phases/active/, phases/done/: empty directories
 
 2. Create a CLAUDE.md (or .cursor/prompt.md) with:
    - Read order: glob contexts/*/context.yaml → glob contexts/*/coding-principles.md
-     → active phase → relevant decisions/<phase-id>-*.yaml
+     → active phase → relevant decisions/<phase-id>.yaml
    - The 10-step implementation workflow (spec first, plan, implement, test,
      log decisions as YAML, update state)
    - Key rules from the contexts' coding principles
@@ -279,7 +286,7 @@ Don't invent conventions — extract them from what's already here.
 |---|---|
 | `contexts/default/context.yaml` | Per-stack metadata, architecture, phase tracking, `workdir:` field |
 | `contexts/default/coding-principles.md` | Per-stack code quality rules and conventions |
-| `decisions/p0001-example-decision.yaml` | Canonical YAML shape for a decision file |
+| `decisions/p0001.yaml` | Canonical YAML shape for a phase's decision file |
 | `decision.schema.json` | JSON Schema for decision YAMLs (IDE autocompletion) |
 | `phase-spec.yaml` | Template for a new phase specification |
 | `phase-spec.schema.json` | JSON Schema for phase specs (IDE autocompletion, includes optional `applies_to:` field) |
@@ -291,12 +298,12 @@ Don't invent conventions — extract them from what's already here.
 
 The AI agent follows this order for every phase:
 
-1. Read every `contexts/*/context.yaml`, every `contexts/*/coding-principles.md`, the active phase spec, and relevant `decisions/<phase-id>-*.yaml`
+1. Read every `contexts/*/context.yaml`, every `contexts/*/coding-principles.md`, the active phase spec, and relevant `decisions/<phase-id>.yaml`
 2. Plan: explore the codebase(s) the phase touches (filtered by `applies_to:`), design approach, get human approval
 3. Implement: contracts first, then implementation, then wiring, then tests
 4. Build after each step — fix errors immediately
 5. Run all tests — 0 failures before moving on
-6. Log decisions: write `decisions/<phase-id>-<slug>.yaml` per non-obvious choice
+6. Log decisions: append each non-obvious choice to `decisions/<phase-id>.yaml` (create the file on first decision; append to its `decisions:` array on subsequent ones)
 7. Update relevant `contexts/<name>/context.yaml` — move phase to done
 8. Move phase file to `done/`
 9. Commit — one commit per phase
