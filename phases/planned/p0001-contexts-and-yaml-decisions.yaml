@@ -1,0 +1,365 @@
+# spec-first plugin v2.0 — contexts/ layout + YAML decisions
+phase: p0001
+requires: []
+supersedes: []
+goal: |
+  Plugin v1.x assumes a single-stack project layout: flat
+  `.{project}/context.yaml` + `coding-principles.md` at root, a flat
+  append-only `decisions.md` Markdown log, and a parallel free-form
+  `decisions/*.md` deep-dive directory (the dual format already
+  duplicates intent).
+
+  v2.0 normalises around a per-stack contexts directory and a single
+  YAML decision format:
+
+    .{project}/
+      contexts/<stack-name>/
+        context.yaml
+        coding-principles.md
+      decisions/
+        <phase-id>-<slug>.yaml
+      phases/{active,done,planned}/
+
+  Every project — single-stack OR monorepo — uses the same layout. The
+  single-stack default is `contexts/default/`. Monorepos add
+  `contexts/server/`, `contexts/client/`, etc. Discovery code globs
+  `contexts/*/context.yaml`, so the consuming side (Agent Smith and
+  any other spec-first consumer) needs zero special-case for the
+  monorepo path.
+
+  Decisions become structured YAML, one file per decision, attached
+  to a phase or a run via filename prefix (`p0161-...yaml` or
+  `r07-...yaml`). The free-form Markdown log and the parallel
+  Markdown deep-dive directory both go away — one format, one
+  location.
+
+  Migration is mechanical (structural moves + format conversion) and
+  ships as part of the `update-project` skill so existing v1.x
+  projects can adopt v2.0 with a single skill invocation.
+
+scope:
+  in: |
+    (1) Template layout (`templates/`):
+        - NEW `templates/contexts/default/context.yaml` (moved from
+          `templates/context.yaml`)
+        - NEW `templates/contexts/default/coding-principles.md` (moved
+          from `templates/coding-principles.md`)
+        - NEW `templates/decisions/p0001-example-decision.yaml`
+          (replaces `templates/decisions.md`)
+        - DELETE `templates/context.yaml`, `templates/coding-principles.md`,
+          `templates/decisions.md`
+
+    (2) Phase-spec schema (`templates/phase-spec.schema.json`):
+        - NEW optional field `applies_to: string` — free-text
+          description of which part of the project the phase touches
+          (e.g. "server", "client + docs", "all stacks"). Free text,
+          not enum — operators decide their own vocabulary. Existing
+          phase YAMLs do NOT need backfill; the field is optional.
+
+    (3) Decision YAML shape (canonical form, written to
+        `decisions/<phase-id>-<slug>.yaml`):
+
+          phase: p0161                  # OR `run: r07` — exactly one
+          category: Architecture        # Architecture | Tooling |
+                                        # Implementation | TradeOff |
+                                        # Security
+          chose: "<one-line summary of what was picked>"
+          over: "<one-line summary of the obvious alternative>"
+          reason: |
+            Free-form multi-line WHY. Cite constraints, prior
+            incidents, related decisions ([[other-decision-slug]]).
+          alternatives:                  # optional
+            - "<one-line — what else was considered, why rejected>"
+
+        - Filename = phase or run ID + slug, e.g.
+          `p0161-contexts-dir-layout.yaml`,
+          `p0161-yaml-decision-shape.yaml`,
+          `r07-emergency-rollback.yaml`.
+        - One decision per file. Multiple decisions per phase = multiple
+          files all sharing the phase-ID prefix. Grouping is by
+          filename glob, not by container file.
+        - No `stacks:` field. Phase-spec's new `applies_to:` carries
+          the stack/area context once per phase; decisions inherit it
+          via their phase ID. Operator instruction 2026-05-24:
+          "ist das ein server oder ne api?" — debates over a discrete
+          stacks enum are avoided by keeping it free text at the
+          phase level only.
+
+    (4) Skills:
+        - `skills/bootstrap-project/SKILL.md` rewritten: creates
+          `contexts/default/`, `decisions/`, `phases/{active,done,
+          planned}/`. No `decisions.md`. No flat root context.yaml.
+        - `skills/log-decision/SKILL.md` rewritten: emits a single YAML
+          file at `decisions/<phase-or-run-id>-<slug>.yaml`. Reads the
+          active phase ID from `context.yaml` to pick the prefix; if
+          the decision is run-attached (no active phase), prompts for
+          the run ID.
+        - `skills/execute-phase/SKILL.md` Step 6 updated: references
+          `decisions/<phase-id>-<slug>.yaml`. Step 1 ("Read context
+          files") updated to read `contexts/<default-or-only>/...`
+          plus glob other `contexts/*/`.
+        - `skills/update-project/SKILL.md` gains the v1 → v2 migration
+          (see scope (5)).
+        - `skills/spec-first-workflow/SKILL.md` updated to reflect the
+          new layout in any structural prose / diagrams.
+        - `skills/create-phase/SKILL.md` updated: writes the
+          `applies_to:` field example into the template prose.
+
+    (5) v1 → v2 migration (in `update-project`):
+        - Move `.{project}/context.yaml` → `.{project}/contexts/default/context.yaml`
+        - Move `.{project}/coding-principles.md` → `.{project}/contexts/default/coding-principles.md`
+        - Split `.{project}/decisions.md` into per-phase YAML files
+          under `.{project}/decisions/`. Each `## p{NN}: <title>`
+          heading + its bullets becomes ONE OR MORE YAML files
+          (one per `[Category] ...` bullet, sharing the phase prefix).
+          Filename slug derived from the first ~6 words of the
+          decision text, lower-kebab-case.
+        - Convert any existing `.{project}/decisions/*.md` to YAML in
+          the same shape. Filename stays (just `.md` → `.yaml`).
+        - DELETE `.{project}/decisions.md` after split.
+        - Run is BIG-BANG (operator instruction 2026-05-24: "ich denke
+          big bang. das ist auch eher mechanisch. nur strukturelle
+          änderungen, keine inhaltlichen") — no transitional
+          dual-write, no backwards-compat shim. Per [[feedback_no_wrapper_shims]]
+          if echoed by consumers.
+        - NOT migrated automatically: any `.{project}/notes/` or
+          `.{project}/concepts/` directories — operator instruction
+          says these are "concepts that lead to phases", not
+          decisions. The migration emits a warning listing the
+          directories and recommends either (a) copying them out
+          of `.{project}/` before migration or (b) renaming each
+          file to `phases/done/p{NN}-base-concept-<topic>.yaml`
+          with a reserved base-concept ID range. The migration does
+          not pick one — operator decides per file.
+
+    (6) `.claude-plugin/plugin.json`: bump version `1.0.0` → `2.0.0`.
+
+    (7) Examples (`examples/agent-smith/`) updated to the v2 layout so
+        the example matches what `bootstrap-project` now produces:
+        - `examples/agent-smith/contexts/default/context.yaml` (moved)
+        - `examples/agent-smith/decisions/<phase>-<slug>.yaml`
+          (synthesised from the current `decisions.md` example
+          entries — or just one illustrative file plus the existing
+          phase example).
+
+    (8) Plugin's own `decisions.md`: migrated in the same commit as the
+        skill changes, so the plugin dogfoods v2.0 immediately.
+
+    (9) README updated: top-level "What does this set up?" section
+        reflects the new layout.
+
+  out: |
+    - No semantic changes to phase specs (decisions YAML schema /
+      contexts/ layout is purely structural; phase YAML keeps its
+      shape except for the new optional `applies_to:` field).
+    - No consumer-side code changes — Agent Smith's adoption of the
+      new layout (ProjectMetaResolver glob, LoadContextHandler
+      iteration, Sandbox coordinator fan-out via contexts/) is a
+      separate phase in the agent-smith repo (planned as p0161 in
+      `.agentsmith/phases/planned/`).
+    - No automated migration of `notes/` or `concepts/` directories —
+      operator decides per file.
+    - No introduction of cross-decision linking infrastructure beyond
+      the existing `[[slug]]` wiki-link convention in `reason:`.
+    - No marketplace listing / publication work — version bump is
+      structural only; release engineering is separate.
+
+decisions:
+  - key: |
+      contexts/<name>/ for all projects — Reason: a single layout for
+      single-stack and monorepo projects means the consuming code
+      globs one path pattern. The single-stack default name is
+      "default" rather than the project name, so projects can rename
+      themselves without touching contexts/. Alternative — keep
+      flat `context.yaml` at root for single-stack and only nest for
+      monorepo — rejected because consumers then need two code paths.
+  - key: |
+      YAML for decisions, file-per-decision — Reason: operator
+      preference (2026-05-24: "ich mag yaml. das führt zu kürzeren
+      strukturen"). File-per-decision lets grep by phase prefix
+      replace section-scanning in a multi-MB Markdown file (today's
+      Agent Smith `decisions.md` is 497 KB). Alternative — single
+      YAML file with a decisions: array — rejected because the file
+      grows the same way decisions.md grew, and merge conflicts on a
+      single array are constant pain.
+  - key: |
+      Decision filename = phase or run prefix + slug — Reason: the
+      filename IS the decision ID, no separate id: field needed. Phase
+      attribution is structural via the prefix, not a YAML field that
+      could drift from the filename. Multiple decisions per phase
+      become multiple files with the same prefix — glob `p0161-*.yaml`
+      lists all decisions for the phase.
+  - key: |
+      Phase-spec `applies_to:` is free text, not an enum — Reason:
+      operator instruction (2026-05-24: "ist das ein server oder ne
+      api?"). A discrete enum invites bikeshedding; free text lets
+      the operator describe scope in their project's own vocabulary.
+      Decisions inherit the applies_to context via their phase
+      prefix, so the field lives once per phase, not once per
+      decision.
+  - key: |
+      Big-bang migration in update-project — Reason: structural only,
+      no content changes. Per operator: "das ist auch eher
+      mechanisch. nur strukturelle änderungen, keine inhaltlichen."
+      A staged migration would force every spec-first consumer to
+      handle two layouts simultaneously, doubling the consuming-code
+      complexity for no operator benefit.
+  - key: |
+      Notes/concepts directories NOT migrated automatically —
+      Reason: they're conceptual exploration, not decisions or
+      phases. Operator instruction: "für mich sind das keine
+      decisions. das sind die konzepte die zu phasen führen und dann
+      hinterher decisions ableiten." The migration emits a warning
+      and lets the operator pick per file: copy out of `.{project}/`,
+      OR rename to `phases/done/p{NN}-base-concept-<topic>.yaml`
+      with a reserved ID. No automatic placement because both targets
+      are legitimate depending on the file's content.
+  - key: |
+      Plugin's own decisions.md migrates in the same commit as the
+      skill changes — Reason: dogfooding. The plugin uses
+      spec-first methodology on itself (today via a single root
+      `decisions.md`). v2.0 requires every consumer to migrate;
+      shipping v2.0 with the plugin still on the old format would be
+      hypocritical and would block the example from rendering the
+      target layout.
+
+steps:
+  - id: templates
+    action: |
+      Create the new template layout and delete the v1 files.
+      The example decision YAML demonstrates the canonical shape
+      including the phase prefix in the filename.
+    new:
+      - "templates/contexts/default/context.yaml (moved from templates/context.yaml)"
+      - "templates/contexts/default/coding-principles.md (moved from templates/coding-principles.md)"
+      - "templates/decisions/p0001-example-decision.yaml"
+    delete:
+      - "templates/context.yaml"
+      - "templates/coding-principles.md"
+      - "templates/decisions.md"
+
+  - id: schema
+    action: |
+      Add optional `applies_to: string` field to the phase-spec
+      schema. Free text, no enum. Existing phase YAMLs continue to
+      validate without the field.
+    modify:
+      - "templates/phase-spec.schema.json"
+
+  - id: bootstrap-skill
+    action: |
+      Rewrite bootstrap-project to create the contexts/default/ +
+      decisions/ + phases/ layout. Drop any reference to creating a
+      flat root context.yaml or a decisions.md.
+    modify:
+      - "skills/bootstrap-project/SKILL.md"
+
+  - id: log-decision-skill
+    action: |
+      Rewrite log-decision to emit YAML in the canonical shape into
+      decisions/<phase-or-run-id>-<slug>.yaml. The skill reads the
+      active phase from context.yaml; if no active phase exists,
+      prompts for the run ID or asks which phase the decision attaches
+      to. No more Markdown emission; no more decisions.md append.
+    modify:
+      - "skills/log-decision/SKILL.md"
+
+  - id: execute-phase-skill
+    action: |
+      Update Step 1 (Read context files) to read
+      contexts/<default-or-only>/context.yaml + globs other
+      contexts/*/ entries. Update Step 6 (Log decisions) to reference
+      decisions/<phase-id>-<slug>.yaml (one file per decision).
+    modify:
+      - "skills/execute-phase/SKILL.md"
+
+  - id: create-phase-skill
+    action: |
+      Update the template prose to mention the optional
+      `applies_to:` field with a free-text example.
+    modify:
+      - "skills/create-phase/SKILL.md"
+
+  - id: workflow-skill
+    action: |
+      Update spec-first-workflow to show the new layout in any
+      structural prose or diagrams. Replace references to flat
+      context.yaml + decisions.md.
+    modify:
+      - "skills/spec-first-workflow/SKILL.md"
+
+  - id: update-project-skill
+    action: |
+      Add the v1 → v2 migration logic per scope (5). Big-bang move +
+      format conversion. Emits a warning for notes/ and concepts/
+      directories listing the operator-choose actions.
+    modify:
+      - "skills/update-project/SKILL.md"
+
+  - id: examples
+    action: |
+      Convert examples/agent-smith/ to the v2 layout so the example
+      renders the target shape. Pick one or two illustrative
+      decisions for the YAML format.
+    new:
+      - "examples/agent-smith/contexts/default/context.yaml (moved)"
+      - "examples/agent-smith/decisions/p59-pr-comment-webhook-routing.yaml"
+    delete:
+      - "examples/agent-smith/context.yaml"
+      - "examples/agent-smith/decisions.md"
+
+  - id: dogfood-plugin-decisions
+    action: |
+      Migrate the plugin's own decisions.md (7 entries today, all
+      under `## p-sfad-plugin: Claude Code Plugin`) into individual
+      YAML files under decisions/. Use `p-sfad-plugin` as the
+      filename prefix or pick a numeric phase ID retroactively.
+    new:
+      - "decisions/p-sfad-plugin-skills-over-commands.yaml"
+      - "decisions/p-sfad-plugin-six-skills-coverage.yaml"
+      - "decisions/p-sfad-plugin-skills-reference-templates.yaml"
+      - "decisions/p-sfad-plugin-methodology-version-field.yaml"
+      - "decisions/p-sfad-plugin-manual-install-mvp.yaml"
+      - "decisions/p-sfad-plugin-no-automated-tests.yaml"
+      - "decisions/p-sfad-plugin-owner-is-plugin-repo.yaml"
+    delete:
+      - "decisions.md"
+
+  - id: version-bump
+    action: |
+      Bump plugin version to 2.0.0 (breaking change — old projects
+      need update-project to keep working with v2 skills).
+    modify:
+      - ".claude-plugin/plugin.json"
+
+  - id: readme
+    action: |
+      Update the top-level "What does this set up?" section to show
+      the v2 layout.
+    modify:
+      - "README.md"
+
+tests: []   # plugin has no automated tests per p-sfad-plugin decision
+
+done:
+  - "templates/contexts/default/ + templates/decisions/ exist;
+     templates/{context.yaml,coding-principles.md,decisions.md}
+     deleted."
+  - "phase-spec.schema.json has optional applies_to: field;
+     existing phase YAMLs still validate."
+  - "All six skills updated; bootstrap-project creates the new
+     layout from scratch; log-decision emits YAML; execute-phase
+     references decisions/<phase-id>-<slug>.yaml; update-project
+     migrates v1 → v2 in big-bang mode with the notes/concepts
+     warning."
+  - "examples/agent-smith/ converted to v2 layout; demonstrates
+     contexts/default/ + decisions/<phase>-<slug>.yaml."
+  - "Plugin's own decisions.md migrated to per-decision YAMLs;
+     decisions.md deleted; plugin dogfoods v2.0."
+  - "plugin.json version = 2.0.0."
+  - "README reflects v2 layout."
+  - "Manual smoke: bootstrap-project on a throwaway fresh dir
+     produces the expected v2 layout; update-project on a v1
+     fixture (a copy of agent-smith's current .agentsmith/)
+     produces the expected v2 layout including the decisions.md
+     split and the notes/concepts warning."

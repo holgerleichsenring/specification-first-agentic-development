@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p0001
+category: Tooling
+chose: "Structured YAML, one file per decision, filename = <phase-id>-<slug>.yaml"
+over: "Flat append-only decisions.md with category-tagged bullets"
+reason: |
+  YAML produces shorter, more grep-able structures than Markdown
+  bullets. File-per-decision replaces section-scanning in a multi-MB
+  Markdown blob (the dogfood project's decisions.md was 497 KB before
+  v2.0). The filename IS the decision ID, attached to a phase or run
+  by prefix — no separate `id:` field that could drift from the
+  filename. Multiple decisions per phase = multiple files sharing the
+  prefix; glob `p0042-*.yaml` to list all decisions for a phase.
+alternatives:
+  - "Single YAML file with a decisions: array — rejected, same monolithic-file problem"
+  - "Markdown frontmatter — rejected, mixes structured fields with free prose in the same file"

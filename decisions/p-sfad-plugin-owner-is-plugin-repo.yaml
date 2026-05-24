@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p-sfad-plugin
+category: Architecture
+chose: "Plugin lives in specification-first-agentic-development repo, not in agent-smith"
+over: "Shipping the plugin alongside the agent-smith codebase"
+reason: |
+  The plugin IS the methodology packaged for Claude Code. Agent Smith
+  just happens to use Spec-First as its development methodology. The
+  right owner for the plugin is the methodology repo, so other
+  projects can adopt the plugin without a hard dependency on Agent
+  Smith.

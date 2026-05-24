@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p0001
+category: TradeOff
+chose: "Notes/ and concepts/ directories are NOT auto-migrated; operator decides per file"
+over: "Move them automatically into decisions/ or phases/done/"
+reason: |
+  Per the dogfood project's operator: "für mich sind das keine
+  decisions. das sind die konzepte die zu phasen führen und dann
+  hinterher decisions ableiten" — these are conceptual exploration
+  that precedes phases, not the structured artifacts that follow
+  them. Automated placement would either misclassify them as
+  decisions (wrong category) or as phases (wrong lifecycle).
+
+  The migration emits a warning listing each file and recommends two
+  legitimate operator actions: (a) copy out of .{project}/ entirely
+  (they're scratch material), or (b) rename to
+  phases/done/p{NN}-base-concept-{topic}.yaml with a reserved ID
+  range. Either is fine — depends on the file's content.

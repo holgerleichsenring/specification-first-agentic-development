@@ -1,12 +1,14 @@
-# yaml-language-server: $schema=context.schema.json
+# yaml-language-server: $schema=../../context.schema.json
 meta:
   project: your-project-name
   version: 0.1.0
   type: [app]                         # app, api, library, agent, pipeline, ...
   purpose: "One-line description of what this project does."
+  workdir: "."                        # sub-tree this context applies to; "." = repo root.
+                                      # Monorepo example: "src/Server", "client", "docs"
 
 methodology:
-  version: "1.0.0"                    # Spec-First methodology version (used by update-project)
+  version: "2.0.0"                    # Spec-First methodology version (used by update-project)
 
 stack:
   runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...

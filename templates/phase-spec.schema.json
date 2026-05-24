@@ -18,6 +18,10 @@
       "description": "One line: what is being built and why",
       "maxLength": 200
     },
+    "applies_to": {
+      "type": "string",
+      "description": "Free-text description of which part of the project this phase touches (e.g. 'server', 'client + docs', 'all stacks'). Optional. Free-form, not an enum — operators pick their own vocabulary."
+    },
     "requires": {
       "oneOf": [
         {

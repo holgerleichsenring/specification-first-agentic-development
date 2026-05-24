@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../../decision.schema.json
+phase: p18
+category: Architecture
+chose: "Redis Streams as message bus with persistent consumer groups"
+over: "In-process events or a heavyweight broker (RabbitMQ, Kafka)"
+reason: |
+  Decouples the agent from the dispatcher, enables multi-platform
+  routing (Slack, Teams, web UI), and survives restarts via
+  consumer-group offsets. Redis is already in the stack for caching
+  and pipeline storage; piggybacking on it avoids an additional
+  operational surface.
+
+  Companion decision: separate `IProgressReporter` implementations
+  (Console for CLI, Redis for K8s) keep the single interface clean
+  while letting deployments pick the right transport.
+alternatives:
+  - "In-process events — rejected, single-process only, no resilience"
+  - "RabbitMQ — rejected, separate operational dependency for a problem Redis already solves"
+  - "Kafka — rejected, oversized for the message volume we expect"

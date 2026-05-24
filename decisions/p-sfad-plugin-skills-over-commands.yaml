@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p-sfad-plugin
+category: Architecture
+chose: "Skills with SKILL.md frontmatter as the surface"
+over: "commands/ directory (legacy Claude Code plugin shape)"
+reason: |
+  Per Anthropic's plugin docs, commands/ is legacy. Skills with
+  SKILL.md frontmatter (name, description, user-invocable) are the
+  current standard and benefit from better discovery in newer Claude
+  Code versions.
