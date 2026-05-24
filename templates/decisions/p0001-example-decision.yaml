@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../decision.schema.json
+# Example decision file. Filename = <phase-id-or-run-id>-<slug>.yaml.
+# One decision per file. Multiple decisions per phase = multiple files sharing the prefix.
+# Glob `p0001-*.yaml` to list all decisions for phase p0001.
+
+phase: p0001                          # OR: run: r07   (exactly one)
+category: Architecture                # Architecture | Tooling | Implementation | TradeOff | Security
+
+chose: "Adapter pattern for ticket providers"
+over: "Direct SDK coupling per provider"
+
+reason: |
+  Adapter lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider
+  interface without touching application logic. Each provider's SDK
+  surface stays isolated in Infrastructure; the rest of the codebase
+  sees only the contract.
+
+  Related: [[p0001-no-sdk-for-github]] explains why we use raw HttpClient
+  for the GitHub adapter rather than Octokit.
+
+alternatives:                         # optional list
+  - "Repository pattern — rejected, overkill for read-mostly ticket data"
+  - "One handler per provider — rejected, duplicates the orchestration loop"

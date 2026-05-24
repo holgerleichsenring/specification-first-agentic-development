@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p-sfad-plugin
+category: Architecture
+chose: "Six skills covering the full lifecycle: workflow, bootstrap-project, create-phase, execute-phase, log-decision, update-project"
+over: "A single monolithic skill or a sprawling per-task set"
+reason: |
+  Each skill maps to a discrete user intent ("start a project", "plan
+  a phase", "implement the active phase", etc.). Six is the minimum
+  that covers the loop without forcing the user to navigate prose to
+  find the right entry point. update-project was included in v1.0
+  because methodology evolution without a sync mechanism strands
+  early adopters on whichever shape they bootstrapped with.

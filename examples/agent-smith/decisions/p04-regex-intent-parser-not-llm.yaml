@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=../../decision.schema.json
+phase: p04
+category: Architecture
+chose: "Regex-based intent parser for slash-command discrimination"
+over: "Per-message LLM call to classify intent"
+reason: |
+  Determinism, cost, and speed. Slash-commands like `/approve`,
+  `/reject`, `/agent-smith ...` are a structural UI contract — a
+  regex catches them in microseconds with zero token spend. The free-
+  text tail after the command (where ambiguity actually lives) is a
+  separate concern handled later (see p0146e).
+alternatives:
+  - "LLM-only parser — rejected for cost and latency on a hot path"
+  - "Fuzzy string match — rejected, no benefit over regex for structural prefixes"

@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=context.schema.json
+# yaml-language-server: $schema=../../context.schema.json
 #
 # This is an extract from the Agent Smith project — a real .NET 8 AI orchestration
 # framework built entirely with specification-first agentic development across 70+ phases.
@@ -8,6 +8,10 @@ meta:
   version: 1.0.0
   type: [agent, pipeline]
   purpose: "Self-hosted AI orchestration framework: code, legal, security, workflows."
+  workdir: "."
+
+methodology:
+  version: "2.0.0"
 
 stack:
   runtime: .NET 8

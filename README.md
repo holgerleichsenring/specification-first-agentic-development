@@ -142,19 +142,33 @@ The AI knows what exists, what's being built, and what's coming without re-readi
 
 ### 3. Decision Capture
 
-Every phase produces entries in `decisions.md`:
+Every phase produces one YAML file per decision in `decisions/`:
 
-```markdown
-## p03: Providers
-
-- [Architecture] Adapter pattern for ticket providers — allows GitHub/Jira/AzureDevOps
-  to swap without touching application logic
-- [TradeOff] No SDK for GitHub, raw HttpClient — SDK added 3MB of transitive deps
-  for 4 API calls we actually need
-- [Rejected] Repository pattern considered — overkill for read-mostly ticket data
+```
+decisions/
+  p03-adapter-pattern-for-providers.yaml
+  p03-no-sdk-for-github.yaml
+  p03-rejected-repository-pattern.yaml
 ```
 
-This transforms implicit tribal knowledge into explicit, searchable history.
+Each file is structured:
+
+```yaml
+phase: p03
+category: Architecture
+chose: "Adapter pattern for ticket providers"
+over: "Direct SDK coupling per provider"
+reason: |
+  Lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider without
+  touching application logic. Each SDK surface stays isolated in
+  Infrastructure; the rest of the codebase sees only the contract.
+alternatives:
+  - "Repository pattern — rejected, overkill for read-mostly ticket data"
+```
+
+Glob `decisions/p03-*.yaml` to list every decision for that phase. This
+transforms implicit tribal knowledge into explicit, searchable, structured
+history — one decision per file, attached to a phase or run by filename.
 
 ### 4. Phase Workflow
 
@@ -187,13 +201,21 @@ planned/  →  active/  →  done/
 
 ---
 
-## Directory Structure
+## Directory Structure (v2.0)
 
 ```
 .yourproject/
-  context.yaml              # central state tracker
-  coding-principles.md      # code quality rules (AI reads every session)
-  decisions.md              # decision log — the why, not the what
+  contexts/                 # per-stack contexts (single-stack uses contexts/default/)
+    default/
+      context.yaml          # stack, arch, quality, state, workdir
+      coding-principles.md  # code quality rules (AI reads every session)
+    # Monorepo example:
+    # server/    { context.yaml (workdir: src/Server), coding-principles.md }
+    # client/    { context.yaml (workdir: client),     coding-principles.md }
+    # docs/      { context.yaml (workdir: docs),       coding-principles.md }
+  decisions/                # one YAML per decision; filename = <phase-id-or-run-id>-<slug>.yaml
+    p{NN}-{slug}.yaml
+    r{NN}-{slug}.yaml
   phases/
     planned/                # upcoming specs
       p{NN}-feature-slug.yaml
@@ -203,6 +225,8 @@ planned/  →  active/  →  done/
       p{NN}-feature-slug.yaml
   runs/                     # execution logs (optional, for automated agents)
 ```
+
+**v1 → v2 upgrade**: existing projects on v1.x (flat root `context.yaml` + `coding-principles.md` + `decisions.md`) migrate via `/spec-first:update-project`, which runs the big-bang structural move + decisions-log split.
 
 ---
 
@@ -216,20 +240,25 @@ Paste this into your AI agent (Claude Code, Cursor, ChatGPT, etc.):
 I want to set up specification-first agentic development for this project.
 
 1. Create a `.yourproject/` directory (replace "yourproject" with my project name) with:
-   - context.yaml: fill in the stack, architecture, layers, quality rules,
-     and naming conventions based on what you see in the codebase.
-   - coding-principles.md: extract the actual conventions from the existing code
-     (language, limits, naming, patterns, testing style).
-   - decisions.md: empty starter with the template header.
+   - contexts/default/context.yaml: fill in the stack, architecture, layers, quality rules,
+     naming conventions, and `meta.workdir: "."` for single-stack at the repo root. For
+     monorepos, add one contexts/<stack>/ per sub-tree (e.g. contexts/server/,
+     contexts/client/) with each `workdir:` pointing at that sub-tree.
+   - contexts/default/coding-principles.md: extract the actual conventions from the
+     existing code (language, limits, naming, patterns, testing style). For monorepos,
+     each contexts/<stack>/coding-principles.md is self-contained for its stack.
+   - decisions/: empty directory; one YAML per decision is written here during execution.
    - phases/planned/, phases/active/, phases/done/: empty directories
 
 2. Create a CLAUDE.md (or .cursor/prompt.md) with:
-   - Read order: context.yaml → coding-principles.md → active phase → decisions.md
-   - The 10-step implementation workflow (spec first, plan, implement, test, log decisions, update state)
-   - Key rules from the coding principles
+   - Read order: glob contexts/*/context.yaml → glob contexts/*/coding-principles.md
+     → active phase → relevant decisions/<phase-id>-*.yaml
+   - The 10-step implementation workflow (spec first, plan, implement, test,
+     log decisions as YAML, update state)
+   - Key rules from the contexts' coding principles
 
-3. Analyze the codebase and populate context.yaml with the actual stack,
-   architecture patterns, and layer structure you observe.
+3. Analyze the codebase and populate each contexts/<name>/context.yaml with the actual
+   stack, architecture patterns, and layer structure you observe.
 
 Don't invent conventions — extract them from what's already here.
 ```
@@ -248,12 +277,13 @@ Don't invent conventions — extract them from what's already here.
 
 | File | Purpose |
 |---|---|
-| `context.yaml` | Project metadata, architecture, phase tracking |
-| `prompt.md` | AI agent instructions and workflow |
-| `coding-principles.md` | Code quality rules and conventions |
+| `contexts/default/context.yaml` | Per-stack metadata, architecture, phase tracking, `workdir:` field |
+| `contexts/default/coding-principles.md` | Per-stack code quality rules and conventions |
+| `decisions/p0001-example-decision.yaml` | Canonical YAML shape for a decision file |
+| `decision.schema.json` | JSON Schema for decision YAMLs (IDE autocompletion) |
 | `phase-spec.yaml` | Template for a new phase specification |
-| `phase-spec.schema.json` | JSON Schema for phase specs (IDE autocompletion) |
-| `decisions.md` | Decision log starter |
+| `phase-spec.schema.json` | JSON Schema for phase specs (IDE autocompletion, includes optional `applies_to:` field) |
+| `prompt.md` | AI agent instructions and workflow |
 
 ---
 
@@ -261,13 +291,13 @@ Don't invent conventions — extract them from what's already here.
 
 The AI agent follows this order for every phase:
 
-1. Read `context.yaml`, coding principles, active phase spec
-2. Plan: explore codebase, design approach, get human approval
+1. Read every `contexts/*/context.yaml`, every `contexts/*/coding-principles.md`, the active phase spec, and relevant `decisions/<phase-id>-*.yaml`
+2. Plan: explore the codebase(s) the phase touches (filtered by `applies_to:`), design approach, get human approval
 3. Implement: contracts first, then implementation, then wiring, then tests
 4. Build after each step — fix errors immediately
 5. Run all tests — 0 failures before moving on
-6. Log decisions to `decisions.md`
-7. Update `context.yaml` — move phase to done
+6. Log decisions: write `decisions/<phase-id>-<slug>.yaml` per non-obvious choice
+7. Update relevant `contexts/<name>/context.yaml` — move phase to done
 8. Move phase file to `done/`
 9. Commit — one commit per phase
 
