@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=../templates/decision.schema.json
+phase: p-sfad-plugin
+
+decisions:
+  - category: Architecture
+    chose: "Plugin lives in specification-first-agentic-development repo, not in agent-smith"
+    over: "Shipping the plugin alongside the agent-smith codebase"
+    reason: |
+      The plugin IS the methodology packaged for Claude Code. Agent Smith
+      just happens to use Spec-First as its development methodology. The
+      right owner for the plugin is the methodology repo, so other
+      projects can adopt the plugin without a hard dependency on Agent
+      Smith.
+
+  - category: Architecture
+    chose: "Skills with SKILL.md frontmatter as the surface"
+    over: "commands/ directory (legacy Claude Code plugin shape)"
+    reason: |
+      Per Anthropic's plugin docs, commands/ is legacy. Skills with
+      SKILL.md frontmatter (name, description, user-invocable) are the
+      current standard and benefit from better discovery in newer Claude
+      Code versions.
+
+  - category: Architecture
+    chose: "Six skills covering the full lifecycle: workflow, bootstrap-project, create-phase, execute-phase, log-decision, update-project"
+    over: "A single monolithic skill or a sprawling per-task set"
+    reason: |
+      Each skill maps to a discrete user intent ("start a project", "plan
+      a phase", "implement the active phase", etc.). Six is the minimum
+      that covers the loop without forcing the user to navigate prose to
+      find the right entry point. update-project was included in v1.0
+      because methodology evolution without a sync mechanism strands
+      early adopters on whichever shape they bootstrapped with.
+
+  - category: Implementation
+    chose: "Skills reference existing templates/ directory rather than embedding template content"
+    over: "Inlining template content into each skill's prose"
+    reason: |
+      Single source of truth. bootstrap-project reads templates as
+      structural guides and adapts per project rather than copying inline
+      YAML/Markdown blobs that would drift from the actual template files.
+
+  - category: Implementation
+    chose: "methodology.version field in context.yaml is the single source of truth"
+    over: "Hardcoded version checks against an external file"
+    reason: |
+      The user's own context.yaml records which methodology version they
+      bootstrapped with. The plugin's plugin.json carries the current
+      version. The comparison is local: if context.yaml's version is
+      older, update-project shows the diff. No central registry, no
+      network call.
+
+  - category: TradeOff
+    chose: "Manual install via git clone + --plugin-dir for MVP"
+    over: "Wait for the Anthropic marketplace listing before shipping"
+    reason: |
+      Marketplace listing is a separate effort with its own approval
+      cycle. Git clone + the local --plugin-dir flag works today, has
+      zero dependencies, and lets early adopters use the plugin without
+      blocking on Anthropic's review queue. Once the marketplace listing
+      lands, the README adds the one-line install command.
+
+  - category: TradeOff
+    chose: "No automated tests for the plugin"
+    over: "A test harness that drives Claude Code with fixture prompts"
+    reason: |
+      Plugin quality is trigger-description quality and skill-prose
+      quality, both verified by manual testing with real prompts. SKILL.md
+      files are prose, not code — there's no behaviour to assert in a
+      unit-test sense. Building a Claude-driven test harness for prose
+      would cost more than the bugs it would catch at this scale.

@@ -1,9 +1,0 @@
-# yaml-language-server: $schema=../templates/decision.schema.json
-phase: p-sfad-plugin
-category: Implementation
-chose: "Skills reference existing templates/ directory rather than embedding template content"
-over: "Inlining template content into each skill's prose"
-reason: |
-  Single source of truth. bootstrap-project reads templates as
-  structural guides and adapts per project rather than copying inline
-  YAML/Markdown blobs that would drift from the actual template files.

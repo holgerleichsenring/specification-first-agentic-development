@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=../../decision.schema.json
+phase: p01
+
+decisions:
+  - category: Architecture
+    chose: "Command Pattern (MediatR-style) as central pattern"
+    over: "Direct controller-to-service calls or service locator"
+    reason: |
+      Strict separation of "What" (the context object describing the work)
+      from "How" (the handler executing it). Each command has exactly one
+      handler, dispatched via DI through a single generic interface
+      `ICommandHandler<TContext>`. New commands plug in without touching
+      any existing dispatch code.
+
+  - category: Tooling
+    chose: "YamlDotNet for configuration"
+    over: "JSON schema-validated config loader"
+    reason: |
+      Early-stage simplicity. YamlDotNet reads the operator's
+      agentsmith.yml directly into POCOs without ceremony. Schema
+      validation can be layered on later once the config shape
+      stabilises (added in p0139 once it did).

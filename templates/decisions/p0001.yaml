@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=../decision.schema.json
+#
+# One YAML file per phase. Filename = <phase-id>.yaml (or <run-id>.yaml for runs).
+# All decisions made within this phase live in the decisions: array below.
+# Glob `decisions/p0001.yaml` for one phase; cat `decisions/*.yaml` for everything.
+
+phase: p0001
+
+decisions:
+  - category: Architecture
+    chose: "Adapter pattern for ticket providers"
+    over: "Direct SDK coupling per provider"
+    reason: |
+      Adapter lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider
+      interface without touching application logic. Each provider's SDK
+      surface stays isolated in Infrastructure; the rest of the codebase
+      sees only the contract.
+    alternatives:
+      - "Repository pattern — rejected, overkill for read-mostly ticket data"
+      - "One handler per provider — rejected, duplicates the orchestration loop"
+
+  - category: TradeOff
+    chose: "Raw HttpClient for GitHub API"
+    over: "Octokit SDK"
+    reason: |
+      Octokit adds 3 MB of transitive deps for 4 API calls we actually need.
+      Raw HttpClient with a small typed wrapper is leaner and the responses
+      are stable JSON.
+
+  - category: Implementation
+    chose: "Lazy environment variable resolution in config loader"
+    reason: |
+      Unset env vars aren't errors during loading, only at usage time. Lets
+      operators run subcommands that don't need every secret without
+      configuring the whole world first.

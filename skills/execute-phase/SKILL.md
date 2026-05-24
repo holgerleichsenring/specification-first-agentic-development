@@ -14,7 +14,7 @@ Implement the currently active phase following the Specification-First workflow.
    - **Every** `.{project}/contexts/<name>/context.yaml` — glob `contexts/*/context.yaml`. Each context describes one stack (single-stack projects have just `contexts/default/`). Read each one to know the architecture, stack, and what's been built per sub-tree.
    - **Every** `.{project}/contexts/<name>/coding-principles.md` — these are constraints per stack, not suggestions. Different contexts can have different conventions (C# vs. TypeScript).
    - The active phase spec in `phases/active/`.
-   - Relevant past decisions: `decisions/<phase-id>-*.yaml` for the active phase and for any phase listed in `requires:`. Also glob `decisions/*.yaml` if you need to consult the broader history.
+   - Relevant past decisions: `decisions/<phase-id>.yaml` for the active phase and for any phase listed in `requires:`. Glob `decisions/*.yaml` if you need to consult the broader history.
 
 2. If there is no phase in `active/`, ask the user which planned phase to start. Move it from `planned/` to `active/`.
 
@@ -61,23 +61,28 @@ After implementation is complete, run the full test suite. Zero failures before 
 
 ### Step 6: Log decisions
 
-For every non-obvious choice made during implementation, write a YAML file under `.{project}/decisions/`:
+For every non-obvious choice made during implementation, append an entry to the phase's decision YAML at `.{project}/decisions/<phase-id>.yaml`.
 
-Filename: `<phase-id>-<slug>.yaml`. Multiple decisions per phase = multiple files all sharing the prefix.
+**One file per phase.** All decisions for p{NN} live in `decisions/p{NN}.yaml` as entries in its `decisions:` array. Create the file on the first decision; append to it on subsequent decisions.
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
 phase: p{NN}
-category: Architecture     # | Tooling | Implementation | TradeOff | Security
-chose: "<one-line>"
-over: "<one-line alternative>"
-reason: |
-  Multi-line why.
-alternatives:              # optional
-  - "<other option — why rejected>"
+
+decisions:
+  - category: Architecture     # | Tooling | Implementation | TradeOff | Security | Scope
+    chose: "<one-line>"
+    over: "<one-line alternative>"   # optional
+    reason: |
+      Multi-line why.
+    alternatives:                    # optional
+      - "<other option — why rejected>"
+  - category: Implementation
+    chose: "..."
+    ...
 ```
 
-Use the `/spec-first:log-decision` skill if you prefer interactive logging — it asks for the slug and writes the file for you.
+Use the `/spec-first:log-decision` skill if you prefer interactive logging — it handles file creation, appending, and YAML formatting.
 
 ### Step 7: Update context.yaml
 

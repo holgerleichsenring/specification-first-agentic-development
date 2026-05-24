@@ -44,7 +44,7 @@ scope:
           `templates/context.yaml`)
         - NEW `templates/contexts/default/coding-principles.md` (moved
           from `templates/coding-principles.md`)
-        - NEW `templates/decisions/p0001-example-decision.yaml`
+        - NEW `templates/decisions/p0001.yaml`
           (replaces `templates/decisions.md`)
         - DELETE `templates/context.yaml`, `templates/coding-principles.md`,
           `templates/decisions.md`
@@ -57,33 +57,35 @@ scope:
           phase YAMLs do NOT need backfill; the field is optional.
 
     (3) Decision YAML shape (canonical form, written to
-        `decisions/<phase-id>-<slug>.yaml`):
+        `decisions/<phase-id>.yaml` — one file per phase):
 
           phase: p0161                  # OR `run: r07` — exactly one
-          category: Architecture        # Architecture | Tooling |
+          decisions:
+            - category: Architecture    # Architecture | Tooling |
                                         # Implementation | TradeOff |
-                                        # Security
-          chose: "<one-line summary of what was picked>"
-          over: "<one-line summary of the obvious alternative>"
-          reason: |
-            Free-form multi-line WHY. Cite constraints, prior
-            incidents, related decisions ([[other-decision-slug]]).
-          alternatives:                  # optional
-            - "<one-line — what else was considered, why rejected>"
+                                        # Security | Scope
+              chose: "<one-line summary of what was picked>"
+              over: "<one-line alternative>"      # optional
+              reason: |
+                Free-form multi-line WHY. Cite constraints, prior
+                incidents, related decisions ([[other-phase-id]]).
+              alternatives:                       # optional
+                - "<one-line — what else was considered, why rejected>"
+            - category: TradeOff
+              chose: "<another decision in the same phase>"
+              ...
 
-        - Filename = phase or run ID + slug, e.g.
-          `p0161-contexts-dir-layout.yaml`,
-          `p0161-yaml-decision-shape.yaml`,
-          `r07-emergency-rollback.yaml`.
-        - One decision per file. Multiple decisions per phase = multiple
-          files all sharing the phase-ID prefix. Grouping is by
-          filename glob, not by container file.
-        - No `stacks:` field. Phase-spec's new `applies_to:` carries
-          the stack/area context once per phase; decisions inherit it
-          via their phase ID. Operator instruction 2026-05-24:
-          "ist das ein server oder ne api?" — debates over a discrete
-          stacks enum are avoided by keeping it free text at the
-          phase level only.
+        - Filename = phase or run ID, e.g. `p0161.yaml`, `r07.yaml`.
+        - One YAML file per phase. All decisions for that phase live
+          in the `decisions:` array inside the file. Grouping is the
+          container file itself, not a filename glob.
+        - `over` is optional. `reason` is optional but encouraged.
+        - No `stacks:` field on decisions. Phase-spec's new
+          `applies_to:` carries the stack/area context once per phase;
+          decisions inherit it via their containing file's `phase:`
+          field. Operator instruction 2026-05-24: "ist das ein server
+          oder ne api?" — debates over a discrete stacks enum are
+          avoided by keeping it free text at the phase level only.
 
     (4) Skills:
         - `skills/bootstrap-project/SKILL.md` rewritten: creates
@@ -95,7 +97,7 @@ scope:
           the decision is run-attached (no active phase), prompts for
           the run ID.
         - `skills/execute-phase/SKILL.md` Step 6 updated: references
-          `decisions/<phase-id>-<slug>.yaml`. Step 1 ("Read context
+          `decisions/<phase-id>.yaml`. Step 1 ("Read context
           files") updated to read `contexts/<default-or-only>/...`
           plus glob other `contexts/*/`.
         - `skills/update-project/SKILL.md` gains the v1 → v2 migration
@@ -232,7 +234,7 @@ steps:
     new:
       - "templates/contexts/default/context.yaml (moved from templates/context.yaml)"
       - "templates/contexts/default/coding-principles.md (moved from templates/coding-principles.md)"
-      - "templates/decisions/p0001-example-decision.yaml"
+      - "templates/decisions/p0001.yaml"
     delete:
       - "templates/context.yaml"
       - "templates/coding-principles.md"
@@ -269,7 +271,7 @@ steps:
       Update Step 1 (Read context files) to read
       contexts/<default-or-only>/context.yaml + globs other
       contexts/*/ entries. Update Step 6 (Log decisions) to reference
-      decisions/<phase-id>-<slug>.yaml (one file per decision).
+      decisions/<phase-id>.yaml (one file per decision).
     modify:
       - "skills/execute-phase/SKILL.md"
 
@@ -349,7 +351,7 @@ done:
      existing phase YAMLs still validate."
   - "All six skills updated; bootstrap-project creates the new
      layout from scratch; log-decision emits YAML; execute-phase
-     references decisions/<phase-id>-<slug>.yaml; update-project
+     references decisions/<phase-id>.yaml; update-project
      migrates v1 → v2 in big-bang mode with the notes/concepts
      warning."
   - "examples/agent-smith/ converted to v2 layout; demonstrates

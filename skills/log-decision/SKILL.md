@@ -1,12 +1,12 @@
 ---
 name: log-decision
-description: "Log an architectural or design decision as a YAML file under decisions/. Triggers when the user makes a choice between alternatives, says 'log this decision', 'record this choice', or when a non-obvious design decision is made during implementation."
+description: "Append an architectural or design decision to the active phase's YAML file under decisions/. Triggers when the user makes a choice between alternatives, says 'log this decision', 'record this choice', or when a non-obvious design decision is made during implementation."
 user-invocable: true
 ---
 
 # Log Decision
 
-Write a decision as a structured YAML file under `.{project}/decisions/`. Decisions capture the **why** behind choices — the code shows the what, but six months later nobody remembers the reasoning.
+Append a decision entry to the phase's YAML file under `.{project}/decisions/`. Decisions capture the **why** behind choices — the code shows the what, but six months later nobody remembers the reasoning.
 
 ## When to Log
 
@@ -16,41 +16,44 @@ Log a decision when:
 - Accepting a trade-off (performance vs. readability, simplicity vs. flexibility)
 - Making a security-relevant choice
 - Choosing a tool, library, or framework
+- Narrowing a phase's scope (in/out trade-offs)
 
 Don't log:
 - Obvious choices (using the project's language, following established patterns)
 - Temporary decisions ("I'll refactor this later")
 - Style preferences already covered by `coding-principles.md`
 
-## File Naming Convention
+## File Convention
 
-One decision per file. Filename = `<phase-or-run-id>-<slug>.yaml`:
+**One YAML file per phase.** Filename = `<phase-or-run-id>.yaml`:
 
-| Source              | Filename example                                  |
-|---------------------|---------------------------------------------------|
-| Phase decision      | `decisions/p0042-adapter-pattern-for-providers.yaml` |
-| Run-attached note   | `decisions/r07-emergency-rollback-rationale.yaml` |
+| Source                | Filename          |
+|-----------------------|-------------------|
+| Phase decisions       | `decisions/p0042.yaml` |
+| Run-attached note     | `decisions/r07.yaml`   |
 
-Multiple decisions per phase → multiple files sharing the prefix:
-- `decisions/p0042-adapter-pattern.yaml`
-- `decisions/p0042-no-sdk-for-github.yaml`
-- `decisions/p0042-rejected-repository-pattern.yaml`
-
-Glob `p0042-*.yaml` to see every decision for that phase.
+The file holds ALL decisions made within that phase or run. Multiple decisions for one phase = multiple entries in the same file's `decisions:` array. Glob `decisions/p0042.yaml` to see every decision for that phase; cat `decisions/*.yaml` to dump everything.
 
 ## YAML Shape
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: p0042                  # OR: run: r07   (exactly one)
-category: Architecture        # Architecture | Tooling | Implementation | TradeOff | Security
-chose: "<one-line summary of what was picked>"
-over: "<one-line summary of the obvious rejected alternative>"
-reason: |
-  Multi-line explanation. Cite constraints, prior incidents,
-  related decisions via [[other-decision-slug]].
-alternatives:                 # optional
-  - "<one-line — what else was considered, why rejected>"
+phase: p0042                # OR: run: r07   (exactly one — must match filename)
+
+decisions:
+  - category: Architecture
+    chose: "<one-line summary of what was picked>"
+    over: "<one-line summary of the obvious rejected alternative>"   # optional
+    reason: |
+      Multi-line explanation. Cite constraints, prior incidents,
+      related decisions via [[other-phase-id]].
+    alternatives:           # optional
+      - "<one-line — what else was considered, why rejected>"
+
+  - category: TradeOff
+    chose: "..."
+    reason: |
+      ...
 ```
 
 | Category         | Use when                                                          |
@@ -60,8 +63,9 @@ alternatives:                 # optional
 | `Implementation` | How something is built (algorithm, data structure, approach)      |
 | `TradeOff`       | Accepting a limitation for a specific benefit                     |
 | `Security`       | Security-relevant choices                                         |
+| `Scope`          | In/out trade-offs at phase boundaries                             |
 
-Use `Architecture` for major structural choices. If the natural fit is "explicitly NOT this", capture it as `chose` describing the chosen-by-omission and put the rejected option in `over` and `alternatives`.
+Only `category` and `chose` are required. `over`, `reason`, `alternatives` are optional — but encouraged for non-trivial decisions.
 
 ## Steps
 
@@ -69,63 +73,64 @@ Use `Architecture` for major structural choices. If the natural fit is "explicit
 
 Check which phase is currently active in `.{project}/contexts/<name>/context.yaml` (`state.active`). If multiple contexts have active phases, ask the user which one this decision belongs to. If no phase is active, ask whether the decision attaches to a phase ID (planned/done) or to a run ID.
 
-### 2. Compose the YAML
+### 2. Read or create the phase decision file
 
-Author a slug (lower-kebab-case, ~3–6 words capturing the decision). Build the filename `<id>-<slug>.yaml`.
+Target path: `.{project}/decisions/<phase-id>.yaml`.
 
-Draft the YAML body:
-- `chose:` and `over:` each ONE LINE.
-- `reason:` multi-line; lead with the load-bearing constraint, not the conclusion.
-- `alternatives:` optional; only when there were other named candidates worth recording.
+- If it exists: read it, preserve its `phase:` (or `run:`) field and its existing `decisions:` entries.
+- If it doesn't exist: create a fresh file with the schema header, the `phase:` (or `run:`) field, and an empty `decisions:` array ready to receive the new entry.
 
-### 3. Write the file
+### 3. Compose the new entry
 
-Write to `.{project}/decisions/<id>-<slug>.yaml`. Do NOT append to a flat log file — v2.0 has no `decisions.md`.
+Author the entry following the shape above. Lead with `category` and `chose:`. Add `over:`, `reason:`, and `alternatives:` only when they apply.
 
-### 4. Confirm
+### 4. Append to the file
 
-Show the user the YAML and the file path. If they want to refine the wording, edit the file.
+Add the new entry to the END of the `decisions:` array (chronological order). Do not rewrite or reorder existing entries.
+
+### 5. Confirm
+
+Show the user the new entry and the file path. If they want to refine the wording, edit the file.
 
 ## Examples
 
-`decisions/p0042-adapter-pattern-for-providers.yaml`:
+`decisions/p0042.yaml` (after two decisions logged in phase p0042):
 
 ```yaml
+# yaml-language-server: $schema=../decision.schema.json
 phase: p0042
-category: Architecture
-chose: "Adapter pattern for ticket providers"
-over: "Direct SDK coupling per provider"
-reason: |
-  Lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider without
-  touching application logic. Each SDK surface stays isolated in
-  Infrastructure; the rest of the codebase sees only the contract.
-alternatives:
-  - "Repository pattern — rejected, overkill for read-mostly ticket data"
-  - "One handler per provider — rejected, duplicates the orchestration loop"
+
+decisions:
+  - category: Architecture
+    chose: "Adapter pattern for ticket providers"
+    over: "Direct SDK coupling per provider"
+    reason: |
+      Lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider without
+      touching application logic. Each SDK surface stays isolated in
+      Infrastructure; the rest of the codebase sees only the contract.
+    alternatives:
+      - "Repository pattern — rejected, overkill for read-mostly ticket data"
+
+  - category: TradeOff
+    chose: "Raw HttpClient for GitHub API"
+    over: "Octokit SDK"
+    reason: |
+      Octokit adds 3 MB of transitive deps for 4 API calls. Raw HttpClient
+      with a small typed wrapper is leaner and the responses are stable JSON.
 ```
 
-`decisions/p0042-no-sdk-for-github.yaml`:
+`decisions/r07.yaml` (a run-attached decision file):
 
 ```yaml
-phase: p0042
-category: TradeOff
-chose: "Raw HttpClient for GitHub API"
-over: "Octokit SDK"
-reason: |
-  Octokit adds 3 MB of transitive deps for 4 API calls we actually
-  need. Raw HttpClient with a small typed wrapper is leaner and the
-  responses are stable JSON.
-```
-
-`decisions/r07-emergency-rollback-rationale.yaml`:
-
-```yaml
+# yaml-language-server: $schema=../decision.schema.json
 run: r07
-category: Implementation
-chose: "Rollback the last 3 commits via revert, not reset"
-over: "git reset --hard HEAD~3 + force push"
-reason: |
-  The branch was already pushed and other operators had pulled it.
-  Force-pushing would have orphaned their work. Three explicit revert
-  commits preserve history and let downstream branches merge cleanly.
+
+decisions:
+  - category: Implementation
+    chose: "Rollback the last 3 commits via revert, not reset"
+    over: "git reset --hard HEAD~3 + force push"
+    reason: |
+      The branch was already pushed and other operators had pulled it.
+      Force-pushing would have orphaned their work. Three explicit revert
+      commits preserve history and let downstream branches merge cleanly.
 ```

@@ -70,33 +70,38 @@ If a `.{project}/context.schema.json` exists alongside, leave it at the project 
 
 Read `.{project}/decisions.md`. The v1 format groups decisions under `## p{NN}: Title` headings with `- [Category] Decision -- rationale` bullets.
 
-For each `## p{NN}: ...` heading, walk the bullets underneath. For each `- [{Category}] {body}` bullet:
+**One YAML file per phase**, all bullets under the heading become entries in that file's `decisions:` array. NOT one file per bullet.
 
-- Parse:
-  - `phase` = the heading's `p{NN}` ID
-  - `category` = `{Category}` from the bullet
-  - Split `{body}` at the first ` -- ` (or ` — `) — left side becomes `chose:`, right side becomes `reason:`. If there's no separator, the entire body becomes `chose:` and `reason:` stays empty (a TODO for the operator).
-  - `over:` = explicit "alternatives" or rejected option mentioned in the body, if any. If none surfaces, mark with a placeholder `over: "<TBD: operator to fill alternative considered>"` so the v2 schema's required field is satisfied (without inventing content).
-- Generate a slug from the first 4–6 meaningful words of `chose:` (lower-kebab-case).
-- Write `.{project}/decisions/p{NN}-{slug}.yaml`:
+For each `## p{NN}: Title` heading:
+- Collect all `- [Category] body` bullets underneath (until the next heading).
+- For each bullet:
+  - `category` = `{Category}`. Normalise off-canonical labels (Scope already canonical; map Fix/Decision/Note/Quality/Cleanup/Reuse/Safety → Implementation; Flow → Architecture; Configuration → Tooling). Warn on anything else and default to Implementation.
+  - Split `body` at the first ` — ` (em-dash) or ` -- ` (double-dash with spaces) — left side becomes `chose:`, right side becomes `reason:`. If there's no separator, the entire body becomes `chose:` and `reason:` is omitted.
+  - `over:` is OMITTED unless the body text clearly names a rejected alternative. No `<TBD>` placeholders — the schema makes `over:` optional.
+- Emit one file:
 
   ```yaml
   # yaml-language-server: $schema=../decision.schema.json
   phase: p{NN}
-  category: {Category}
-  chose: "{...}"
-  over: "{... or <TBD>}"
-  reason: |
-    {...}
+  decisions:
+    - category: {Category}
+      chose: "{...}"
+      reason: |
+        {...}
+    - category: {Category}
+      chose: "{...}"
+      ...
   ```
 
-If two bullets under the same phase produce the same slug, append `-2`, `-3`, etc.
+- File path: `.{project}/decisions/p{NN}.yaml`. The filename IS the phase ID — no slug, no per-bullet suffix.
 
-Convert any pre-existing `.{project}/decisions/*.md` files in the same shape: read each, derive `phase:` from the filename prefix (e.g. `p0146d-observation-fields.md` → phase p0146d), produce `.yaml` with the same prefix, and `git rm` the `.md`.
+Convert any pre-existing `.{project}/decisions/*.md` files in the same shape: read each, derive the phase ID from its heading (or from the filename prefix as fallback, e.g. `p0146d-observation-fields.md` → `p0146d.yaml`), MERGE its bullets into the same phase's YAML if `decisions.md` also had entries for that phase, otherwise emit a fresh phase YAML. `git rm` each `.md` after.
 
 After the split:
 - `git rm .{project}/decisions.md`.
-- The big-bang means the Markdown log is gone — every entry now lives as its own file.
+- The big-bang means the Markdown log is gone — every entry now lives in its phase's YAML file.
+
+For a 1000-bullet `decisions.md` spanning 200 phases, expect ~200 YAML files — one per phase.
 
 #### 3a.3. Add the schemas
 
@@ -150,16 +155,19 @@ Write the approved changes. Update `methodology.version` in every `contexts/<nam
 
 ### 6. Log the update
 
-Write a decision YAML at `.{project}/decisions/{phase-or-meta}-methodology-update-{old}-to-{new}.yaml`:
+Append a decision entry to the phase YAML the project uses for meta updates (or create a fresh `decisions/p-meta-update.yaml` if none exists):
 
 ```yaml
+# yaml-language-server: $schema=../decision.schema.json
 phase: p-meta-update            # or pick an existing meta-phase ID convention the project uses
-category: Tooling
-chose: "Updated Spec-First methodology from v{old} to v{new}"
-over: "Staying on v{old}"
-reason: |
-  {Summary of key changes: contexts/ layout, YAML decisions, ...}
-  Migration mode: {v1-to-v2 big-bang | 2.x additive merge}.
+
+decisions:
+  - category: Tooling
+    chose: "Updated Spec-First methodology from v{old} to v{new}"
+    over: "Staying on v{old}"
+    reason: |
+      {Summary of key changes: contexts/ layout, YAML decisions, ...}
+      Migration mode: {v1-to-v2 big-bang | 2.x additive merge}.
 ```
 
 ## Safety
@@ -170,4 +178,4 @@ reason: |
 - Never modify files outside the project's methodology directory unless explicitly told to (e.g., updating `CLAUDE.md` at root).
 - Always show diffs before writing.
 - Preserve every line of user-written content in `contexts/<name>/context.yaml` (stack, arch, quality, state sections).
-- For the v1 → v2 decisions-log split: when a bullet's body has no obvious `over:` (rejected alternative), insert a `<TBD>` placeholder rather than invent content. The operator can fill in later or leave as historical artifact.
+- For the v1 → v2 decisions-log split: when a bullet's body has no obvious `over:` (rejected alternative), OMIT the `over:` field. The schema makes it optional — never invent placeholder text.

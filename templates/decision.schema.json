@@ -1,10 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/holgerleichsenring/specification-first-agentic-development/decision.schema.json",
-  "title": "Decision",
-  "description": "Single architectural or design decision attached to a phase or run. One decision per file. Filename = <phase-id-or-run-id>-<slug>.yaml.",
+  "title": "Phase Decisions",
+  "description": "All decisions attached to a single phase (or run). One YAML file per phase, decisions array inside. Filename = <phase-or-run-id>.yaml (e.g. p0042.yaml, r07.yaml).",
   "type": "object",
-  "required": ["category", "chose", "over", "reason"],
+  "required": ["decisions"],
   "additionalProperties": false,
   "oneOf": [
     { "required": ["phase"] },
@@ -13,37 +13,47 @@
   "properties": {
     "phase": {
       "type": "string",
-      "description": "Phase identifier the decision attaches to (e.g. p0161). Must match the filename prefix.",
-      "pattern": "^p\\d+[a-z]?(-[a-z][a-z0-9-]*)?$"
+      "description": "Phase identifier this file's decisions attach to (e.g. p0042). Must match the filename.",
+      "pattern": "^p[0-9a-z]+(?:-[a-z][a-z0-9-]*)?$"
     },
     "run": {
       "type": "string",
-      "description": "Run identifier the decision attaches to (e.g. r07). Must match the filename prefix.",
-      "pattern": "^r\\d+[a-z]?$"
+      "description": "Run identifier this file's decisions attach to (e.g. r07). Must match the filename.",
+      "pattern": "^r[0-9a-z]+$"
     },
-    "category": {
-      "type": "string",
-      "description": "Decision category.",
-      "enum": ["Architecture", "Tooling", "Implementation", "TradeOff", "Security"]
-    },
-    "chose": {
-      "type": "string",
-      "description": "One-line summary of what was picked.",
-      "maxLength": 200
-    },
-    "over": {
-      "type": "string",
-      "description": "One-line summary of the obvious alternative that was rejected.",
-      "maxLength": 200
-    },
-    "reason": {
-      "type": "string",
-      "description": "Multi-line explanation of WHY. Free-form. Use [[other-decision-slug]] to link related decisions."
-    },
-    "alternatives": {
+    "decisions": {
       "type": "array",
-      "description": "Other alternatives considered, each a one-line summary including why rejected.",
-      "items": { "type": "string" }
+      "description": "All decisions made within this phase or run, in chronological order of recording.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["category", "chose"],
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Decision category.",
+            "enum": ["Architecture", "Implementation", "TradeOff", "Tooling", "Security", "Scope"]
+          },
+          "chose": {
+            "type": "string",
+            "description": "One-line summary of what was picked."
+          },
+          "over": {
+            "type": "string",
+            "description": "Optional. One-line summary of the obvious alternative that was rejected."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional. Multi-line explanation of WHY. Use [[other-decision-slug]] to link related decisions."
+          },
+          "alternatives": {
+            "type": "array",
+            "description": "Optional. Other alternatives considered, each a one-line summary including why rejected.",
+            "items": { "type": "string" }
+          }
+        }
+      }
     }
   }
 }
