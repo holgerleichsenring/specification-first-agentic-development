@@ -20,7 +20,7 @@ Implement the currently active phase following the Specification-First workflow.
 
 3. If the active phase has `applies_to:` set, prefer the matching context's `coding-principles.md` over others when there's a conflict. `applies_to:` is free text — interpret it against the context names in `contexts/`.
 
-## The 10 Steps
+## The 11 Steps
 
 ### Step 1: Understand the spec
 
@@ -57,9 +57,21 @@ Run the build after completing each step. Fix errors immediately — don't accum
 
 ### Step 5: Run all tests
 
-After implementation is complete, run the full test suite. Zero failures before moving on. If tests fail, fix them before proceeding.
+After implementation is complete, run the **full** verification — not just the unit tests, but every deterministic check the project defines: unit tests, CLI/pipeline dry-runs, and any separate integration/harness executable. Zero failures before moving on. If anything fails, fix it before proceeding.
 
-### Step 6: Log decisions
+A project may enforce these as a **blocking commit gate** (e.g. a PreToolUse hook on `git commit`). Treat that as the floor, not the ceiling: run them yourself here so the commit in Step 11 is never the first time they run.
+
+### Step 6: Principles & refactoring review
+
+The code is green — now check it's *good*. This is a judgment pass, not a shell command, so do it explicitly (ideally delegate to a fresh-eyes subagent / the project's code-review skill if one exists — a separate context catches what the author's does not):
+
+1. **Coding-principles cross-check** — re-read each affected context's `coding-principles.md` and the phase spec's instructions. Walk the diff against every constraint. List any violation with file:line and fix it before committing — principles are constraints, not suggestions.
+2. **Spec-adherence** — confirm the diff does what the spec says and nothing it doesn't (no scope creep, no premature abstraction).
+3. **Refactoring recommendations** — surface anything that *should* be improved (duplication, leaky seams, a clearer shape) to the user. Apply only what's in-scope for this phase; for the rest, name a follow-up phase rather than silently dropping it.
+
+Report the outcome to the user: principles ✅/violations-fixed, plus the refactoring recommendations.
+
+### Step 7: Log decisions
 
 For every non-obvious choice made during implementation, append an entry to the phase's decision YAML at `.{project}/decisions/<phase-id>.yaml`.
 
@@ -84,7 +96,7 @@ decisions:
 
 Use the `/spec-first:log-decision` skill if you prefer interactive logging — it handles file creation, appending, and YAML formatting.
 
-### Step 7: Update context.yaml
+### Step 8: Update context.yaml
 
 Move the phase entry in the affected context(s):
 - Remove from `state.active`
@@ -92,17 +104,19 @@ Move the phase entry in the affected context(s):
 
 If the phase touched multiple contexts, update each affected context's `context.yaml`. The phase ID is shared across contexts; the phase entry can live in whichever context owns it (often the one named in `applies_to:`).
 
-### Step 8: Move phase file
+### Step 9: Move phase file
 
 Move the spec from `phases/active/` to `phases/done/`.
 
-### Step 9: Verify done criteria
+### Step 10: Verify done criteria
 
 Go through every item in the spec's `done:` list. Confirm each one is satisfied. If any criterion is not met, address it before committing.
 
-### Step 10: Commit
+### Step 11: Commit
 
 One commit per phase. Message format: `feat: {short description} (p{NN})`
+
+The `(p{NN})` in the message is what a project's commit gate keys on — keep the format exact so the gate fires.
 
 ## Rules During Execution
 
