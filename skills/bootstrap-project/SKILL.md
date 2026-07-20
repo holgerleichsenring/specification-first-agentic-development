@@ -86,16 +86,39 @@ state:
 
 ### 6. Write each context's `coding-principles.md`
 
-Extract the actual coding principles from the codebase of that stack. Use `templates/contexts/default/coding-principles.md` as the structural guide. Sections:
-- Language policy
-- Hard limits (method size, class size, types per file)
-- Naming conventions
-- Architecture principles
-- Error handling approach
-- Testing conventions
-- What NOT to do
+This file is **prescriptive**: it tells an agent *how new code must be written* in
+this stack, in the imperative ("Controllers are thin — inject `IMediator` and only
+`Send`"). It is **not** a description of the project. Use the codebase as *evidence
+for which rules apply* — not as content to transcribe.
 
-Different stacks have different conventions — C# `PascalCase`, TypeScript `camelCase`, Python `snake_case`. Each `contexts/<name>/coding-principles.md` is self-contained for its stack.
+**The failure mode to avoid:** a file that inventories the target framework, package
+versions, and middleware order and calls that "principles". Those are observations,
+not principles — no one can write new code from them. If a section states a fact
+without a rule, it belongs at the **end** under a "Build facts to preserve" heading,
+never at the top. A `coding-principles.md` whose first sections are csproj/build
+archaeology has failed, even if every fact in it is correct.
+
+Required sections, each written as rules:
+- **Language policy** — the non-negotiable language rule.
+- **Architecture / the "red thread"** — the single path every feature follows
+  (request → handler → persistence → response), the layers, and where each type
+  lives, named for *this* stack. This is the most important section and the one a
+  facts-dump omits entirely. Include a small flow diagram and a "where things live" table.
+- **Hard limits** — method size, class size, types per file, constructor params.
+- **Naming conventions** — the actual casing/suffix rules of this stack.
+- **Design principles** — SOLID, composition over inheritance, one-responsibility, DI.
+- **Error handling** — how errors are thrown, caught, logged.
+- **Testing** — framework, naming, AAA.
+- **What NOT to do** — the concrete anti-patterns for this stack.
+- **(last) Build facts to preserve** — framework version, build flags, middleware
+  order: only what a change must not break, kept at the bottom.
+
+See `example-coding-principles.md` in this skill for a filled-in reference (a layered
+.NET / MediatR API) — an *example of the shape*, not a template to copy. Different
+stacks have different conventions (C# `PascalCase`, TypeScript `camelCase`, Python
+`snake_case`) and a different red thread; each `contexts/<name>/coding-principles.md`
+is self-contained for its stack. `templates/contexts/default/coding-principles.md` is
+the minimal skeleton for a greenfield project with no code to derive rules from.
 
 ### 7. Decisions directory
 
@@ -112,6 +135,12 @@ Create a `CLAUDE.md` at the project root with:
 ### 9. Confirm with the user
 
 Show what you created and ask the user to review. The methodology is now ready — they can start writing their first phase spec.
+
+## Reference example
+
+`example-coding-principles.md` (in this skill directory) is a filled-in, fully
+prescriptive `coding-principles.md` for one stack. Read it before writing step 6 —
+it is the target shape (red thread first, build facts last).
 
 ## Templates
 
