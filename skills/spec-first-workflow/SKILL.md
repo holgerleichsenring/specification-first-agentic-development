@@ -14,7 +14,7 @@ You are working in a project that follows the Specification-First Agentic Develo
 Discuss → Write Spec → planned/ → active/ → done/ → decisions/<phase>-<slug>.yaml written per choice
 ```
 
-## Directory Layout (v2.0)
+## Directory Layout (v2.1)
 
 ```
 .yourproject/
@@ -24,6 +24,9 @@ Discuss → Write Spec → planned/ → active/ → done/ → decisions/<phase>-
   decisions/
     <phase-id>-<slug>.yaml    # one decision per file; phase ID prefix groups them
     <run-id>-<slug>.yaml      # run-attached decisions
+  memory/
+    MEMORY.md                 # experiential-memory index (one line per memory)
+    <name>.md                 # one typed Markdown fact per file
   phases/
     planned/  active/  done/
       p{NN}-feature-slug.yaml
@@ -39,8 +42,11 @@ Before starting any work, read these files in order:
 2. **Every** `.yourproject/contexts/<name>/coding-principles.md` — code quality rules per stack (ALWAYS follow). Different contexts can have different conventions.
 3. `.yourproject/phases/active/` — spec for the current phase. Note its `applies_to:` field — it tells you which context's principles dominate when conflicts arise.
 4. Relevant `.yourproject/decisions/<phase-id>-*.yaml` files — past decisions for the active phase and its `requires:` chain. Glob broader if you need historical context.
+5. `.yourproject/memory/MEMORY.md` — the experiential-memory index, one line per recorded fact. Recall detail from `memory/<name>.md` on demand when an index line touches your task.
 
 Replace `.yourproject/` with the actual project directory name (e.g., `.agentsmith/`, `.myapp/`).
+
+**Decisions vs memory — the boundary:** a decision records a CHOICE made at a point in time (chose/over/reason — it lives in `decisions/`, written via `/spec-first:log-decision`); a memory records a transferable FACT or RULE that future work consults (it lives in `memory/`: `feedback` = ratified operator preference, `project` = goal/constraint/state not derivable from code or git, `reference` = external pointer). `log-decision` never writes `memory/`, and memory writes never land in `decisions/` — distil a decision's durable lesson into a memory entry when one exists, never copy the decision itself.
 
 ## Available Skills
 
