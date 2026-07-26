@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.0.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.1.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -34,13 +34,14 @@ If they match, tell the user they're up to date. Done.
 
 ### 2. Pick the migration path
 
-| From    | To    | Path                                |
-|---------|-------|-------------------------------------|
-| 0.0.0   | 2.0.0 | v1-to-v2 (treat as v1.0.0)          |
-| 1.x.x   | 2.0.0 | v1-to-v2                            |
-| 2.x.x   | 2.y.y | additive/diff merge (no migration)  |
+| From    | To     | Path                                                  |
+|---------|--------|-------------------------------------------------------|
+| 0.0.0   | 2.1.0  | v1-to-v2 (treat as v1.0.0), then the 2.1.0 additions  |
+| 1.x.x   | 2.1.0  | v1-to-v2, then the 2.1.0 additions                    |
+| 2.0.x   | 2.1.0  | 2.1.0 additions (step 3c) + additive merge (step 3b)  |
+| 2.1.x   | 2.y.y  | additive/diff merge (no migration)                    |
 
-For v1 → v2 jump to step 3a (the structural migration). For 2.x → 2.y skip to step 3b (additive merge).
+For v1 → v2 run step 3a (the structural migration) and then step 3c (the 2.1.0 additions). For 2.0.x → 2.1.0 run step 3c plus the step 3b additive merge. For later 2.x → 2.y skip to step 3b (additive merge).
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -62,7 +63,7 @@ Use `git mv` so history is preserved.
 Inside the moved `context.yaml`:
 - Update the schema reference: `# yaml-language-server: $schema=context.schema.json` → `# yaml-language-server: $schema=../../context.schema.json`.
 - Add `meta.workdir: "."` (single-stack default — the existing project's code lives at the repo root from this context's perspective).
-- Bump `methodology.version: "1.0.0"` → `"2.0.0"`.
+- Bump `methodology.version` to the plugin's current version (from `.claude-plugin/plugin.json`).
 
 If a `.{project}/context.schema.json` exists alongside, leave it at the project root. The relative path adjustment above handles the new depth.
 
@@ -144,6 +145,32 @@ For each file with changes:
 - **Removed sections**: flag them but don't auto-delete. The user decides.
 
 Never overwrite user customizations silently. The user's `contexts/<name>/context.yaml` stack, arch, quality, and state sections are theirs — only touch the methodology-related structure.
+
+### 3c. 2.1.0 additions: memory store + root CLAUDE.md read order
+
+Two retroactive changes bring pre-2.1.0 projects to parity with fresh bootstraps.
+
+#### 3c.1. Create the memory store (structural-only)
+
+If `.{project}/memory/` is missing:
+
+- Create `.{project}/memory/` and copy `templates/memory/MEMORY.md` into it as the empty index.
+- **Structural-only — no auto-distillation of history.** Do NOT convert the project's decisions, git log, or phase records into memory entries as part of this migration. The store opens empty; memories accumulate from future sessions and runs (entry convention: one Markdown file per memory beside the index, frontmatter `name` kebab-slug / `description` one line / `metadata.type` in `feedback` | `project` | `reference` — see `templates/memory/example-memory.md`), and a `feedback` entry becomes policy only after operator ratification.
+
+#### 3c.2. Patch the root CLAUDE.md read-order block
+
+A project bootstrapped before 2.1.0 typically still carries the v1 read order in its root `CLAUDE.md` (flat `context.yaml`, the retired `decisions.md` append log, `phases/active/*.md`). Sessions obey `CLAUDE.md` first, so they look in the wrong place before recovering — fix it here:
+
+- Locate the context-file read-order block in the project's root `CLAUDE.md`.
+- Replace ONLY that block with the v2 order (as in `templates/prompt.md`):
+  1. glob `contexts/*/context.yaml`
+  2. each context's `coding-principles.md`
+  3. `phases/active/*.yaml`
+  4. `decisions/*.yaml`
+  5. `memory/MEMORY.md` (recall entry detail from `memory/<name>.md` on demand)
+- If `CLAUDE.md` has no memory/recall discipline section yet, offer to add the one from `templates/prompt.md` alongside.
+
+Because the root `CLAUDE.md` lives OUTSIDE the methodology directory, this edit ALWAYS requires explicit operator approval: show the exact before/after diff of the block and apply only after the operator approves. Leave every other section of `CLAUDE.md` untouched.
 
 ### 4. Ask approval
 

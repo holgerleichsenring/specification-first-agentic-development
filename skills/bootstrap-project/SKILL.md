@@ -8,7 +8,7 @@ user-invocable: true
 
 Set up the Specification-First Agentic Development methodology in a project.
 
-## What You Create (v2.0 layout)
+## What You Create (v2.1 layout)
 
 ```
 .{project-name}/
@@ -17,6 +17,8 @@ Set up the Specification-First Agentic Development methodology in a project.
       context.yaml            #   contexts/server/, contexts/client/, ...
       coding-principles.md
   decisions/                  # one YAML file per decision; filename = phase-or-run id + slug
+  memory/
+    MEMORY.md                 # experiential-memory index; one entry file per memory beside it
   phases/
     planned/                  # upcoming specs
     active/                   # current work (max 1)
@@ -28,6 +30,7 @@ Plus a `CLAUDE.md` (or equivalent prompt file) at the project root.
 **Why this layout:**
 - `contexts/<name>/` per stack. Single-stack projects use `contexts/default/`. Monorepos add siblings (`contexts/server/`, `contexts/client/`, `contexts/docs/`) — each with its own `context.yaml` (with `workdir:` pointing at the sub-tree) and its own `coding-principles.md`.
 - `decisions/` only. One YAML file per decision; filename `<phase-id>-<slug>.yaml` or `<run-id>-<slug>.yaml`. No flat `decisions.md` append-log.
+- `memory/` holds typed Markdown facts (one file per memory, `MEMORY.md` as index) — the experiential-memory store agent-smith runs and IDE sessions share.
 
 ## Steps
 
@@ -55,6 +58,7 @@ Don't invent conventions — extract them from what's already there. For greenfi
 Create:
 - `.{project-name}/contexts/<name>/` for each target stack (`default/` for single-stack)
 - `.{project-name}/decisions/`
+- `.{project-name}/memory/`
 - `.{project-name}/phases/planned/`, `phases/active/`, `phases/done/`
 
 ### 5. Write each context's `context.yaml`
@@ -74,7 +78,7 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.0.0"
+  version: "2.1.0"
 stack: {...}
 arch: {...}
 quality: {...}
@@ -124,15 +128,27 @@ the minimal skeleton for a greenfield project with no code to derive rules from.
 
 Create `.{project-name}/decisions/` empty. The `/spec-first:log-decision` skill writes one YAML file per decision at `decisions/<phase-id>-<slug>.yaml`. Do not seed it with placeholder content.
 
-### 8. Write CLAUDE.md
+### 8. Memory store
 
-Create a `CLAUDE.md` at the project root with:
-- Context-file read order pointing at the new layout (glob `contexts/*/context.yaml`, glob `decisions/*.yaml`)
+Create `.{project-name}/memory/` with a `MEMORY.md` index copied from
+`templates/memory/MEMORY.md`. The store opens EMPTY of entries — one Markdown
+file per memory lands beside the index later (frontmatter `name` kebab-slug,
+`description` one line, `metadata.type` in `feedback` | `project` |
+`reference`; see `templates/memory/example-memory.md` for the entry
+convention). Do not distil "memories" from the codebase at bootstrap:
+memories arrive from future sessions and runs, and a `feedback` entry becomes
+policy only after the operator ratifies it.
+
+### 9. Write CLAUDE.md
+
+Create a `CLAUDE.md` at the project root, based on `templates/prompt.md`, with:
+- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, 2. each context's `coding-principles.md`, 3. `phases/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
+- The remember/recall discipline section (memory vs decision boundary, curation rules)
 - The 10-step implementation workflow
 - Key rules from the contexts' coding-principles
 - Phase directory structure explanation
 
-### 9. Confirm with the user
+### 10. Confirm with the user
 
 Show what you created and ask the user to review. The methodology is now ready — they can start writing their first phase spec.
 
@@ -148,6 +164,8 @@ This skill references templates from the plugin's `templates/` directory:
 - `templates/contexts/default/context.yaml`
 - `templates/contexts/default/coding-principles.md`
 - `templates/decisions/p0001-example-decision.yaml` (shape reference, not copied as-is)
+- `templates/memory/MEMORY.md` (copied as the empty index) and `templates/memory/example-memory.md` (entry-shape reference, not copied)
+- `templates/prompt.md` (basis for the root CLAUDE.md)
 - `templates/decision.schema.json` and `templates/phase-spec.schema.json` (copy to `.{project}/` so editors validate)
 
 These are structural guides — always adapt content to the actual project.
