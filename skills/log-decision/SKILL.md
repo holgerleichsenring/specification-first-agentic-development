@@ -23,6 +23,8 @@ Don't log:
 - Temporary decisions ("I'll refactor this later")
 - Style preferences already covered by `coding-principles.md`
 
+**Decision vs memory:** a decision records a CHOICE made at a point in time (chose/over/reason) and lives in `decisions/`. A transferable FACT or RULE that future work consults — a ratified operator preference, a project constraint, an external pointer — is a MEMORY and lives in `.{project}/memory/` instead (see the layout in `/spec-first:spec-first-workflow`). This skill never writes `memory/`, and memory writes never land in `decisions/`; when a decision teaches a durable lesson, distil that lesson into a separate memory entry rather than stretching the decision file.
+
 ## File Convention
 
 **One YAML file per phase.** Filename = `<phase-or-run-id>.yaml`:
