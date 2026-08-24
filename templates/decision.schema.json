@@ -14,7 +14,7 @@
     "phase": {
       "type": "string",
       "description": "Phase identifier this file's decisions attach to (e.g. p0042). Must match the filename.",
-      "pattern": "^p[0-9a-z]+(?:-[a-z][a-z0-9-]*)?$"
+      "pattern": "^(?:p\\d{4,6}[a-z]?|\\d{4}-\\d{2}-\\d{2}-[0-9a-f]{4})(?:-[a-z][a-z0-9-]*)?$"
     },
     "run": {
       "type": "string",

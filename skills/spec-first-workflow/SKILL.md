@@ -29,7 +29,7 @@ Discuss → Write Spec → planned/ → active/ → done/ → decisions/<phase>-
     <name>.md                 # one typed Markdown fact per file
   phases/
     planned/  active/  done/
-      p{NN}-feature-slug.yaml
+      {id}-feature-slug.yaml
 ```
 
 Single-stack projects have one context: `contexts/default/`. Monorepos add siblings — `contexts/server/`, `contexts/client/`, `contexts/docs/` — each with its own `workdir:` pointing at that stack's sub-tree of the repo.
@@ -64,7 +64,7 @@ This plugin provides specialized skills for each part of the workflow:
 
 For every phase, follow this order:
 
-1. **Write phase spec first** — create `phases/planned/p{NN}-slug.yaml` with goal, `applies_to:`, steps, done criteria. No code until the spec exists.
+1. **Write phase spec first** — create `phases/planned/{id}-slug.yaml` with goal, `applies_to:`, steps, done criteria. No code until the spec exists. The id is minted from the clock — today's UTC date plus four random hex digits, e.g. `2026-08-24-8a3f` — never from a count of what already exists, so it can be minted offline and in parallel. Counter ids (`p0042`) from older projects stay valid forever and are never renamed.
 2. **Move to active** — move the phase file from `planned/` to `active/`.
 3. **Plan first** — explore the codebase(s) the phase touches (filtered by `applies_to:`), design the approach, get human approval before coding.
 4. **Implement step by step** — contracts/models first, then implementation, then wiring, then tests. Follow the relevant context's coding-principles.

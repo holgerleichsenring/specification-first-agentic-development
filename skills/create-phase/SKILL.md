@@ -10,9 +10,25 @@ Write a phase specification for an upcoming unit of work. Every feature, refacto
 
 ## Steps
 
-### 1. Determine the phase number
+### 1. Mint the phase id
 
-Glob `.{project}/contexts/*/context.yaml` and find the highest phase number across all contexts' `state.{done,active,planned}` sections (phase IDs are project-wide, not per-context). The new phase is the next number (e.g., if the last is p42, the new one is p43). Use letter suffixes (p43a, p43b) for sub-phases of related work.
+Mint the id from the clock, not from a count: today's UTC date plus four random hex
+digits, `{yyyy-MM-dd}-{xxxx}` — for example `2026-08-24-8a3f`. Take the date and the
+random digits from the machine you are on; nothing else is consulted.
+
+Minting needs no knowledge of what anyone else has taken, which is the point: a
+worktree cut this morning, a sandboxed agent with no network and two people working in
+parallel all mint safely, because the four hex digits carry a 16-bit keyspace against
+same-day collision. Asking "what is the highest number so far" cannot be answered
+offline, and answering it wrongly is how two phases end up sharing one id.
+
+The suffix's FIXED WIDTH is what marks where the id ends and the descriptive slug
+begins: `2026-08-24-8a3f-a-phase-id-can-be-minted-offline.yaml`.
+
+Older projects carry counter ids (`p0042`, `p0057a`, `p0131c-pre`). That namespace stays
+permanently valid and nothing minted from it is ever renamed — every existing id, every
+`requires:` naming one and every commit message citing one keeps working. It is simply
+closed to new ids.
 
 ### 2. Discuss scope with the user
 
@@ -25,11 +41,11 @@ Before writing the spec, understand:
 
 ### 3. Write the spec
 
-Create the file at `.{project}/phases/planned/p{NN}-{slug}.yaml` using this format:
+Create the file at `.{project}/phases/planned/{id}-{slug}.yaml` using this format:
 
 ```yaml
 # yaml-language-server: $schema=../../phase-spec.schema.json
-phase: p{NN}
+phase: 2026-08-24-8a3f   # the id you minted in step 1
 goal: "One line — what we're building and why"
 
 applies_to: "server"   # optional free-text scope hint — match the project's contexts/<name> vocabulary
@@ -69,7 +85,7 @@ Add the new phase to the `planned` section of the relevant context's `context.ya
 
 ```yaml
 planned:
-  p{NN}: "Short description -> .yourproject/phases/planned/p{NN}-slug.yaml"
+  2026-08-24-8a3f: "Short description -> .yourproject/phases/planned/2026-08-24-8a3f-slug.yaml"
 ```
 
 ### 6. Confirm with the user

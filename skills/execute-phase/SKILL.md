@@ -1,6 +1,6 @@
 ---
 name: execute-phase
-description: "Implement the active phase following the 10-step workflow. Triggers when the user references an active phase file, says 'implement this phase', 'execute the phase', 'start working on p{NN}', or has a phase in the active/ directory."
+description: "Implement the active phase following the 10-step workflow. Triggers when the user references an active phase file, says 'implement this phase', 'execute the phase', 'start working on {id}', or has a phase in the active/ directory."
 user-invocable: true
 ---
 
@@ -63,11 +63,11 @@ After implementation is complete, run the full test suite. Zero failures before 
 
 For every non-obvious choice made during implementation, append an entry to the phase's decision YAML at `.{project}/decisions/<phase-id>.yaml`.
 
-**One file per phase.** All decisions for p{NN} live in `decisions/p{NN}.yaml` as entries in its `decisions:` array. Create the file on the first decision; append to it on subsequent decisions.
+**One file per phase.** All decisions for {id} live in `decisions/{id}.yaml` as entries in its `decisions:` array. Create the file on the first decision; append to it on subsequent decisions.
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: p{NN}
+phase: {id}
 
 decisions:
   - category: Architecture     # | Tooling | Implementation | TradeOff | Security | Scope
@@ -102,7 +102,7 @@ Go through every item in the spec's `done:` list. Confirm each one is satisfied.
 
 ### Step 10: Commit
 
-One commit per phase. Message format: `feat: {short description} (p{NN})`
+One commit per phase. Message format: `feat: {short description} ({id})`
 
 ## Rules During Execution
 
