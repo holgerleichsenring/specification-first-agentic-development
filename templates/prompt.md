@@ -41,15 +41,17 @@ one line per memory, content never in the index.
 ## Implementation Workflow (follow this order for every phase)
 
 1. **Write phase spec first** -- create `.yourproject/phases/planned/{id}-slug.yaml` with goal, `applies_to:`, steps, and definition of done BEFORE writing any code. No exceptions.
-2. **Move to active** -- move the phase file from `planned/` to `active/` when starting work.
-3. **Plan first** -- explore codebase, design approach, get user approval before coding.
-4. **Implement step by step** -- contracts/models first, then implementation, then wiring, then tests.
-5. **Build after each step** -- fix errors immediately, don't accumulate them.
-6. **Run ALL tests** -- ensure zero failures before moving on.
-7. **Log decisions** -- one YAML per phase at `.yourproject/decisions/{id}.yaml`; each entry: what was chosen, what alternatives existed, and why.
-8. **Update state** -- move phase from `planned`/`active` to `done` in the relevant context's `context.yaml`.
-9. **Move to done** -- move the phase file from `active/` to `done/`.
-10. **Commit** -- one commit per phase, descriptive message.
+2. **A worktree per phase** -- commit the spec and its planned entry on branch `phase/{id}` in a new worktree cut from the default branch; all work on the phase happens there.
+3. **Review the spec** -- run review-spec: the evidence script must pass and a fresh reviewer must answer BUILD (or BUILD WITH CUTS, cuts applied) before any code.
+4. **Move to active** -- move the phase file from `planned/` to `active/` when starting work.
+5. **Plan first** -- explore codebase, design approach, get user approval before coding.
+6. **Implement step by step** -- contracts/models first, then implementation, then wiring, then tests.
+7. **Build after each step** -- fix errors immediately, don't accumulate them.
+8. **Run ALL tests** -- the contexts' `verify:` stages and every other check; zero failures before moving on.
+9. **Log decisions** -- one YAML per phase at `.yourproject/decisions/{id}.yaml`; each entry: what was chosen, what alternatives existed, and why.
+10. **Update state** -- move phase from `planned`/`active` to `done` in the relevant context's `context.yaml`.
+11. **Move to done** -- move the phase file from `active/` to `done/`.
+12. **Ship** -- run ship-phase: verify stages, one commit `feat: {short description} ({id})`, push, pull request.
 
 ## Key Rules
 

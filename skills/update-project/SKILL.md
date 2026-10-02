@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.2.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.3.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,13 +36,14 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.2.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, then 3d      |
-| 1.x.x   | 2.2.0  | v1-to-v2, the 2.1.0 additions, then 3d                        |
-| 2.0.x   | 2.2.0  | 2.1.0 additions (3c) + additive merge (3b), then 3d           |
-| 2.1.x   | 2.2.0  | 3d, then additive merge (3b)                                  |
-| 2.2.x   | 2.y.y  | additive/diff merge (no migration)                            |
+| 0.0.0   | 2.3.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, then 3d, 3e  |
+| 1.x.x   | 2.3.0  | v1-to-v2, the 2.1.0 additions, then 3d, 3e                    |
+| 2.0.x   | 2.3.0  | 2.1.0 additions (3c) + additive merge (3b), then 3d, 3e       |
+| 2.1.x   | 2.3.0  | 3d, 3e, then additive merge (3b)                              |
+| 2.2.x   | 2.3.0  | 3e, then additive merge (3b)                                  |
+| 2.3.x   | 2.y.y  | additive/diff merge (no migration)                            |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions) and step 3d. For 2.0.x run 3c, 3b and 3d. For 2.1.x run 3d and 3b. For later 2.x → 2.y skip to step 3b (additive merge).
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d and 3e. For 2.0.x run 3c, 3b, 3d and 3e. For 2.1.x run 3d, 3e and 3b. For 2.2.x run 3e and 3b. For later 2.x → 2.y skip to step 3b (additive merge).
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -133,6 +134,7 @@ For each methodology file, compare the user's version with the plugin's template
 | `contexts/<name>/coding-principles.md` | Sections and rules (not project-specific values) |
 | `decision.schema.json` | Schema fields and validation rules |
 | `phase-spec.schema.json` | Schema fields and validation rules |
+| `context.schema.json` | Schema fields (`verify`, `evidence_roots`) |
 | `CLAUDE.md` / `prompt.md` | Workflow steps, read order, rules |
 
 Present a summary of what's new or changed per file. Be specific: "New field `meta.workdir` added to context.yaml", not "context.yaml was updated".
@@ -176,6 +178,10 @@ Because the root `CLAUDE.md` lives OUTSIDE the methodology directory, this edit 
 ### 3d. 2.2.0: date-minted ids and premise keys in the schemas
 
 Replace the project's copies of `phase-spec.schema.json` and `decision.schema.json` with the plugin's templates. 2.2.0 accepts date-minted ids (`2026-08-24-8a3f`, series `2026-08-24-8a3fa`) beside every counter id the project already carries, and lets a spec state `scope`, `facts` and `assumptions`. Nothing in the project is renamed. Root `CLAUDE.md`: if it tells sessions to mint the next counter id, point it at create-phase's minting rule instead.
+
+### 3e. 2.3.0: context schema and the loop
+
+Copy `templates/context.schema.json` into `.{project}/` (it is what every `context.yaml`'s `$schema` comment already points at; its top level is open, so no existing key fails). Offer the commented `verify:` and `evidence_roots:` blocks from `templates/contexts/default/context.yaml`. Root `CLAUDE.md`: offer the 12-step workflow from `templates/prompt.md` — a worktree per phase, review-spec before code, ship-phase at the end — with the same before/after approval as 3c.2. Nothing is renamed.
 
 ### 4. Ask approval
 

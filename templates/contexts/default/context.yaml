@@ -8,7 +8,7 @@ meta:
                                       # Monorepo example: "src/Server", "client", "docs"
 
 methodology:
-  version: "2.2.0"                    # Spec-First methodology version (used by update-project)
+  version: "2.3.0"                    # Spec-First methodology version (used by update-project)
 
 stack:
   runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...
@@ -40,6 +40,19 @@ quality:
   testing:
     style: AAA
     naming: "{Method}_{Scenario}_{Expected}"
+
+# Proof a change holds -- ship-phase runs these from the repository root before committing.
+# verify:
+#   - label: build
+#     command: "dotnet build"
+#   - label: dashboard
+#     command: "cd web && npm test"
+#     when_present: web/package.json   # stage skipped (and reported) when this path is absent
+
+# Other repositories a spec's evidence may cite as 'name:path:lines' -- path relative to the repo root;
+# review-spec checks citations there when the path exists, otherwise accepts them unchecked.
+# evidence_roots:
+#   skills: ../my-skills
 
 # Phase tracking -- the AI reads this to know what exists and what's next.
 # Move entries between sections as work progresses.

@@ -97,7 +97,30 @@ planned:
 
 ### 6. Confirm with the user
 
-Show the spec and ask for approval before considering it done.
+Show the spec and ask for approval. Do not go on until the user approves.
+
+### 7. Commit the spec on a phase branch, in its own worktree
+
+A worktree cut from the default branch does not contain an uncommitted spec, so the spec and its planned entry are committed there first. From the repository root:
+
+```bash
+git fetch origin 2>/dev/null || true
+base=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || echo main)   # e.g. origin/main
+wt="../$(basename "$PWD")-{id}"                                                       # outside the repo
+git worktree add -b "phase/{id}" "$wt" "$base"
+mkdir -p "$wt/.{project}/phases/planned"
+mv .{project}/phases/planned/{id}-{label}.yaml "$wt/.{project}/phases/planned/"
+git diff -- .{project}/contexts | git -C "$wt" apply                                  # the planned entry
+git checkout -- .{project}/contexts
+git -C "$wt" add .{project}
+git -C "$wt" commit -m "spec: {id} {short description}"
+```
+
+The id is not in parentheses: that form marks the phase's one shipping commit (ship-phase), which a project's commit gate may key on. If `git apply` fails because the default branch moved, add the planned entry to the worktree's `context.yaml` by hand. All further work on this phase happens in `$wt`; tell the user its path.
+
+### 8. Review the spec
+
+Run `/spec-first:review-spec` on the committed spec. No code before its verdict is BUILD, or BUILD WITH CUTS with the cuts applied.
 
 ## Examples
 

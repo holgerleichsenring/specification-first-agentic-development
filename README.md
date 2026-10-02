@@ -15,7 +15,7 @@ A lightweight structure for AI-assisted development that eliminates context amne
 
 ## Quick Start: Claude Code Plugin
 
-The fastest way to get started is the Claude Code plugin. Install it and you get 6 skills that guide you through the entire methodology:
+The fastest way to get started is the Claude Code plugin. Install it and you get 8 skills that guide you through the entire methodology:
 
 > **Official marketplace listing**: submitted, pending approval by Anthropic. Once approved, install will be a single command: `/plugin install spec-first`
 
@@ -39,8 +39,10 @@ Then in Claude Code:
 | Skill | What it does |
 |-------|-------------|
 | `/bootstrap-project` | Set up the methodology in your project |
-| `/create-phase` | Plan a new feature or task |
-| `/execute-phase` | Implement the active phase |
+| `/create-phase` | Plan a new feature or task; commit its spec on a phase branch in its own worktree |
+| `/review-spec` | Check the spec's evidence and get a fresh reviewer's verdict before any code |
+| `/execute-phase` | Implement the active phase, up to its done criteria |
+| `/ship-phase` | Run the verify stages, commit, push and open the pull request |
 | `/log-decision` | Record an architectural decision |
 | `/update-project` | Sync with newer methodology versions |
 | `/spec-first-workflow` | Overview of the full methodology |
@@ -62,7 +64,7 @@ When working with AI coding agents, three things go wrong repeatedly:
 Treat documentation as a first-class development artifact. Every feature starts as a specification. Every decision gets logged. The AI reads context files in a defined order before writing a single line of code.
 
 ```
-Discuss → Write Spec → planned/ → active/ → done/ → decisions.md updated
+Discuss → Write Spec → worktree → review-spec → active/ → done/ → ship-phase (verify, commit, PR)
 ```
 
 In practice: restart your machine, restart your AI agent, open `context.yaml` and you're back in 30 seconds.
@@ -260,8 +262,8 @@ I want to set up specification-first agentic development for this project.
 2. Create a CLAUDE.md (or .cursor/prompt.md) with:
    - Read order: glob contexts/*/context.yaml → glob contexts/*/coding-principles.md
      → active phase → relevant decisions/<phase-id>.yaml
-   - The 10-step implementation workflow (spec first, plan, implement, test,
-     log decisions as YAML, update state)
+   - The 12-step implementation workflow (spec first, a worktree per phase, review the
+     spec, plan, implement, test, log decisions as YAML, update state, ship as a PR)
    - Key rules from the contexts' coding principles
 
 3. Analyze the codebase and populate each contexts/<name>/context.yaml with the actual
@@ -290,6 +292,7 @@ Don't invent conventions — extract them from what's already here.
 | `decision.schema.json` | JSON Schema for decision YAMLs (IDE autocompletion) |
 | `phase-spec.yaml` | Template for a new phase specification |
 | `phase-spec.schema.json` | JSON Schema for phase specs (IDE autocompletion, includes optional `applies_to:` field) |
+| `context.schema.json` | JSON Schema for `context.yaml` (open top level; declares `verify:` stages and `evidence_roots:`) |
 | `prompt.md` | AI agent instructions and workflow |
 
 ---
@@ -298,15 +301,17 @@ Don't invent conventions — extract them from what's already here.
 
 The AI agent follows this order for every phase:
 
-1. Read every `contexts/*/context.yaml`, every `contexts/*/coding-principles.md`, the active phase spec, and relevant `decisions/<phase-id>.yaml`
-2. Plan: explore the codebase(s) the phase touches (filtered by `applies_to:`), design approach, get human approval
-3. Implement: contracts first, then implementation, then wiring, then tests
-4. Build after each step — fix errors immediately
-5. Run all tests — 0 failures before moving on
-6. Log decisions: append each non-obvious choice to `decisions/<phase-id>.yaml` (create the file on first decision; append to its `decisions:` array on subsequent ones)
-7. Update relevant `contexts/<name>/context.yaml` — move phase to done
-8. Move phase file to `done/`
-9. Commit — one commit per phase
+1. Write the spec in `phases/planned/` and commit it on branch `phase/{id}` in a new worktree (`/create-phase`)
+2. Review the spec: an evidence script resolves every cited file and line, then a fresh reviewer answers BUILD, BUILD WITH CUTS or REFUSE (`/review-spec`)
+3. Read every `contexts/*/context.yaml`, every `contexts/*/coding-principles.md`, the active phase spec, and relevant `decisions/<phase-id>.yaml`
+4. Plan: explore the codebase(s) the phase touches (filtered by `applies_to:`), design approach, get human approval
+5. Implement: contracts first, then implementation, then wiring, then tests
+6. Build after each step — fix errors immediately
+7. Run all tests and the contexts' `verify:` stages — 0 failures before moving on
+8. Log decisions: append each non-obvious choice to `decisions/<phase-id>.yaml` (create the file on first decision; append to its `decisions:` array on subsequent ones)
+9. Update relevant `contexts/<name>/context.yaml` — move phase to done
+10. Move phase file to `done/`
+11. Ship: run the verify stages, one commit `feat: … ({id})`, push, open the pull request (`/ship-phase`)
 
 ---
 

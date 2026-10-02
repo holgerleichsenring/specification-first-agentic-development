@@ -68,6 +68,7 @@ Use the template at `templates/contexts/default/context.yaml` as a starting poin
 - Set `methodology.version` to the plugin's current version (read from `.claude-plugin/plugin.json`).
 - Fill `stack`, `arch`, `quality` from what step 3 found.
 - Leave `state.{done,active,planned}` empty for greenfield, or seed with what already exists.
+- Fill `verify:` with the commands that prove a change holds (build, tests, lint — what the project already runs), if any; leave it commented out otherwise. Add `evidence_roots:` only when specs will cite another repository.
 
 ```yaml
 # yaml-language-server: $schema=../../context.schema.json
@@ -78,7 +79,7 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.2.0"
+  version: "2.3.0"
 stack: {...}
 arch: {...}
 quality: {...}
@@ -144,7 +145,7 @@ policy only after the operator ratifies it.
 Create a `CLAUDE.md` at the project root, based on `templates/prompt.md`, with:
 - Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, 2. each context's `coding-principles.md`, 3. `phases/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
 - The remember/recall discipline section (memory vs decision boundary, curation rules)
-- The 10-step implementation workflow
+- The 12-step implementation workflow (spec, worktree, review-spec, …, ship-phase)
 - Key rules from the contexts' coding-principles
 - Phase directory structure explanation
 
@@ -166,6 +167,6 @@ This skill references templates from the plugin's `templates/` directory:
 - `templates/decisions/p0001-example-decision.yaml` (shape reference, not copied as-is)
 - `templates/memory/MEMORY.md` (copied as the empty index) and `templates/memory/example-memory.md` (entry-shape reference, not copied)
 - `templates/prompt.md` (basis for the root CLAUDE.md)
-- `templates/decision.schema.json` and `templates/phase-spec.schema.json` (copy to `.{project}/` so editors validate)
+- `templates/decision.schema.json`, `templates/phase-spec.schema.json` and `templates/context.schema.json` (copy to `.{project}/` so editors validate)
 
 These are structural guides — always adapt content to the actual project.
