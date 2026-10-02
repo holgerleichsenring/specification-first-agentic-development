@@ -221,15 +221,15 @@ planned/  →  active/  →  done/
     # client/    { context.yaml (workdir: client),     coding-principles.md }
     # docs/      { context.yaml (workdir: docs),       coding-principles.md }
   decisions/                # one YAML per phase; all decisions for that phase inside
-    p{NN}.yaml
+    {id}.yaml
     r{NN}.yaml              # run-attached decisions
   phases/
     planned/                # upcoming specs
-      p{NN}-feature-slug.yaml
+      {id}-{label}.yaml
     active/                 # current work (max 1)
-      p{NN}-feature-slug.yaml
+      {id}-{label}.yaml
     done/                   # completed phases (historical reference)
-      p{NN}-feature-slug.yaml
+      {id}-{label}.yaml
   runs/                     # execution logs (optional, for automated agents)
 ```
 

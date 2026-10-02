@@ -10,9 +10,15 @@ Write a phase specification for an upcoming unit of work. Every feature, refacto
 
 ## Steps
 
-### 1. Determine the phase number
+### 1. Mint the phase id
 
-Glob `.{project}/contexts/*/context.yaml` and find the highest phase number across all contexts' `state.{done,active,planned}` sections (phase IDs are project-wide, not per-context). The new phase is the next number (e.g., if the last is p42, the new one is p43). Use letter suffixes (p43a, p43b) for sub-phases of related work.
+A phase id is minted from the clock, never from a count: today's UTC date plus four random hex digits — `{yyyy-MM-dd}-{xxxx}`, e.g. `2026-08-24-8a3f`. Read the date off the machine you are on and take the four digits at random. Nothing else is consulted.
+
+Minting therefore needs no knowledge of what anyone else has taken: a worktree cut this morning, a sandboxed agent with no network, and two agents working in parallel all mint safely, and the four hex digits give a 16-bit keyspace against a same-day collision. "What is the highest number so far?" is a question none of them can answer, and answering it wrongly is how two phases end up sharing one id.
+
+The suffix's **fixed width** is what marks where the id ends and the label begins. Counter ids a project already carries (`p42`, `p0042`, `p0057a`) stay valid forever and are never renamed — that namespace is closed to NEW ids only.
+
+**Phases cut from one piece of work form a series**: they share one minted number and differ by an appended lowercase letter — `2026-08-24-8a3fa`, `2026-08-24-8a3fb`. The letter is appended, never dashed; the bare number names no phase; a series is minted in one go, and a phase that turns up later mints its own number and says in prose what it follows.
 
 ### 2. Discuss scope with the user
 
@@ -25,16 +31,30 @@ Before writing the spec, understand:
 
 ### 3. Write the spec
 
-Create the file at `.{project}/phases/planned/p{NN}-{slug}.yaml` using this format:
+Create the file at `.{project}/phases/planned/{id}-{label}.yaml` using this format.
+**Keep it short**: `{label}` 2 to 5 words and at most 50 characters, `goal:` one sentence of at most 200, and the whole spec under **4,800 characters** — about 700 words of prose. The `facts:` register, where each claim carries the `file:line` that proves it, does not count toward that: a citation cannot be shortened without ceasing to be one. Limit your wording to what it takes to express the matter. The budget is one number for the whole file rather than a cap per field, so a phase spends it where it needs it.
+
+The label is a **topic, area first** (`checkpoint-partial-restore`, `account-base-ref-search`): the leading word names the subject area, so kin group in a directory listing. The claim belongs in `goal:`, which has room and grammar a file name has not. Labels may repeat; the id is the identity.
 
 ```yaml
 # yaml-language-server: $schema=../../phase-spec.schema.json
-phase: p{NN}
-goal: "One line — what we're building and why"
+phase: {id}
+goal: "One sentence — what we build and why (<= 200 chars)"
 
 applies_to: "server"   # optional free-text scope hint — match the project's contexts/<name> vocabulary
 
 requires: []  # phase IDs or preconditions
+
+facts:        # what you READ in the code — open the file before citing it
+  - claim: "what is true of the code today"
+    evidence: "src/Api/OrderHandler.cs:34-41"
+assumptions:  # what the spec rests on that you did NOT open a file to confirm
+  - claim: "what you expect"
+    check: "how to confirm it before building"
+
+scope:
+  in: "what this phase changes"
+  out: "what it deliberately leaves, and where that goes"
 
 decisions:
   - key: "non-obvious choice — why"
@@ -56,10 +76,13 @@ done:
 
 ### 4. Key principles for good specs
 
-- **Goal fits in one line** — if it doesn't, the phase is too big. Split it.
+- **Goal fits in one line** — 200 characters. If it doesn't fit, the phase is too big. Split it.
+- **A revision does not add** — a spec that comes back from review is rewritten within the same budget, not extended past it. What a round of review adds, it also displaces; a spec that grows with every round is how a one-page phase becomes ten.
+- **Say it once** — do not restate the goal inside `scope:`, do not tell a future reader what not to conclude, and do not note that an existing rule still stands. What is out of scope is named, not argued.
+- **Facts come from the code** — every fact cites a file (and lines) you opened; what you did not open is an assumption. Evidence that is not a file — a log, a scan, a conversation — starts with `observed:` and carries its date. In a project with no code yet, `facts: []` is the honest statement.
 - **Steps are imperative** — "Create X", "Add Y", "Modify Z". Not "we should consider".
 - **Done criteria are verifiable** — someone can check each item as true/false.
-- **Decisions capture the non-obvious** — don't log that you used the project's language. Log why you chose pattern A over pattern B. Decisions are written as separate YAML files under `decisions/<phase-id>-<slug>.yaml` during execution; the `decisions:` array in the spec captures decisions that were already made WHEN WRITING THE SPEC.
+- **Decisions capture the non-obvious** — don't log that you used the project's language. Log why you chose pattern A over pattern B. Decisions are written as separate YAML files under `decisions/<phase-id>.yaml` during execution; the `decisions:` array in the spec captures decisions that were already made WHEN WRITING THE SPEC.
 - **`applies_to:` is free text** — no enum, no validation. Match the project's existing context names so readers can grep `contexts/<name>/` and find the relevant stack.
 - **Tests use AAA naming** — `Method_Scenario_Expected`.
 
@@ -69,7 +92,7 @@ Add the new phase to the `planned` section of the relevant context's `context.ya
 
 ```yaml
 planned:
-  p{NN}: "Short description -> .yourproject/phases/planned/p{NN}-slug.yaml"
+  {id}: "Short description -> .yourproject/phases/planned/{id}-label.yaml"
 ```
 
 ### 6. Confirm with the user
