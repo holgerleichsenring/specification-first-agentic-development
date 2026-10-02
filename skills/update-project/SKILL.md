@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.1.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.2.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -34,14 +34,15 @@ If they match, tell the user they're up to date. Done.
 
 ### 2. Pick the migration path
 
-| From    | To     | Path                                                  |
-|---------|--------|-------------------------------------------------------|
-| 0.0.0   | 2.1.0  | v1-to-v2 (treat as v1.0.0), then the 2.1.0 additions  |
-| 1.x.x   | 2.1.0  | v1-to-v2, then the 2.1.0 additions                    |
-| 2.0.x   | 2.1.0  | 2.1.0 additions (step 3c) + additive merge (step 3b)  |
-| 2.1.x   | 2.y.y  | additive/diff merge (no migration)                    |
+| From    | To     | Path                                                          |
+|---------|--------|---------------------------------------------------------------|
+| 0.0.0   | 2.2.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, then 3d      |
+| 1.x.x   | 2.2.0  | v1-to-v2, the 2.1.0 additions, then 3d                        |
+| 2.0.x   | 2.2.0  | 2.1.0 additions (3c) + additive merge (3b), then 3d           |
+| 2.1.x   | 2.2.0  | 3d, then additive merge (3b)                                  |
+| 2.2.x   | 2.y.y  | additive/diff merge (no migration)                            |
 
-For v1 → v2 run step 3a (the structural migration) and then step 3c (the 2.1.0 additions). For 2.0.x → 2.1.0 run step 3c plus the step 3b additive merge. For later 2.x → 2.y skip to step 3b (additive merge).
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions) and step 3d. For 2.0.x run 3c, 3b and 3d. For 2.1.x run 3d and 3b. For later 2.x → 2.y skip to step 3b (additive merge).
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -172,6 +173,10 @@ A project bootstrapped before 2.1.0 typically still carries the v1 read order in
 
 Because the root `CLAUDE.md` lives OUTSIDE the methodology directory, this edit ALWAYS requires explicit operator approval: show the exact before/after diff of the block and apply only after the operator approves. Leave every other section of `CLAUDE.md` untouched.
 
+### 3d. 2.2.0: date-minted ids and premise keys in the schemas
+
+Replace the project's copies of `phase-spec.schema.json` and `decision.schema.json` with the plugin's templates. 2.2.0 accepts date-minted ids (`2026-08-24-8a3f`, series `2026-08-24-8a3fa`) beside every counter id the project already carries, and lets a spec state `scope`, `facts` and `assumptions`. Nothing in the project is renamed. Root `CLAUDE.md`: if it tells sessions to mint the next counter id, point it at create-phase's minting rule instead.
+
 ### 4. Ask approval
 
 Show the complete list of proposed changes and ask the user to approve before writing anything.
@@ -182,11 +187,11 @@ Write the approved changes. Update `methodology.version` in every `contexts/<nam
 
 ### 6. Log the update
 
-Append a decision entry to the phase YAML the project uses for meta updates (or create a fresh `decisions/p-meta-update.yaml` if none exists):
+Append a decision entry to the phase YAML the project uses for meta updates (or mint a fresh id for the update, as create-phase does, and create `decisions/{id}.yaml`):
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: p-meta-update            # or pick an existing meta-phase ID convention the project uses
+phase: 2026-08-24-8a3f          # the id you minted, or an existing meta-phase id the project uses
 
 decisions:
   - category: Tooling

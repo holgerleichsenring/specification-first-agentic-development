@@ -9,9 +9,9 @@
   "properties": {
     "phase": {
       "type": "string",
-      "description": "Phase identifier (e.g. p01, p42, p57a)",
-      "pattern": "^p\\d+[a-z]?$",
-      "examples": ["p01", "p42", "p57a"]
+      "description": "Phase identifier: a date-minted id (e.g. 2026-08-24-8a3f, series member 2026-08-24-8a3fa) or a counter id a project already carries (e.g. p42, p0042, p57a), optionally followed by -label.",
+      "pattern": "^(?:p\\d+[a-z]?|\\d{4}-\\d{2}-\\d{2}-[0-9a-f]{4}[a-z]?)(?:-[a-z][a-z0-9-]*)?$",
+      "examples": ["2026-08-24-8a3f", "2026-08-24-8a3fa", "p42", "p0042"]
     },
     "goal": {
       "type": "string",
@@ -21,6 +21,47 @@
     "applies_to": {
       "type": "string",
       "description": "Free-text description of which part of the project this phase touches (e.g. 'server', 'client + docs', 'all stacks'). Optional. Free-form, not an enum — operators pick their own vocabulary."
+    },
+    "scope": {
+      "type": "object",
+      "description": "What this phase changes (in) and what it deliberately leaves, with where that goes (out).",
+      "additionalProperties": false,
+      "properties": {
+        "in": { "type": "string" },
+        "out": { "type": "string" }
+      }
+    },
+    "facts": {
+      "type": ["array", "null"],
+      "description": "What the spec rests on that the author READ in the code. Each evidence names the file and lines opened, or starts with 'observed:' and a date for evidence that is not a file.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "evidence"],
+        "properties": {
+          "claim": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "assumptions": {
+      "type": ["array", "string", "null"],
+      "description": "What the spec rests on that the author did NOT open a file to confirm, with how to check it.",
+      "minLength": 1,
+      "items": {
+        "oneOf": [
+          { "type": "string", "minLength": 1 },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["claim"],
+            "properties": {
+              "claim": { "type": "string", "minLength": 1 },
+              "check": { "type": "string" }
+            }
+          }
+        ]
+      }
     },
     "requires": {
       "oneOf": [

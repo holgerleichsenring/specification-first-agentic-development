@@ -1,6 +1,6 @@
 ---
 name: execute-phase
-description: "Implement the active phase following the 10-step workflow. Triggers when the user references an active phase file, says 'implement this phase', 'execute the phase', 'start working on p{NN}', or has a phase in the active/ directory."
+description: "Implement the active phase following the 10-step workflow. Triggers when the user references an active phase file, says 'implement this phase', 'execute the phase', 'start working on {id}', or has a phase in the active/ directory."
 user-invocable: true
 ---
 
@@ -55,19 +55,27 @@ Follow the spec's `steps` array in order. For each step:
 
 Run the build after completing each step. Fix errors immediately — don't accumulate broken state.
 
-### Step 5: Run all tests
+### Step 5: Verify, then review
 
-After implementation is complete, run the full test suite. Zero failures before moving on. If tests fail, fix them before proceeding.
+After implementation is complete, run the **full** verification — not just the unit tests, but every deterministic check the project defines: unit tests, CLI/pipeline dry-runs, and any separate integration/harness executable. Zero failures before moving on. A project may enforce these as a blocking commit gate (e.g. a PreToolUse hook on `git commit`); treat that as the floor, not the ceiling, so the commit is never the first time they run.
+
+Then check the green code is *good* — a judgment pass, best delegated to a fresh-eyes subagent, because a separate context catches what the author's does not:
+
+1. **Principles** — walk the diff against each affected context's `coding-principles.md`; list every violation with file:line and fix it.
+2. **Spec adherence** — the diff does what the spec says and nothing it doesn't.
+3. **Refactoring** — surface what *should* improve; apply what is in scope, name a follow-up phase for the rest rather than dropping it.
+
+Report the outcome to the user before moving on.
 
 ### Step 6: Log decisions
 
 For every non-obvious choice made during implementation, append an entry to the phase's decision YAML at `.{project}/decisions/<phase-id>.yaml`.
 
-**One file per phase.** All decisions for p{NN} live in `decisions/p{NN}.yaml` as entries in its `decisions:` array. Create the file on the first decision; append to it on subsequent decisions.
+**One file per phase.** All decisions for {id} live in `decisions/{id}.yaml` as entries in its `decisions:` array. Create the file on the first decision; append to it on subsequent decisions.
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: p{NN}
+phase: {id}
 
 decisions:
   - category: Architecture     # | Tooling | Implementation | TradeOff | Security | Scope
@@ -102,7 +110,7 @@ Go through every item in the spec's `done:` list. Confirm each one is satisfied.
 
 ### Step 10: Commit
 
-One commit per phase. Message format: `feat: {short description} (p{NN})`
+One commit per phase. Message format: `feat: {short description} ({id})` — keep the id in parentheses exactly; a project's commit gate may key on it.
 
 ## Rules During Execution
 

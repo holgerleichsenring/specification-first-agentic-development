@@ -71,7 +71,7 @@ a generic `IConverter<TIn,TOut>`.
 
 - **Max 20 lines per method** — extract a helper instead.
 - **Max 120 lines per class** (80 = warning); a large class means too many responsibilities.
-- **Max 30 lines for a base class** — scaffolding only, never business logic.
+- **Base classes hold scaffolding only** — never business logic.
 - **One type per file.**
 
 ## Design principles
@@ -102,7 +102,7 @@ a generic `IConverter<TIn,TOut>`.
 
 ## What NOT to do
 
-- No god classes (>120 lines) or fat base classes (>30 lines).
+- No god classes (>120 lines) or fat base classes (logic beyond the skeleton).
 - No static services; no `*Helper` / `*Utils` / `*Manager` names.
 - No business logic in controllers; no raw DbContext access in handlers.
 - No AutoMapper; no magic strings; no `Console.WriteLine`; no empty catch blocks.

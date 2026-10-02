@@ -31,7 +31,7 @@ Don't log:
 
 | Source                | Filename          |
 |-----------------------|-------------------|
-| Phase decisions       | `decisions/p0042.yaml` |
+| Phase decisions       | `decisions/2026-08-24-8a3f.yaml` (or `decisions/p0042.yaml` for a counter-era phase) |
 | Run-attached note     | `decisions/r07.yaml`   |
 
 The file holds ALL decisions made within that phase or run. Multiple decisions for one phase = multiple entries in the same file's `decisions:` array. Glob `decisions/p0042.yaml` to see every decision for that phase; cat `decisions/*.yaml` to dump everything.
