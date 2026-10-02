@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/holgerleichsenring/specification-first-agentic-development/context.schema.json",
+  "title": "Context",
+  "description": "A per-stack context.yaml. The top level is open: a project keeps whatever keys it needs. Only the keys the plugin's skills read are declared.",
+  "type": "object",
+  "properties": {
+    "verify": {
+      "type": "array",
+      "description": "Commands that prove a change in this repository holds. ship-phase runs them in order from the repository root before committing.",
+      "items": {
+        "type": "object",
+        "required": ["label", "command"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string", "minLength": 1, "description": "What the stage is called in the report (build, test, lint)." },
+          "command": { "type": "string", "minLength": 1, "description": "Shell command, run from the repository root; a command needing another directory carries its own cd." },
+          "when_present": { "type": "string", "minLength": 1, "description": "Path relative to the repository root the command needs; absent path = the stage is skipped and reported, never failed." }
+        }
+      }
+    },
+    "evidence_roots": {
+      "type": "object",
+      "description": "Qualifiers a spec's evidence may use ('name:path/to/file:12'), each mapped to a path relative to the repository root. review-spec resolves a qualified citation there when the path exists, otherwise accepts it unchecked.",
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    }
+  }
+}

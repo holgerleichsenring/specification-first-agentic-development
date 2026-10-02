@@ -1,12 +1,12 @@
 ---
 name: execute-phase
-description: "Implement the active phase following the 10-step workflow. Triggers when the user references an active phase file, says 'implement this phase', 'execute the phase', 'start working on {id}', or has a phase in the active/ directory."
+description: "Implement the active phase following the 9-step workflow, in the phase's worktree, up to its done criteria. Triggers when the user references an active phase file, says 'implement this phase', 'execute the phase', 'start working on {id}', or has a phase in the active/ directory."
 user-invocable: true
 ---
 
 # Execute Phase
 
-Implement the currently active phase following the Specification-First workflow. The spec is the contract — build exactly what it says, nothing more.
+Implement the currently active phase following the Specification-First workflow. The spec is the contract — build exactly what it says, nothing more. Work in the phase's worktree (branch `phase/{id}`, created by create-phase); the commit, push and pull request belong to `/spec-first:ship-phase`.
 
 ## Before You Start
 
@@ -18,9 +18,11 @@ Implement the currently active phase following the Specification-First workflow.
 
 2. If there is no phase in `active/`, ask the user which planned phase to start. Move it from `planned/` to `active/`.
 
-3. If the active phase has `applies_to:` set, prefer the matching context's `coding-principles.md` over others when there's a conflict. `applies_to:` is free text — interpret it against the context names in `contexts/`.
+3. Work in the phase's worktree: `git worktree list` shows it on branch `phase/{id}`. If there is none, create it as create-phase step 7 does. Its spec must have passed `/spec-first:review-spec`.
 
-## The 10 Steps
+4. If the active phase has `applies_to:` set, prefer the matching context's `coding-principles.md` over others when there's a conflict. `applies_to:` is free text — interpret it against the context names in `contexts/`.
+
+## The 9 Steps
 
 ### Step 1: Understand the spec
 
@@ -57,7 +59,7 @@ Run the build after completing each step. Fix errors immediately — don't accum
 
 ### Step 5: Verify, then review
 
-After implementation is complete, run the **full** verification — not just the unit tests, but every deterministic check the project defines: unit tests, CLI/pipeline dry-runs, and any separate integration/harness executable. Zero failures before moving on. A project may enforce these as a blocking commit gate (e.g. a PreToolUse hook on `git commit`); treat that as the floor, not the ceiling, so the commit is never the first time they run.
+After implementation is complete, run the **full** verification — not just the unit tests, but every deterministic check the project defines — the contexts' `verify:` stages first, then unit tests, CLI/pipeline dry-runs, and any separate integration/harness executable. Zero failures before moving on. A project may enforce these as a blocking commit gate (e.g. a PreToolUse hook on `git commit`); treat that as the floor, not the ceiling, so the commit is never the first time they run.
 
 Then check the green code is *good* — a judgment pass, best delegated to a fresh-eyes subagent, because a separate context catches what the author's does not:
 
@@ -106,11 +108,9 @@ Move the spec from `phases/active/` to `phases/done/`.
 
 ### Step 9: Verify done criteria
 
-Go through every item in the spec's `done:` list. Confirm each one is satisfied. If any criterion is not met, address it before committing.
+Go through every item in the spec's `done:` list. Confirm each one is satisfied. If any criterion is not met, address it before handing over.
 
-### Step 10: Commit
-
-One commit per phase. Message format: `feat: {short description} ({id})` — keep the id in parentheses exactly; a project's commit gate may key on it.
+Then stop: do not commit. Run `/spec-first:ship-phase` — it runs the project's verify stages, commits, pushes and opens the pull request.
 
 ## Rules During Execution
 

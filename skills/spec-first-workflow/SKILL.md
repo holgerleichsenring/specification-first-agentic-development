@@ -11,7 +11,7 @@ You are working in a project that follows the Specification-First Agentic Develo
 ## Core Loop
 
 ```
-Discuss → Write Spec → planned/ → active/ → done/ → decisions/<phase>-<slug>.yaml written per choice
+Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → ship-phase (verify, commit, PR)
 ```
 
 ## Directory Layout (v2.1)
@@ -55,25 +55,29 @@ This plugin provides specialized skills for each part of the workflow:
 | Skill | When to use |
 |-------|-------------|
 | `/spec-first:bootstrap-project` | Setting up the methodology in a new or existing project |
-| `/spec-first:create-phase` | Planning a new feature, refactor, or task |
-| `/spec-first:execute-phase` | Implementing the active phase |
+| `/spec-first:create-phase` | Planning a new feature, refactor, or task; commits the spec on a phase branch in its own worktree |
+| `/spec-first:review-spec` | Checking a spec's evidence and getting a fresh reviewer's verdict before any code |
+| `/spec-first:execute-phase` | Implementing the active phase, up to its done criteria |
+| `/spec-first:ship-phase` | Running the verify stages, committing, pushing and opening the pull request |
 | `/spec-first:log-decision` | Recording an architectural or design decision |
 | `/spec-first:update-project` | Syncing methodology files with a newer plugin version (and migrating v1 → v2) |
 
-## The 10-Step Implementation Workflow
+## The 12-Step Implementation Workflow
 
 For every phase, follow this order:
 
 1. **Write phase spec first** — create `phases/planned/{id}-slug.yaml` with goal, `applies_to:`, steps, done criteria. No code until the spec exists. The id is minted from the clock — today's UTC date plus four random hex digits, e.g. `2026-08-24-8a3f` — never from a count of what already exists, so it can be minted offline and in parallel. Counter ids (`p0042`) from older projects stay valid forever and are never renamed.
-2. **Move to active** — move the phase file from `planned/` to `active/`.
-3. **Plan first** — explore the codebase(s) the phase touches (filtered by `applies_to:`), design the approach, get human approval before coding.
-4. **Implement step by step** — contracts/models first, then implementation, then wiring, then tests. Follow the relevant context's coding-principles.
-5. **Build after each step** — fix errors immediately, don't accumulate them.
-6. **Run ALL tests** — zero failures before moving on.
-7. **Log decisions** — write one YAML per non-obvious choice to `decisions/<phase-id>-<slug>.yaml`. Multiple decisions per phase = multiple files sharing the prefix.
-8. **Update state** — move phase from `active` to `done` in the relevant context's `context.yaml`.
-9. **Move phase file** — move from `active/` to `done/`.
-10. **Commit** — one commit per phase, descriptive message.
+2. **A worktree per phase** — commit the spec and its planned entry on branch `phase/{id}` in a new worktree cut from the default branch (create-phase does this). All work on the phase happens there.
+3. **Review the spec** — `/spec-first:review-spec`: the evidence script resolves every cited file and line, then a fresh reviewer answers BUILD, BUILD WITH CUTS or REFUSE. No code before BUILD, or BUILD WITH CUTS with the cuts applied.
+4. **Move to active** — move the phase file from `planned/` to `active/`.
+5. **Plan first** — explore the codebase(s) the phase touches (filtered by `applies_to:`), design the approach, get human approval before coding.
+6. **Implement step by step** — contracts/models first, then implementation, then wiring, then tests. Follow the relevant context's coding-principles.
+7. **Build after each step** — fix errors immediately, don't accumulate them.
+8. **Run ALL tests** — the contexts' `verify:` stages and every other check; zero failures before moving on.
+9. **Log decisions** — one YAML per phase at `decisions/<phase-id>.yaml`, every non-obvious choice an entry in its `decisions:` list.
+10. **Update state** — move phase from `active` to `done` in the relevant context's `context.yaml`.
+11. **Move phase file** — move from `active/` to `done/`.
+12. **Ship** — `/spec-first:ship-phase`: runs the `verify:` stages, commits once as `feat: {short description} ({id})`, pushes and opens the pull request.
 
 ## Key Rules
 
