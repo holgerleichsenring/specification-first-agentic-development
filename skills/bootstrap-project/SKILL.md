@@ -79,7 +79,7 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.3.0"
+  version: "2.4.0"
 stack: {...}
 arch: {...}
 quality: {...}
@@ -145,7 +145,7 @@ policy only after the operator ratifies it.
 Create a `CLAUDE.md` at the project root, based on `templates/prompt.md`, with:
 - Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, 2. each context's `coding-principles.md`, 3. `phases/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
 - The remember/recall discipline section (memory vs decision boundary, curation rules)
-- The 12-step implementation workflow (spec, worktree, review-spec, …, ship-phase)
+- The 12-step implementation workflow (spec, worktree, review-spec, …, deliver-spec)
 - Key rules from the contexts' coding-principles
 - Phase directory structure explanation
 

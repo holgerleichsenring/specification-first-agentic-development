@@ -8,7 +8,7 @@ meta:
                                       # Monorepo example: "src/Server", "client", "docs"
 
 methodology:
-  version: "2.3.0"                    # Spec-First methodology version (used by update-project)
+  version: "2.4.0"                    # Spec-First methodology version (used by update-project)
 
 stack:
   runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...
@@ -41,7 +41,7 @@ quality:
     style: AAA
     naming: "{Method}_{Scenario}_{Expected}"
 
-# Proof a change holds -- ship-phase runs these from the repository root before committing.
+# Proof a change holds -- deliver-spec runs these from the repository root before committing.
 # verify:
 #   - label: build
 #     command: "dotnet build"

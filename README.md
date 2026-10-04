@@ -41,8 +41,8 @@ Then in Claude Code:
 | `/bootstrap-project` | Set up the methodology in your project |
 | `/create-phase` | Plan a new feature or task; commit its spec on a phase branch in its own worktree |
 | `/review-spec` | Check the spec's evidence and get a fresh reviewer's verdict before any code |
-| `/execute-phase` | Implement the active phase, up to its done criteria |
-| `/ship-phase` | Run the verify stages, commit, push and open the pull request |
+| `/apply-spec` | Implement the active phase, up to its done criteria |
+| `/deliver-spec` | Run the verify stages, commit, push and open the pull request |
 | `/log-decision` | Record an architectural decision |
 | `/update-project` | Sync with newer methodology versions |
 | `/spec-first-workflow` | Overview of the full methodology |
@@ -64,7 +64,7 @@ When working with AI coding agents, three things go wrong repeatedly:
 Treat documentation as a first-class development artifact. Every feature starts as a specification. Every decision gets logged. The AI reads context files in a defined order before writing a single line of code.
 
 ```
-Discuss → Write Spec → worktree → review-spec → active/ → done/ → ship-phase (verify, commit, PR)
+Discuss → Write Spec → worktree → review-spec → active/ → done/ → deliver-spec (verify, commit, PR)
 ```
 
 In practice: restart your machine, restart your AI agent, open `context.yaml` and you're back in 30 seconds.
@@ -311,7 +311,7 @@ The AI agent follows this order for every phase:
 8. Log decisions: append each non-obvious choice to `decisions/<phase-id>.yaml` (create the file on first decision; append to its `decisions:` array on subsequent ones)
 9. Update relevant `contexts/<name>/context.yaml` — move phase to done
 10. Move phase file to `done/`
-11. Ship: run the verify stages, one commit `feat: … ({id})`, push, open the pull request (`/ship-phase`)
+11. Deliver: run the verify stages, one commit `feat: … ({id})`, push, open the pull request (`/deliver-spec`)
 
 ---
 

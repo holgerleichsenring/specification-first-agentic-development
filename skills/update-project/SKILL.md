@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.3.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.4.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,14 +36,15 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.3.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, then 3d, 3e  |
-| 1.x.x   | 2.3.0  | v1-to-v2, the 2.1.0 additions, then 3d, 3e                    |
-| 2.0.x   | 2.3.0  | 2.1.0 additions (3c) + additive merge (3b), then 3d, 3e       |
-| 2.1.x   | 2.3.0  | 3d, 3e, then additive merge (3b)                              |
-| 2.2.x   | 2.3.0  | 3e, then additive merge (3b)                                  |
-| 2.3.x   | 2.y.y  | additive/diff merge (no migration)                            |
+| 0.0.0   | 2.4.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, then 3d-3f |
+| 1.x.x   | 2.4.0  | v1-to-v2, the 2.1.0 additions, then 3d-3f                   |
+| 2.0.x   | 2.4.0  | 2.1.0 additions (3c) + additive merge (3b), then 3d-3f      |
+| 2.1.x   | 2.4.0  | 3d-3f, then additive merge (3b)                               |
+| 2.2.x   | 2.4.0  | 3e, 3f, then additive merge (3b)                              |
+| 2.3.x   | 2.4.0  | 3f                                                            |
+| 2.4.x   | 2.y.y  | additive/diff merge (no migration)                            |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d and 3e. For 2.0.x run 3c, 3b, 3d and 3e. For 2.1.x run 3d, 3e and 3b. For 2.2.x run 3e and 3b. For later 2.x → 2.y skip to step 3b (additive merge).
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e and 3f. For 2.0.x run 3c, 3b, 3d, 3e and 3f. For 2.1.x run 3d, 3e, 3f and 3b. For 2.2.x run 3e, 3f and 3b. For 2.3.x run 3f. For later 2.x → 2.y skip to step 3b (additive merge).
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -181,7 +182,11 @@ Replace the project's copies of `phase-spec.schema.json` and `decision.schema.js
 
 ### 3e. 2.3.0: context schema and the loop
 
-Copy `templates/context.schema.json` into `.{project}/` (it is what every `context.yaml`'s `$schema` comment already points at; its top level is open, so no existing key fails). Offer the commented `verify:` and `evidence_roots:` blocks from `templates/contexts/default/context.yaml`. Root `CLAUDE.md`: offer the 12-step workflow from `templates/prompt.md` — a worktree per phase, review-spec before code, ship-phase at the end — with the same before/after approval as 3c.2. Nothing is renamed.
+Copy `templates/context.schema.json` into `.{project}/` (it is what every `context.yaml`'s `$schema` comment already points at; its top level is open, so no existing key fails). Offer the commented `verify:` and `evidence_roots:` blocks from `templates/contexts/default/context.yaml`. Root `CLAUDE.md`: offer the 12-step workflow from `templates/prompt.md` — a worktree per phase, review-spec before code, deliver-spec at the end — with the same before/after approval as 3c.2. Nothing is renamed.
+
+### 3f. 2.4.0: execute-phase is apply-spec, ship-phase is deliver-spec
+
+Nothing in the project is renamed. If the root `CLAUDE.md` or any project document names `execute-phase` or `ship-phase`, replace them with `apply-spec` and `deliver-spec`. The old skill names still answer in 2.4.0 and forward to the new ones; they are removed in the next release.
 
 ### 4. Ask approval
 

@@ -116,7 +116,7 @@ git -C "$wt" add .{project}
 git -C "$wt" commit -m "spec: {id} {short description}"
 ```
 
-The id is not in parentheses: that form marks the phase's one shipping commit (ship-phase), which a project's commit gate may key on. If `git apply` fails because the default branch moved, add the planned entry to the worktree's `context.yaml` by hand. All further work on this phase happens in `$wt`; tell the user its path.
+The id is not in parentheses: that form marks the phase's one delivering commit (deliver-spec), which a project's commit gate may key on. If `git apply` fails because the default branch moved, add the planned entry to the worktree's `context.yaml` by hand. All further work on this phase happens in `$wt`; tell the user its path.
 
 ### 8. Review the spec
 

@@ -11,7 +11,7 @@ You are working in a project that follows the Specification-First Agentic Develo
 ## Core Loop
 
 ```
-Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → ship-phase (verify, commit, PR)
+Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → deliver-spec (verify, commit, PR)
 ```
 
 ## Directory Layout (v2.1)
@@ -57,8 +57,8 @@ This plugin provides specialized skills for each part of the workflow:
 | `/spec-first:bootstrap-project` | Setting up the methodology in a new or existing project |
 | `/spec-first:create-phase` | Planning a new feature, refactor, or task; commits the spec on a phase branch in its own worktree |
 | `/spec-first:review-spec` | Checking a spec's evidence and getting a fresh reviewer's verdict before any code |
-| `/spec-first:execute-phase` | Implementing the active phase, up to its done criteria |
-| `/spec-first:ship-phase` | Running the verify stages, committing, pushing and opening the pull request |
+| `/spec-first:apply-spec` | Implementing the active phase, up to its done criteria |
+| `/spec-first:deliver-spec` | Running the verify stages, committing, pushing and opening the pull request |
 | `/spec-first:log-decision` | Recording an architectural or design decision |
 | `/spec-first:update-project` | Syncing methodology files with a newer plugin version (and migrating v1 → v2) |
 
@@ -77,7 +77,7 @@ For every phase, follow this order:
 9. **Log decisions** — one YAML per phase at `decisions/<phase-id>.yaml`, every non-obvious choice an entry in its `decisions:` list.
 10. **Update state** — move phase from `active` to `done` in the relevant context's `context.yaml`.
 11. **Move phase file** — move from `active/` to `done/`.
-12. **Ship** — `/spec-first:ship-phase`: runs the `verify:` stages, commits once as `feat: {short description} ({id})`, pushes and opens the pull request.
+12. **Deliver** — `/spec-first:deliver-spec`: runs the `verify:` stages, commits once as `feat: {short description} ({id})`, pushes and opens the pull request.
 
 ## Key Rules
 
