@@ -51,7 +51,7 @@ one line per memory, content never in the index.
 9. **Log decisions** -- one YAML per phase at `.yourproject/decisions/{id}.yaml`; each entry: what was chosen, what alternatives existed, and why.
 10. **Update state** -- move phase from `planned`/`active` to `done` in the relevant context's `context.yaml`.
 11. **Move to done** -- move the phase file from `active/` to `done/`.
-12. **Ship** -- run ship-phase: verify stages, one commit `feat: {short description} ({id})`, push, pull request.
+12. **Deliver** -- run deliver-spec: verify stages, one commit `feat: {short description} ({id})`, push, pull request.
 
 ## Key Rules
 

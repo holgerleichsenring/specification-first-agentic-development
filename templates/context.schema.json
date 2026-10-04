@@ -7,7 +7,7 @@
   "properties": {
     "verify": {
       "type": "array",
-      "description": "Commands that prove a change in this repository holds. ship-phase runs them in order from the repository root before committing.",
+      "description": "Commands that prove a change in this repository holds. deliver-spec runs them in order from the repository root before committing.",
       "items": {
         "type": "object",
         "required": ["label", "command"],
