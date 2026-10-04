@@ -15,7 +15,7 @@
         "source": "url",
         "url": "https://github.com/holgerleichsenring/specification-first-agentic-development.git"
       },
-      "description": "8 skills for the Spec-First methodology: bootstrap projects, create phases in their own worktree, review specs against the code, execute phases, ship them as a pull request, log decisions, sync methodology updates.",
+      "description": "8 skills for the Spec-First methodology: bootstrap projects, create phases in their own worktree, review specs against the code, apply them, deliver them as a pull request, log decisions, sync methodology updates.",
       "version": "2.4.0",
       "author": {
         "name": "Holger Leichsenring"
