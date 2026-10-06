@@ -1,12 +1,12 @@
 ---
 name: log-decision
-description: "Append an architectural or design decision to the active phase's YAML file under decisions/. Triggers when the user makes a choice between alternatives, says 'log this decision', 'record this choice', or when a non-obvious design decision is made during implementation."
+description: "Append a design decision to the active spec's YAML under decisions/. Triggers on a choice between alternatives, 'log this decision', 'record this choice', or a non-obvious design call."
 user-invocable: true
 ---
 
 # Log Decision
 
-Append a decision entry to the phase's YAML file under `.{project}/decisions/`. Decisions capture the **why** behind choices — the code shows the what, but six months later nobody remembers the reasoning.
+Append a decision entry to the spec's YAML file under `.{project}/decisions/`. Decisions capture the **why** behind choices — the code shows the what, but six months later nobody remembers the reasoning.
 
 ## When to Log
 
@@ -16,7 +16,7 @@ Log a decision when:
 - Accepting a trade-off (performance vs. readability, simplicity vs. flexibility)
 - Making a security-relevant choice
 - Choosing a tool, library, or framework
-- Narrowing a phase's scope (in/out trade-offs)
+- Narrowing a spec's scope (in/out trade-offs)
 
 Don't log:
 - Obvious choices (using the project's language, following established patterns)
@@ -27,20 +27,20 @@ Don't log:
 
 ## File Convention
 
-**One YAML file per phase.** Filename = `<phase-or-run-id>.yaml`:
+**One YAML file per spec.** Filename = `<spec-or-run-id>.yaml`:
 
 | Source                | Filename          |
 |-----------------------|-------------------|
-| Phase decisions       | `decisions/2026-08-24-8a3f.yaml` (or `decisions/p0042.yaml` for a counter-era phase) |
+| Spec decisions       | `decisions/2026-08-24-8a3f.yaml` (or `decisions/p0042.yaml` for a counter-era spec) |
 | Run-attached note     | `decisions/r07.yaml`   |
 
-The file holds ALL decisions made within that phase or run. Multiple decisions for one phase = multiple entries in the same file's `decisions:` array. Glob `decisions/p0042.yaml` to see every decision for that phase; cat `decisions/*.yaml` to dump everything.
+The file holds ALL decisions made within that spec or run. Multiple decisions for one spec = multiple entries in the same file's `decisions:` array. Glob `decisions/p0042.yaml` to see every decision for that spec; cat `decisions/*.yaml` to dump everything.
 
 ## YAML Shape
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: p0042                # OR: run: r07   (exactly one — must match filename)
+spec: p0042                # OR: run: r07   (exactly one — must match filename)
 
 decisions:
   - category: Architecture
@@ -48,7 +48,7 @@ decisions:
     over: "<one-line summary of the obvious rejected alternative>"   # optional
     reason: |
       Multi-line explanation. Cite constraints, prior incidents,
-      related decisions via [[other-phase-id]].
+      related decisions via [[other-spec-id]].
     alternatives:           # optional
       - "<one-line — what else was considered, why rejected>"
 
@@ -65,22 +65,22 @@ decisions:
 | `Implementation` | How something is built (algorithm, data structure, approach)      |
 | `TradeOff`       | Accepting a limitation for a specific benefit                     |
 | `Security`       | Security-relevant choices                                         |
-| `Scope`          | In/out trade-offs at phase boundaries                             |
+| `Scope`          | In/out trade-offs at spec boundaries                             |
 
 Only `category` and `chose` are required. `over`, `reason`, `alternatives` are optional — but encouraged for non-trivial decisions.
 
 ## Steps
 
-### 1. Identify the phase or run
+### 1. Identify the spec or run
 
-Check which phase is currently active in `.{project}/contexts/<name>/context.yaml` (`state.active`). If multiple contexts have active phases, ask the user which one this decision belongs to. If no phase is active, ask whether the decision attaches to a phase ID (planned/done) or to a run ID.
+Check which spec is currently active in `.{project}/contexts/<name>/context.yaml` (`state.active`). If multiple contexts have active specs, ask the user which one this decision belongs to. If no spec is active, ask whether the decision attaches to a spec ID (planned/done) or to a run ID.
 
-### 2. Read or create the phase decision file
+### 2. Read or create the spec decision file
 
-Target path: `.{project}/decisions/<phase-id>.yaml`.
+Target path: `.{project}/decisions/<spec-id>.yaml`.
 
-- If it exists: read it, preserve its `phase:` (or `run:`) field and its existing `decisions:` entries.
-- If it doesn't exist: create a fresh file with the schema header, the `phase:` (or `run:`) field, and an empty `decisions:` array ready to receive the new entry.
+- If it exists: read it, preserve its `spec:` (or `run:`) field and its existing `decisions:` entries.
+- If it doesn't exist: create a fresh file with the schema header, the `spec:` (or `run:`) field, and an empty `decisions:` array ready to receive the new entry.
 
 ### 3. Compose the new entry
 
@@ -96,11 +96,11 @@ Show the user the new entry and the file path. If they want to refine the wordin
 
 ## Examples
 
-`decisions/p0042.yaml` (after two decisions logged in phase p0042):
+`decisions/p0042.yaml` (after two decisions logged in spec p0042):
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: p0042
+spec: p0042
 
 decisions:
   - category: Architecture

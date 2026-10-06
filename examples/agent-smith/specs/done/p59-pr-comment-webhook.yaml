@@ -1,5 +1,5 @@
-# yaml-language-server: $schema=../../../../templates/phase-spec.schema.json
-phase: p59
+# yaml-language-server: $schema=../../../../templates/spec.schema.json
+spec: p59
 goal: "PR comments as pipeline inputs — /agent-smith commands + dialogue answers via GitHub webhooks"
 
 decisions:

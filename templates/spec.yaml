@@ -1,10 +1,10 @@
-# yaml-language-server: $schema=phase-spec.schema.json
-phase: p00
+# yaml-language-server: $schema=spec.schema.json
+spec: p00
 goal: "One line — what we're building and why"
 
 applies_to: "all stacks"   # optional free-text scope hint (e.g. 'server', 'client + docs')
 
-requires: ["p00"]  # phase IDs or free-text preconditions (optional)
+requires: ["p00"]  # spec IDs or free-text preconditions (optional)
 
 decisions:
   - key: "what — why (only non-obvious choices)"

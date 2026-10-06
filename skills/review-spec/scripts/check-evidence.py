@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check that every fact of a phase spec cites evidence that resolves.
+"""Check that every fact of a spec cites evidence that resolves.
 
 Each `facts[].evidence` is read with the evidence grammar (shared with agent-smith's
 EvidenceReferences; the parse cases in ../evidence-cases.yaml are the contract) and resolved
@@ -10,7 +10,8 @@ Usage:
   check-evidence.py [--repo-root DIR] [--evidence-root NAME=PATH ...] SPEC [SPEC ...]
   check-evidence.py --self-test [--cases FILE]
 
-Exit codes: 0 clean, 1 problems found, 2 usage error, 3 the check did not run (no PyYAML).
+Exit codes: 0 clean, 1 problems found, 2 usage error, 3 the check did not run (no PyYAML),
+4 the spec lies under a 2.4 phases directory (run update-project's migrate-specs-layout.py).
 """
 
 import argparse
@@ -213,12 +214,15 @@ def check(evidence, policy):
 # --- the spec and its project ----------------------------------------------------------------
 
 def meta_dir_of(spec):
-    """The `.{project}` directory holding `phases/<state>/<spec>`, or None."""
+    """The `.{project}` directory holding `specs/<state>/<spec>`, or None."""
     directory = os.path.dirname(os.path.abspath(spec))
     while True:
         parent = os.path.dirname(directory)
-        if os.path.basename(directory) == "phases":
+        if os.path.basename(directory) == "specs":
             return parent
+        if os.path.basename(directory) == "phases":
+            raise LegacyLayout("%s lies under a 2.4 phases directory: run update-project's "
+                               "migrate-specs-layout.py" % spec)
         if parent == directory:
             return None
         directory = parent
@@ -253,7 +257,7 @@ def policy_for(spec, repo_root, overrides):
     refused = []
     if meta:
         relative = os.path.relpath(meta, repo_root).replace(os.sep, "/")
-        refused = ["%s/phases/planned/" % relative, "%s/phases/active/" % relative]
+        refused = ["%s/specs/planned/" % relative, "%s/specs/active/" % relative]
     return Policy(repo_root, roots, refused)
 
 
@@ -276,6 +280,10 @@ def check_spec(spec, repo_root, overrides):
 
 
 class UsageError(Exception):
+    pass
+
+
+class LegacyLayout(Exception):
     pass
 
 
@@ -314,7 +322,7 @@ def self_test(cases_path):
 
 
 def main(argv):
-    parser = argparse.ArgumentParser(description="Check a phase spec's facts against the repository.")
+    parser = argparse.ArgumentParser(description="Check a spec's facts against the repository.")
     parser.add_argument("specs", nargs="*", metavar="SPEC")
     parser.add_argument("--repo-root", help="repository root paths resolve against (default: git toplevel)")
     parser.add_argument("--evidence-root", action="append", default=[], metavar="NAME=PATH",
@@ -345,6 +353,9 @@ def main(argv):
     except UsageError as error:
         print("check-evidence: %s" % error, file=sys.stderr)
         return 2
+    except LegacyLayout as error:
+        print("check-evidence: %s" % error, file=sys.stderr)
+        return 4
     for failure in failures:
         print(failure)
     if failures:

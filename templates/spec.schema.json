@@ -1,15 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/holgerleichsenring/specification-first-agentic-development/phase-spec.schema.json",
-  "title": "Phase Specification",
-  "description": "Compact YAML spec for a development phase. Used by AI agents to understand scope, deliverables, and completion criteria.",
+  "$id": "https://github.com/holgerleichsenring/specification-first-agentic-development/spec.schema.json",
+  "title": "Specification",
+  "description": "Compact YAML spec for one unit of work. Used by AI agents to understand scope, deliverables, and completion criteria.",
   "type": "object",
-  "required": ["phase", "goal"],
+  "required": ["spec", "goal"],
   "additionalProperties": false,
   "properties": {
-    "phase": {
+    "spec": {
       "type": "string",
-      "description": "Phase identifier: a date-minted id (e.g. 2026-08-24-8a3f, series member 2026-08-24-8a3fa) or a counter id a project already carries (e.g. p42, p0042, p57a), optionally followed by -label.",
+      "description": "Spec identifier: a date-minted id (e.g. 2026-08-24-8a3f, series member 2026-08-24-8a3fa) or a counter id a project already carries (e.g. p42, p0042, p57a), optionally followed by -label.",
       "pattern": "^(?:p\\d+[a-z]?|\\d{4}-\\d{2}-\\d{2}-[0-9a-f]{4}[a-z]?)(?:-[a-z][a-z0-9-]*)?$",
       "examples": ["2026-08-24-8a3f", "2026-08-24-8a3fa", "p42", "p0042"]
     },
@@ -20,11 +20,11 @@
     },
     "applies_to": {
       "type": "string",
-      "description": "Free-text description of which part of the project this phase touches (e.g. 'server', 'client + docs', 'all stacks'). Optional. Free-form, not an enum — operators pick their own vocabulary."
+      "description": "Free-text description of which part of the project this spec touches (e.g. 'server', 'client + docs', 'all stacks'). Optional. Free-form, not an enum — operators pick their own vocabulary."
     },
     "scope": {
       "type": "object",
-      "description": "What this phase changes (in) and what it deliberately leaves, with where that goes (out).",
+      "description": "What this spec changes (in) and what it deliberately leaves, with where that goes (out).",
       "additionalProperties": false,
       "properties": {
         "in": { "type": "string" },
@@ -67,7 +67,7 @@
       "oneOf": [
         {
           "type": "array",
-          "description": "Phase IDs or free-text preconditions",
+          "description": "Spec IDs or free-text preconditions",
           "items": { "type": "string" }
         },
         {
@@ -78,7 +78,7 @@
     },
     "decisions": {
       "type": "array",
-      "description": "Non-obvious choices made during this phase, with reasoning",
+      "description": "Non-obvious choices made for this spec, with reasoning",
       "items": {
         "type": "object",
         "additionalProperties": false,

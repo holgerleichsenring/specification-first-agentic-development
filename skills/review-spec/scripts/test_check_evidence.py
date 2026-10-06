@@ -27,7 +27,7 @@ class ResolutionTests(unittest.TestCase):
         self.write(".proj/contexts/default/context.yaml",
                    "evidence_roots:\n  other: vendor/other\n  absent: not/here\n")
         self.policy = check_evidence.policy_for(
-            os.path.join(self.root, ".proj/phases/planned/x.yaml"), self.root, {})
+            os.path.join(self.root, ".proj/specs/planned/x.yaml"), self.root, {})
 
     def tearDown(self):
         self._tmp.cleanup()
@@ -73,8 +73,8 @@ class ResolutionTests(unittest.TestCase):
 
     def test_planned_and_active_paths_are_refused(self):
         for state in ("planned", "active"):
-            self.write(".proj/phases/%s/y.yaml" % state, "phase: y\n")
-            [(reason, _)] = self.problems(".proj/phases/%s/y.yaml" % state)
+            self.write(".proj/specs/%s/y.yaml" % state, "spec: y\n")
+            [(reason, _)] = self.problems(".proj/specs/%s/y.yaml" % state)
             self.assertIn("a plan is not evidence", reason)
 
     def test_unknown_qualifier_is_a_problem(self):
@@ -93,8 +93,8 @@ class ResolutionTests(unittest.TestCase):
         self.assertEqual(1, len(self.problems("the code says so")))
 
     def test_cli_exit_codes(self):
-        spec = self.write(".proj/phases/planned/z.yaml", textwrap.dedent("""\
-            phase: z
+        spec = self.write(".proj/specs/planned/z.yaml", textwrap.dedent("""\
+            spec: z
             facts:
               - claim: "a fine fact"
                 evidence: "src/a.cs:2"
@@ -107,6 +107,12 @@ class ResolutionTests(unittest.TestCase):
         self.assertNotIn('"a fine fact"', run.stdout)
         usage = subprocess.run([sys.executable, SCRIPT], capture_output=True, text=True)
         self.assertEqual(2, usage.returncode)
+
+    def test_check_evidence_phases_parent_exits_4(self):
+        spec = self.write(".proj/phases/planned/old.yaml", "phase: old\nfacts: []\n")
+        run = subprocess.run([sys.executable, SCRIPT, "--repo-root", self.root, spec], capture_output=True, text=True)
+        self.assertEqual(4, run.returncode)
+        self.assertIn("migrate-specs-layout.py", run.stderr)
 
 
 if __name__ == "__main__":

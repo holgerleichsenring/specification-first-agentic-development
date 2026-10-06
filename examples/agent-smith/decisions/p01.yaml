@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../decision.schema.json
-phase: p01
+spec: p01
 
 decisions:
   - category: Architecture

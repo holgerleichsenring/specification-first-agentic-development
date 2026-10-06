@@ -1,5 +1,5 @@
 # spec-first plugin v2.0 — contexts/ layout + YAML decisions
-phase: p0001
+spec: p0001
 requires: []
 supersedes: []
 goal: |
