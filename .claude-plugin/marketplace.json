@@ -5,8 +5,8 @@
     "email": "mail@holger-leichsenring.de"
   },
   "metadata": {
-    "description": "Specification-First Agentic Development — structured AI-assisted development with context persistence, phase specs, and decision capture.",
-    "version": "2.4.0"
+    "description": "Specification-First Agentic Development — structured AI-assisted development with context persistence, specs, and decision capture.",
+    "version": "2.5.0"
   },
   "plugins": [
     {
@@ -15,14 +15,14 @@
         "source": "url",
         "url": "https://github.com/holgerleichsenring/specification-first-agentic-development.git"
       },
-      "description": "8 skills for the Spec-First methodology: bootstrap projects, create phases in their own worktree, review specs against the code, apply them, deliver them as a pull request, log decisions, sync methodology updates.",
-      "version": "2.4.0",
+      "description": "8 skills for the Spec-First methodology: bootstrap projects, create specs in their own worktree, review specs against the code, apply them, deliver them as a pull request, log decisions, sync methodology updates.",
+      "version": "2.5.0",
       "author": {
         "name": "Holger Leichsenring"
       },
       "homepage": "https://github.com/holgerleichsenring/specification-first-agentic-development",
       "license": "MIT",
-      "keywords": ["methodology", "specification-first", "phase-specs", "decision-log", "context-persistence"]
+      "keywords": ["methodology", "specification-first", "specs", "decision-log", "context-persistence"]
     }
   ]
 }

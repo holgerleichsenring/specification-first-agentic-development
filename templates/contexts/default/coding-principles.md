@@ -49,7 +49,7 @@ If a method exceeds the limit, extract a helper. If a class exceeds the limit, s
 
 ## What NOT To Do
 
-- Don't add features beyond the current phase spec
+- Don't add features beyond the current spec
 - Don't refactor code you didn't change
 - Don't add comments for self-evident logic
 - Don't create abstractions for one-time operations

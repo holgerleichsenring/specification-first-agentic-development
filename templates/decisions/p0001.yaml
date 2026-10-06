@@ -1,10 +1,10 @@
 # yaml-language-server: $schema=../decision.schema.json
 #
-# One YAML file per phase. Filename = <phase-id>.yaml (or <run-id>.yaml for runs).
-# All decisions made within this phase live in the decisions: array below.
-# Glob `decisions/p0001.yaml` for one phase; cat `decisions/*.yaml` for everything.
+# One YAML file per spec. Filename = <spec-id>.yaml (or <run-id>.yaml for runs).
+# All decisions made within this spec live in the decisions: array below.
+# Glob `decisions/p0001.yaml` for one spec; cat `decisions/*.yaml` for everything.
 
-phase: p0001
+spec: p0001
 
 decisions:
   - category: Architecture

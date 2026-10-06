@@ -1,6 +1,6 @@
 ---
 name: bootstrap-project
-description: "Set up Specification-First Agentic Development in a new or existing project. Triggers when the user asks to 'set up spec-first', 'bootstrap the methodology', 'initialize project structure', or wants to add contexts/ and phase tracking to their project."
+description: "Set up Specification-First Agentic Development in a project. Triggers on 'set up spec-first', 'bootstrap the methodology', or adding contexts/ and spec tracking to a project."
 user-invocable: true
 ---
 
@@ -16,20 +16,20 @@ Set up the Specification-First Agentic Development methodology in a project.
     default/                  # single-stack default. Monorepos add more:
       context.yaml            #   contexts/server/, contexts/client/, ...
       coding-principles.md
-  decisions/                  # one YAML file per decision; filename = phase-or-run id + slug
+  decisions/                  # one YAML file per decision; filename = spec-or-run id + slug
   memory/
     MEMORY.md                 # experiential-memory index; one entry file per memory beside it
-  phases/
+  specs/
     planned/                  # upcoming specs
     active/                   # current work (max 1)
-    done/                     # completed phases
+    done/                     # completed specs
 ```
 
 Plus a `CLAUDE.md` (or equivalent prompt file) at the project root.
 
 **Why this layout:**
 - `contexts/<name>/` per stack. Single-stack projects use `contexts/default/`. Monorepos add siblings (`contexts/server/`, `contexts/client/`, `contexts/docs/`) — each with its own `context.yaml` (with `workdir:` pointing at the sub-tree) and its own `coding-principles.md`.
-- `decisions/` only. One YAML file per decision; filename `<phase-id>-<slug>.yaml` or `<run-id>-<slug>.yaml`. No flat `decisions.md` append-log.
+- `decisions/` only. One YAML file per decision; filename `<spec-id>-<slug>.yaml` or `<run-id>-<slug>.yaml`. No flat `decisions.md` append-log.
 - `memory/` holds typed Markdown facts (one file per memory, `MEMORY.md` as index) — the experiential-memory store agent-smith runs and IDE sessions share.
 
 ## Steps
@@ -59,7 +59,7 @@ Create:
 - `.{project-name}/contexts/<name>/` for each target stack (`default/` for single-stack)
 - `.{project-name}/decisions/`
 - `.{project-name}/memory/`
-- `.{project-name}/phases/planned/`, `phases/active/`, `phases/done/`
+- `.{project-name}/specs/planned/`, `specs/active/`, `specs/done/`
 
 ### 5. Write each context's `context.yaml`
 
@@ -79,7 +79,7 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.4.0"
+  version: "2.5.0"
 stack: {...}
 arch: {...}
 quality: {...}
@@ -127,7 +127,7 @@ the minimal skeleton for a greenfield project with no code to derive rules from.
 
 ### 7. Decisions directory
 
-Create `.{project-name}/decisions/` empty. The `/spec-first:log-decision` skill writes one YAML file per decision at `decisions/<phase-id>-<slug>.yaml`. Do not seed it with placeholder content.
+Create `.{project-name}/decisions/` empty. The `/spec-first:log-decision` skill writes one YAML file per decision at `decisions/<spec-id>-<slug>.yaml`. Do not seed it with placeholder content.
 
 ### 8. Memory store
 
@@ -143,15 +143,15 @@ policy only after the operator ratifies it.
 ### 9. Write CLAUDE.md
 
 Create a `CLAUDE.md` at the project root, based on `templates/prompt.md`, with:
-- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, 2. each context's `coding-principles.md`, 3. `phases/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
+- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, 2. each context's `coding-principles.md`, 3. `specs/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
 - The remember/recall discipline section (memory vs decision boundary, curation rules)
 - The 12-step implementation workflow (spec, worktree, review-spec, …, deliver-spec)
 - Key rules from the contexts' coding-principles
-- Phase directory structure explanation
+- Spec directory structure explanation
 
 ### 10. Confirm with the user
 
-Show what you created and ask the user to review. The methodology is now ready — they can start writing their first phase spec.
+Show what you created and ask the user to review. The methodology is now ready — they can start writing their first spec.
 
 ## Reference example
 
@@ -167,6 +167,6 @@ This skill references templates from the plugin's `templates/` directory:
 - `templates/decisions/p0001-example-decision.yaml` (shape reference, not copied as-is)
 - `templates/memory/MEMORY.md` (copied as the empty index) and `templates/memory/example-memory.md` (entry-shape reference, not copied)
 - `templates/prompt.md` (basis for the root CLAUDE.md)
-- `templates/decision.schema.json`, `templates/phase-spec.schema.json` and `templates/context.schema.json` (copy to `.{project}/` so editors validate)
+- `templates/decision.schema.json`, `templates/spec.schema.json` and `templates/context.schema.json` (copy to `.{project}/` so editors validate)
 
 These are structural guides — always adapt content to the actual project.

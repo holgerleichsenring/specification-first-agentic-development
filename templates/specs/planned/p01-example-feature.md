@@ -1,4 +1,4 @@
-# Phase {NN}: {Title}
+# Spec {NN}: {Title}
 
 ## Goal
 
@@ -12,11 +12,11 @@
 
 ### Out of Scope
 
-- {What this phase explicitly does NOT cover}
+- {What this spec explicitly does NOT cover}
 
 ## Prerequisites
 
-- {Phase or feature that must exist before this phase can start}
+- {Spec or feature that must exist before this spec can start}
 
 ## Architecture Notes
 

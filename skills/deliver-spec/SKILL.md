@@ -1,19 +1,21 @@
 ---
 name: deliver-spec
-description: "Deliver a finished phase: run the context's verify stages, commit as 'feat: … ({id})', push the phase branch and open the pull request. Triggers after apply-spec, or when the user says 'deliver the phase', 'ship it' or 'open the PR'."
+description: "Deliver a finished spec: run the verify stages, commit as 'feat: … ({id})', push the spec branch, open the PR. Triggers after apply-spec, or on 'deliver the spec', 'ship it', 'open the PR'."
 user-invocable: true
 ---
 
 # Deliver Spec
 
-The one owner of a phase's commit. Run it in the phase's worktree (branch `phase/{id}`) once apply-spec has verified the done criteria. Stop at the first failure and report it; never push past one.
+The one owner of a spec's commit. Run it in the spec's worktree (branch `spec/{id}`) once apply-spec has verified the done criteria. Stop at the first failure and report it; never push past one.
 
 ## 1. Check the preconditions
 
 ```bash
-git branch --show-current          # must be phase/{id}
+git branch --show-current          # must be spec/{id}
 gh auth status                     # must succeed
 ```
+
+A `phase/{id}` branch cut under 2.4 is accepted in 2.5: if it still carries `.{project}/phases/`, run update-project's `scripts/migrate-specs-layout.py` on it and commit first; push and open the PR on `phase/{id}` (until the script is removed).
 
 If `gh auth status` fails, stop **before pushing** and tell the user: `gh` must be installed and authenticated to open the pull request.
 
@@ -28,7 +30,7 @@ No `verify:` stages anywhere: say **"no verify stages declared — relying on th
 
 ## 3. Commit
 
-Stage the phase's work — code, tests, the spec now in `phases/done/`, `decisions/{id}.yaml`, the `context.yaml` entry — and commit once:
+Stage the spec's work — code, tests, the spec now in `specs/done/`, `decisions/{id}.yaml`, the `context.yaml` entry — and commit once:
 
 ```bash
 git add -A
@@ -41,8 +43,8 @@ Keep `({id})` exactly — the id in parentheses is what a project's commit gate 
 ## 4. Push and open the pull request
 
 ```bash
-git push -u origin phase/{id}
-gh pr create --base {default-branch} --head phase/{id} \
+git push -u origin spec/{id}
+gh pr create --base {default-branch} --head spec/{id} \
   --title "feat: {short description} ({id})" --body-file {body.md}
 ```
 

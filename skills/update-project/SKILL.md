@@ -1,6 +1,6 @@
 ---
 name: update-project
-description: "Sync an existing project's methodology files with a newer plugin version. Triggers when the user says 'update methodology', 'sync templates', 'update spec-first', or when methodology.version in context.yaml is older than the plugin version. Handles the big-bang v1.x → v2.0 layout migration."
+description: "Sync a project's methodology files with a newer plugin version. Triggers on 'update methodology', 'sync templates', 'update spec-first', or an older methodology.version in context.yaml."
 user-invocable: true
 ---
 
@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.4.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.5.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,15 +36,16 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.4.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, then 3d-3f |
-| 1.x.x   | 2.4.0  | v1-to-v2, the 2.1.0 additions, then 3d-3f                   |
-| 2.0.x   | 2.4.0  | 2.1.0 additions (3c) + additive merge (3b), then 3d-3f      |
-| 2.1.x   | 2.4.0  | 3d-3f, then additive merge (3b)                               |
-| 2.2.x   | 2.4.0  | 3e, 3f, then additive merge (3b)                              |
-| 2.3.x   | 2.4.0  | 3f                                                            |
-| 2.4.x   | 2.y.y  | additive/diff merge (no migration)                            |
+| 0.0.0   | 2.5.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, then 3g |
+| 1.x.x   | 2.5.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, then 3g               |
+| 2.0.x   | 2.5.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, then 3g  |
+| 2.1.x   | 2.5.0  | 3d-3f, additive merge (3b), then 3g                           |
+| 2.2.x   | 2.5.0  | 3e, 3f, additive merge (3b), then 3g                          |
+| 2.3.x   | 2.5.0  | 3f, then 3g                                                   |
+| 2.4.x   | 2.5.0  | 3g                                                            |
+| 2.5.x   | 2.y.y  | additive/diff merge (no migration)                            |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e and 3f. For 2.0.x run 3c, 3b, 3d, 3e and 3f. For 2.1.x run 3d, 3e, 3f and 3b. For 2.2.x run 3e, 3f and 3b. For 2.3.x run 3f. For later 2.x → 2.y skip to step 3b (additive merge).
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f and 3g. For 2.0.x run 3c, 3b, 3d, 3e, 3f and 3g. For 2.1.x run 3d, 3e, 3f, 3b and 3g. For 2.2.x run 3e, 3f, 3b and 3g. For 2.3.x run 3f and 3g. For 2.4.x run 3g. For later 2.x → 2.y skip to step 3b (additive merge). Every path ends with 3g: commit, run the script, show its report, commit.
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -109,7 +110,7 @@ For a 1000-bullet `decisions.md` spanning 200 phases, expect ~200 YAML files —
 
 #### 3a.3. Add the schemas
 
-Copy `templates/decision.schema.json` and `templates/phase-spec.schema.json` from the plugin into `.{project}/` if they're missing. Editors pick them up from there.
+Copy `templates/decision.schema.json` and `templates/spec.schema.json` from the plugin into `.{project}/` if they're missing. Editors pick them up from there.
 
 #### 3a.4. Emit warnings for notes/ and concepts/ directories
 
@@ -134,7 +135,7 @@ For each methodology file, compare the user's version with the plugin's template
 | `contexts/<name>/context.yaml` | Structure and field names (not user content) |
 | `contexts/<name>/coding-principles.md` | Sections and rules (not project-specific values) |
 | `decision.schema.json` | Schema fields and validation rules |
-| `phase-spec.schema.json` | Schema fields and validation rules |
+| `spec.schema.json` | Schema fields and validation rules |
 | `context.schema.json` | Schema fields (`verify`, `evidence_roots`) |
 | `CLAUDE.md` / `prompt.md` | Workflow steps, read order, rules |
 
@@ -169,7 +170,7 @@ A project bootstrapped before 2.1.0 typically still carries the v1 read order in
 - Replace ONLY that block with the v2 order (as in `templates/prompt.md`):
   1. glob `contexts/*/context.yaml`
   2. each context's `coding-principles.md`
-  3. `phases/active/*.yaml`
+  3. `specs/active/*.yaml`
   4. `decisions/*.yaml`
   5. `memory/MEMORY.md` (recall entry detail from `memory/<name>.md` on demand)
 - If `CLAUDE.md` has no memory/recall discipline section yet, offer to add the one from `templates/prompt.md` alongside.
@@ -178,7 +179,7 @@ Because the root `CLAUDE.md` lives OUTSIDE the methodology directory, this edit 
 
 ### 3d. 2.2.0: date-minted ids and premise keys in the schemas
 
-Replace the project's copies of `phase-spec.schema.json` and `decision.schema.json` with the plugin's templates. 2.2.0 accepts date-minted ids (`2026-08-24-8a3f`, series `2026-08-24-8a3fa`) beside every counter id the project already carries, and lets a spec state `scope`, `facts` and `assumptions`. Nothing in the project is renamed. Root `CLAUDE.md`: if it tells sessions to mint the next counter id, point it at create-phase's minting rule instead.
+Replace the project's copies of the two schemas with the plugin's templates: `spec.schema.json` (`git rm` the old `phase-spec.schema.json`) and `decision.schema.json`. 2.2.0 accepts date-minted ids (`2026-08-24-8a3f`, series `2026-08-24-8a3fa`) beside every counter id the project already carries, and lets a spec state `scope`, `facts` and `assumptions`. No id is renamed. Root `CLAUDE.md`: if it tells sessions to mint the next counter id, point it at create-spec's minting rule instead.
 
 ### 3e. 2.3.0: context schema and the loop
 
@@ -186,7 +187,21 @@ Copy `templates/context.schema.json` into `.{project}/` (it is what every `conte
 
 ### 3f. 2.4.0: execute-phase is apply-spec, ship-phase is deliver-spec
 
-Nothing in the project is renamed. If the root `CLAUDE.md` or any project document names `execute-phase` or `ship-phase`, replace them with `apply-spec` and `deliver-spec`. The old skill names still answer in 2.4.0 and forward to the new ones; they are removed in the next release.
+Nothing in the project is renamed. If the root `CLAUDE.md` or any project document names `execute-phase` or `ship-phase`, replace them with `apply-spec` and `deliver-spec`. The old skill names answered in 2.4.0 only; 2.5.0 removes them.
+
+### 3g. 2.5.0: the noun is spec
+
+1. Commit everything — the script refuses a directory with uncommitted or untracked files.
+2. Run the script on the project's methodology directory:
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/migrate-specs-layout.py" .{project}
+   ```
+
+3. Show the operator its report verbatim — what moved, what was edited, and the files it lists as still naming the old path (the root `CLAUDE.md` among them); those are the operator's to edit.
+4. Commit.
+
+Exit 1 means refused and nothing changed: show the reason. Exit 0 with "nothing to move" means the project is already on `specs/`.
 
 ### 4. Ask approval
 
@@ -198,11 +213,11 @@ Write the approved changes. Update `methodology.version` in every `contexts/<nam
 
 ### 6. Log the update
 
-Append a decision entry to the phase YAML the project uses for meta updates (or mint a fresh id for the update, as create-phase does, and create `decisions/{id}.yaml`):
+Append a decision entry to the spec YAML the project uses for meta updates (or mint a fresh id for the update, as create-spec does, and create `decisions/{id}.yaml`):
 
 ```yaml
 # yaml-language-server: $schema=../decision.schema.json
-phase: 2026-08-24-8a3f          # the id you minted, or an existing meta-phase id the project uses
+spec: 2026-08-24-8a3f           # the id you minted, or an existing meta-spec id the project uses
 
 decisions:
   - category: Tooling

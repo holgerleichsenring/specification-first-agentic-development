@@ -1,5 +1,5 @@
-# yaml-language-server: $schema=../../../templates/phase-spec.schema.json
-phase: p12
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: p12
 goal: "Add user profile page with avatar upload and bio editing"
 
 decisions:

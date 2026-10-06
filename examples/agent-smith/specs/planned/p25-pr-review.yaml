@@ -1,5 +1,5 @@
-# yaml-language-server: $schema=../../../../templates/phase-spec.schema.json
-phase: p25
+# yaml-language-server: $schema=../../../../templates/spec.schema.json
+spec: p25
 goal: "PR review iteration — agent reads comments, makes changes, pushes commits until approved"
 
 requires: ["p59"]
