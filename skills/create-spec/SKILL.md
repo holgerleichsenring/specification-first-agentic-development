@@ -1,6 +1,6 @@
 ---
 name: create-spec
-description: "Create a new spec for upcoming work. Triggers when the user wants to 'plan a new feature', 'write a spec', 'create a spec' (or a phase), or discusses upcoming work that should be captured as a spec."
+description: "Create a new spec for upcoming work. Triggers when the user wants to 'plan a new feature', 'write a spec', 'create a spec', or discusses upcoming work that should be captured as a spec."
 user-invocable: true
 ---
 

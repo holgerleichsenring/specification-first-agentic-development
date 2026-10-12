@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.5.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.6.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,16 +36,17 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.5.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, then 3g |
-| 1.x.x   | 2.5.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, then 3g               |
-| 2.0.x   | 2.5.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, then 3g  |
-| 2.1.x   | 2.5.0  | 3d-3f, additive merge (3b), then 3g                           |
-| 2.2.x   | 2.5.0  | 3e, 3f, additive merge (3b), then 3g                          |
-| 2.3.x   | 2.5.0  | 3f, then 3g                                                   |
-| 2.4.x   | 2.5.0  | 3g                                                            |
-| 2.5.x   | 2.y.y  | additive/diff merge (no migration)                            |
+| 0.0.0   | 2.6.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, then 3h |
+| 1.x.x   | 2.6.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, then 3h               |
+| 2.0.x   | 2.6.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, then 3h  |
+| 2.1.x   | 2.6.0  | 3d-3f, additive merge (3b), 3g, then 3h                           |
+| 2.2.x   | 2.6.0  | 3e, 3f, additive merge (3b), 3g, then 3h                          |
+| 2.3.x   | 2.6.0  | 3f, 3g, then 3h                                                   |
+| 2.4.x   | 2.6.0  | 3g, then 3h                                                       |
+| 2.5.x   | 2.6.0  | 3h                                                                |
+| 2.6.x   | 2.y.y  | additive/diff merge (no migration)                                |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f and 3g. For 2.0.x run 3c, 3b, 3d, 3e, 3f and 3g. For 2.1.x run 3d, 3e, 3f, 3b and 3g. For 2.2.x run 3e, 3f, 3b and 3g. For 2.3.x run 3f and 3g. For 2.4.x run 3g. For later 2.x → 2.y skip to step 3b (additive merge). Every path ends with 3g: commit, run the script, show its report, commit.
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g and 3h. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g and 3h. For 2.1.x run 3d, 3e, 3f, 3b, 3g and 3h. For 2.2.x run 3e, 3f, 3b, 3g and 3h. For 2.3.x run 3f, 3g and 3h. For 2.4.x run 3g and 3h. For 2.5.x run 3h. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -53,7 +54,7 @@ The migration is mechanical and structural-only. No content is rewritten — fil
 
 **Confirm with the operator before starting** that:
 - The repo is committed clean (so `git diff` shows exactly the migration changes).
-- Any in-flight work in `phases/active/` is at a safe checkpoint (the migration does not touch phase YAMLs but the operator should know what state they're starting from).
+- Any in-flight work in `phases/active/` is at a safe checkpoint (the migration does not touch spec YAMLs but the operator should know what state they're starting from).
 
 #### 3a.1. Move root context + principles into `contexts/default/`
 
@@ -71,11 +72,11 @@ Inside the moved `context.yaml`:
 
 If a `.{project}/context.schema.json` exists alongside, leave it at the project root. The relative path adjustment above handles the new depth.
 
-#### 3a.2. Split the `decisions.md` log into per-phase YAMLs
+#### 3a.2. Split the `decisions.md` log into per-spec YAMLs
 
 Read `.{project}/decisions.md`. The v1 format groups decisions under `## p{NN}: Title` headings with `- [Category] Decision -- rationale` bullets.
 
-**One YAML file per phase**, all bullets under the heading become entries in that file's `decisions:` array. NOT one file per bullet.
+**One YAML file per spec**, all bullets under the heading become entries in that file's `decisions:` array. NOT one file per bullet.
 
 For each `## p{NN}: Title` heading:
 - Collect all `- [Category] body` bullets underneath (until the next heading).
@@ -87,7 +88,7 @@ For each `## p{NN}: Title` heading:
 
   ```yaml
   # yaml-language-server: $schema=../decision.schema.json
-  phase: p{NN}
+  spec: p{NN}
   decisions:
     - category: {Category}
       chose: "{...}"
@@ -98,15 +99,15 @@ For each `## p{NN}: Title` heading:
       ...
   ```
 
-- File path: `.{project}/decisions/p{NN}.yaml`. The filename IS the phase ID — no slug, no per-bullet suffix.
+- File path: `.{project}/decisions/p{NN}.yaml`. The filename IS the spec ID — no slug, no per-bullet suffix.
 
-Convert any pre-existing `.{project}/decisions/*.md` files in the same shape: read each, derive the phase ID from its heading (or from the filename prefix as fallback, e.g. `p0146d-observation-fields.md` → `p0146d.yaml`), MERGE its bullets into the same phase's YAML if `decisions.md` also had entries for that phase, otherwise emit a fresh phase YAML. `git rm` each `.md` after.
+Convert any pre-existing `.{project}/decisions/*.md` files in the same shape: read each, derive the spec ID from its heading (or from the filename prefix as fallback, e.g. `p0146d-observation-fields.md` → `p0146d.yaml`), MERGE its bullets into the same spec's YAML if `decisions.md` also had entries for that spec, otherwise emit a fresh spec YAML. `git rm` each `.md` after.
 
 After the split:
 - `git rm .{project}/decisions.md`.
-- The big-bang means the Markdown log is gone — every entry now lives in its phase's YAML file.
+- The big-bang means the Markdown log is gone — every entry now lives in its spec's YAML file.
 
-For a 1000-bullet `decisions.md` spanning 200 phases, expect ~200 YAML files — one per phase.
+For a 1000-bullet `decisions.md` spanning 200 specs, expect ~200 YAML files — one per spec.
 
 #### 3a.3. Add the schemas
 
@@ -115,16 +116,16 @@ Copy `templates/decision.schema.json` and `templates/spec.schema.json` from the 
 #### 3a.4. Emit warnings for notes/ and concepts/ directories
 
 If `.{project}/notes/` or `.{project}/concepts/` exist:
-- Do NOT automatically move them. Per operator instruction: "für mich sind das keine decisions. das sind die konzepte die zu phasen führen und dann hinterher decisions ableiten."
+- Do NOT automatically move them. Per operator instruction: these are not decisions — they are the concepts that lead to specs, which only afterwards yield decisions.
 - Emit a warning listing every file under those directories and recommend the operator choose, per file:
   - (a) Copy the file out of `.{project}/` (e.g. into a `docs/notes/` or a separate branch) before continuing — they're conceptual exploration, not part of the spec-first artifact set.
-  - (b) Rename to `phases/done/p{NN}-base-concept-{topic}.yaml` with a reserved ID range the operator picks. The file becomes a "base-concept phase" — documented foundation that was never executed as work but shaped subsequent phases.
+  - (b) Rename to `phases/done/p{NN}-base-concept-{topic}.yaml` with a reserved ID range the operator picks. The file becomes a "base-concept spec" — documented foundation that was never executed as work but shaped subsequent specs. (`phases/` is still the v1 directory here; 3g moves it to `specs/`.)
 
 The migration does NOT pick one — operator decides per file.
 
 #### 3a.5. Update `state.{done,active,planned}` entries (optional housekeeping)
 
-The `state.{done,active,planned}` sections in the moved `context.yaml` still reference phase YAMLs by path. v1 paths like `.{project}/phases/...` are unchanged in v2 — no rewrite needed. If the operator wants to add new `applies_to:` annotations to existing phase YAMLs, that's done lazily as each phase comes back into focus, not as part of this migration.
+The `state.{done,active,planned}` sections in the moved `context.yaml` still reference spec YAMLs by path. v1 paths like `.{project}/phases/...` are left alone here — 3g's script rewrites them to `specs/`. If the operator wants to add new `applies_to:` annotations to existing spec YAMLs, that's done lazily as each spec comes back into focus, not as part of this migration.
 
 ### 3b. 2.x → 2.y additive merge
 
@@ -160,7 +161,7 @@ Two retroactive changes bring pre-2.1.0 projects to parity with fresh bootstraps
 If `.{project}/memory/` is missing:
 
 - Create `.{project}/memory/` and copy `templates/memory/MEMORY.md` into it as the empty index.
-- **Structural-only — no auto-distillation of history.** Do NOT convert the project's decisions, git log, or phase records into memory entries as part of this migration. The store opens empty; memories accumulate from future sessions and runs (entry convention: one Markdown file per memory beside the index, frontmatter `name` kebab-slug / `description` one line / `metadata.type` in `feedback` | `project` | `reference` — see `templates/memory/example-memory.md`), and a `feedback` entry becomes policy only after operator ratification.
+- **Structural-only — no auto-distillation of history.** Do NOT convert the project's decisions, git log, or spec records into memory entries as part of this migration. The store opens empty; memories accumulate from future sessions and runs (entry convention: one Markdown file per memory beside the index, frontmatter `name` kebab-slug / `description` one line / `metadata.type` in `feedback` | `project` | `reference` — see `templates/memory/example-memory.md`), and a `feedback` entry becomes policy only after operator ratification.
 
 #### 3c.2. Patch the root CLAUDE.md read-order block
 
@@ -183,7 +184,7 @@ Replace the project's copies of the two schemas with the plugin's templates: `sp
 
 ### 3e. 2.3.0: context schema and the loop
 
-Copy `templates/context.schema.json` into `.{project}/` (it is what every `context.yaml`'s `$schema` comment already points at; its top level is open, so no existing key fails). Offer the commented `verify:` and `evidence_roots:` blocks from `templates/contexts/default/context.yaml`. Root `CLAUDE.md`: offer the 12-step workflow from `templates/prompt.md` — a worktree per phase, review-spec before code, deliver-spec at the end — with the same before/after approval as 3c.2. Nothing is renamed.
+Copy `templates/context.schema.json` into `.{project}/` (it is what every `context.yaml`'s `$schema` comment already points at; its top level is open, so no existing key fails). Offer the commented `verify:` and `evidence_roots:` blocks from `templates/contexts/default/context.yaml`. Root `CLAUDE.md`: offer the 12-step workflow from `templates/prompt.md` — a worktree per spec, review-spec before code, deliver-spec at the end — with the same before/after approval as 3c.2. Nothing is renamed.
 
 ### 3f. 2.4.0: execute-phase is apply-spec, ship-phase is deliver-spec
 
@@ -202,6 +203,10 @@ Nothing in the project is renamed. If the root `CLAUDE.md` or any project docume
 4. Commit.
 
 Exit 1 means refused and nothing changed: show the reason. Exit 0 with "nothing to move" means the project is already on `specs/`.
+
+### 3h. 2.6.0: create-phase is gone
+
+Nothing in the project is renamed. If the root `CLAUDE.md` or any project document names `create-phase`, replace it with `create-spec`. The old skill name answered in 2.5.0 only; 2.6.0 removes it.
 
 ### 4. Ask approval
 
