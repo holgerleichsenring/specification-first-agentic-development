@@ -1,6 +1,6 @@
 ---
 name: apply-spec
-description: "Implement the active spec in its worktree, up to its done criteria. Triggers on 'implement this spec' (or phase), 'execute the spec', 'start working on {id}', or a spec in active/."
+description: "Implement the active spec in its worktree, up to its done criteria. Triggers on 'implement this spec', 'execute the spec', 'start working on {id}', or a spec in active/."
 user-invocable: true
 ---
 
