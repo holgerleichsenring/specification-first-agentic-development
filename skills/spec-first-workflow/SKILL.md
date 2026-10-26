@@ -11,7 +11,7 @@ You are working in a project that follows the Specification-First Agentic Develo
 ## Core Loop
 
 ```
-Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → deliver-spec (verify, commit, PR)
+Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → deliver-spec (commit through the gate, PR)
 ```
 
 ## Directory Layout (v2.5)

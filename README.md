@@ -15,7 +15,7 @@ A lightweight structure for AI-assisted development that eliminates context amne
 
 ## Quick Start: Claude Code Plugin
 
-The fastest way to get started is the Claude Code plugin. Install it and you get 8 skills that guide you through the entire methodology:
+The fastest way to get started is the Claude Code plugin. Install it and you get 9 skills that guide you through the entire methodology, and a commit gate:
 
 > **Official marketplace listing**: submitted, pending approval by Anthropic. Once approved, install will be a single command: `/plugin install spec-first`
 
@@ -48,6 +48,8 @@ Then in Claude Code:
 | `/update-project` | Sync with newer methodology versions |
 | `/spec-first-workflow` | Overview of the full methodology |
 
+**The commit gate.** The plugin ships a PreToolUse hook. On every `git commit` whose message carries the spec id in parentheses, `feat: … ({id})`, it runs the `verify:` stages of every `contexts/*/context.yaml` from the repository root and blocks the commit if one fails. It writes one line per spec commit to `spec-first-gate.log` in the git common directory, which `/deliver-spec` reads. A project that already runs its own commit gate adds `gate: project` to one `context.yaml`, and the plugin's gate steps aside, so only one gate runs. A project with no verify stages passes with a notice saying so.
+
 No framework required. The plugin is an optional convenience layer — the methodology works with any AI agent, the plugin just makes it easier with Claude Code.
 
 ---
@@ -65,7 +67,7 @@ When working with AI coding agents, three things go wrong repeatedly:
 Treat documentation as a first-class development artifact. Every feature starts as a specification. Every decision gets logged. The AI reads context files in a defined order before writing a single line of code.
 
 ```
-Discuss → Write Spec → worktree → review-spec → active/ → done/ → deliver-spec (verify, commit, PR)
+Discuss → Write Spec → worktree → review-spec → active/ → done/ → deliver-spec (commit through the gate, PR)
 ```
 
 In practice: restart your machine, restart your AI agent, open `context.yaml` and you're back in 30 seconds.
@@ -294,7 +296,7 @@ Don't invent conventions — extract them from what's already here.
 | `decision.schema.json` | JSON Schema for decision YAMLs (IDE autocompletion) |
 | `spec.yaml` | Template for a new spec |
 | `spec.schema.json` | JSON Schema for specs (IDE autocompletion, includes optional `applies_to:` field) |
-| `context.schema.json` | JSON Schema for `context.yaml` (open top level; declares `verify:` stages and `evidence_roots:`) |
+| `context.schema.json` | JSON Schema for `context.yaml` (open top level; declares `verify:` stages, `gate:` and `evidence_roots:`) |
 | `prompt.md` | AI agent instructions and workflow |
 
 ---
@@ -309,11 +311,11 @@ The AI agent follows this order for every spec:
 4. Plan: explore the codebase(s) the spec touches (filtered by `applies_to:`), design approach, get human approval
 5. Implement: contracts first, then implementation, then wiring, then tests
 6. Build after each step — fix errors immediately
-7. Run all tests and the contexts' `verify:` stages — 0 failures before moving on
+7. Run the build and the tests of what you changed: 0 failures before moving on. The full `verify:` stages run once, at the spec commit
 8. Log decisions: append each non-obvious choice to `decisions/<spec-id>.yaml` (create the file on first decision; append to its `decisions:` array on subsequent ones)
 9. Update relevant `contexts/<name>/context.yaml` — move spec to done
 10. Move spec file to `done/`
-11. Deliver: run the verify stages, one commit `feat: … ({id})`, push, open the pull request (`/deliver-spec`)
+11. Deliver: one commit `feat: … ({id})` through the commit gate, push, open the pull request (`/deliver-spec`)
 
 ---
 
