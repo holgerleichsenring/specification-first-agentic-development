@@ -41,13 +41,18 @@ quality:
     style: AAA
     naming: "{Method}_{Scenario}_{Expected}"
 
-# Proof a change holds -- deliver-spec runs these from the repository root before committing.
+# Proof a change holds -- the plugin's commit gate runs these from the repository root at every spec commit
+# and blocks it on the first red stage.
 # verify:
 #   - label: build
 #     command: "dotnet build"
 #   - label: dashboard
 #     command: "cd web && npm test"
 #     when_present: web/package.json   # stage skipped (and reported) when this path is absent
+
+# Who gates a spec commit: plugin (the default) or project. Set project in ONE context when the
+# repository runs its own commit gate, so the plugin's gate steps aside and only one gate runs.
+# gate: project
 
 # Other repositories a spec's evidence may cite as 'name:path:lines' -- path relative to the repo root;
 # review-spec checks citations there when the path exists, otherwise accepts them unchecked.

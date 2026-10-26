@@ -10,6 +10,11 @@ in the tree the commit runs in, from that tree's top level, in context order and
 declaration order. The first red stage blocks the commit: exit 2, with the stage's output
 on stderr, which Claude Code hands back to Claude.
 
+A project that runs its own commit gate says so with `gate: project` at the top level of
+one of its context.yaml files; the gate then steps aside in one line, so exactly one gate
+checks the commit. Absent, or `gate: plugin`, this gate runs. Two different values, or any
+other value, block until the declaration is fixed.
+
 Every spec commit it recognises leaves one line in the ledger, whether it passed, was
 blocked or was let through unchecked: time, verdict, spec id, tree, the tree's HEAD (the
 new commit's parent) and a detail. A spec commit with no line never met the gate. The
@@ -64,6 +69,9 @@ COMMIT_SHAPE = re.compile(
     rf"(?:^|[;&|]|&&){_SPACE}*git(?:{_SPACE}+{_OPTION})*{_SPACE}+commit(?:{_SPACE}|[;&|]|$)",
     re.MULTILINE)
 SHELL_SUBSTITUTION = re.compile(r"\$\(|`")
+# Read by a line scan, not by YAML, so the declaration holds where PyYAML is missing.
+GATE_DECLARATION = re.compile(r"^gate:[ \t]*(['\"]?)([^'\"#\s]*)\1[ \t]*(?:#.*)?$", re.MULTILINE)
+GATE_OWNERS = ("plugin", "project")
 
 
 def _load_resolver():
@@ -208,6 +216,9 @@ class Gate:
             return self.not_gated(
                 self.tree, "no contexts",
                 f"no .{{project}}/contexts/*/context.yaml in {self.tree}; nothing to gate.")
+        owner = self.owner(contexts)
+        if owner is not None:
+            return owner
         try:
             import yaml
         except ImportError:
@@ -232,6 +243,32 @@ class Gate:
                 self.tree, "no verify stages declared",
                 "no verify stages declared in any context.yaml; the commit is not gated.")
         return self.run_stages(stages)
+
+    def owner(self, contexts):
+        """None when this gate runs; otherwise the exit code of stepping aside or blocking."""
+        declared = {}
+        for context in contexts:
+            try:
+                with open(context, encoding="utf-8") as handle:
+                    found = GATE_DECLARATION.search(handle.read())
+            except OSError:
+                continue
+            if found:
+                declared[os.path.relpath(context, self.tree)] = found.group(2)
+        unknown = {path: value for path, value in declared.items() if value not in GATE_OWNERS}
+        if unknown:
+            named = ", ".join(f"{path}: {value or '(empty)'}" for path, value in unknown.items())
+            return self.block("unknown gate value", f"gate: must be plugin or project ({named}).")
+        if len(set(declared.values())) > 1:
+            named = ", ".join(f"{path}: {value}" for path, value in declared.items())
+            return self.block("conflicting gate declarations",
+                              f"the contexts declare different gates ({named}); one repository has one gate.")
+        if "project" in declared.values():
+            where = ", ".join(declared)
+            return self.not_gated(
+                self.tree, "gate: project",
+                f"this project owns its commit gate (gate: project in {where}); the spec-first gate steps aside.")
+        return None
 
     def stages_of(self, document, context):
         verify = document.get("verify") if isinstance(document, dict) else None

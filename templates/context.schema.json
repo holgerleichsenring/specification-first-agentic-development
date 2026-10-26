@@ -7,7 +7,7 @@
   "properties": {
     "verify": {
       "type": "array",
-      "description": "Commands that prove a change in this repository holds. deliver-spec runs them in order from the repository root before committing.",
+      "description": "Commands that prove a change in this repository holds. The plugin's commit gate runs them in order from the repository root at every spec commit; deliver-spec runs them by hand only when no gate checked the commit.",
       "items": {
         "type": "object",
         "required": ["label", "command"],
@@ -18,6 +18,11 @@
           "when_present": { "type": "string", "minLength": 1, "description": "Path relative to the repository root the command needs; absent path = the stage is skipped and reported, never failed." }
         }
       }
+    },
+    "gate": {
+      "type": "string",
+      "enum": ["plugin", "project"],
+      "description": "Who gates a spec commit. plugin (the default when no context declares it): the plugin's PreToolUse hook runs the verify stages. project: the repository runs its own commit gate and the plugin's hook steps aside. Declare it in one context; two different values block every spec commit."
     },
     "evidence_roots": {
       "type": "object",

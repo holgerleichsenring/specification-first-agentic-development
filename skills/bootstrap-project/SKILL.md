@@ -68,7 +68,7 @@ Use the template at `templates/contexts/default/context.yaml` as a starting poin
 - Set `methodology.version` to the plugin's current version (read from `.claude-plugin/plugin.json`).
 - Fill `stack`, `arch`, `quality` from what step 3 found.
 - Leave `state.{done,active,planned}` empty for greenfield, or seed with what already exists.
-- Fill `verify:` with the commands that prove a change holds (build, tests, lint — what the project already runs), if any; leave it commented out otherwise. Add `evidence_roots:` only when specs will cite another repository.
+- Fill `verify:` with the commands that prove a change holds (build, tests, lint — what the project already runs), if any; leave it commented out otherwise. The plugin's commit gate runs them at every spec commit. If the project already runs its own commit gate (a hook of its own), ask the user and add `gate: project` to one context instead, so only one gate runs. Add `evidence_roots:` only when specs will cite another repository.
 
 ```yaml
 # yaml-language-server: $schema=../../context.schema.json

@@ -84,8 +84,9 @@ def _run_gate(command, cwd, ledger=None, extra=None, interpreter=None):
                           cwd=cwd, env=environment, capture_output=True, text=True)
 
 
-def _context_yaml(stages):
-    lines = ["meta:", "  workdir: \".\"", "verify:"] if stages else ["meta:", "  workdir: \".\""]
+def _context_yaml(stages, gate=None):
+    lines = ["meta:", "  workdir: \".\""] + ([f"gate: {gate}"] if gate is not None else [])
+    lines += ["verify:"] if stages else []
     for stage in stages:
         lines.append(f"  - label: {stage['label']}")
         lines.append(f"    command: {json.dumps(stage['command'])}")
@@ -95,12 +96,12 @@ def _context_yaml(stages):
 
 
 @contextlib.contextmanager
-def _project_repository(stages=({"label": "check", "command": "exit 0"},), context="default"):
+def _project_repository(stages=({"label": "check", "command": "exit 0"},), context="default", gate=None):
     """A throwaway spec-first project whose one context declares the given verify stages."""
     with _repository("seed") as repo:
         directory = pathlib.Path(repo) / ".demo" / "contexts" / context
         directory.mkdir(parents=True)
-        (directory / "context.yaml").write_text(_context_yaml(list(stages)))
+        (directory / "context.yaml").write_text(_context_yaml(list(stages), gate))
         _git(repo, "add", "-A")
         _git(repo, "commit", "-q", "-m", "chore: a project to gate")
         yield repo
@@ -437,6 +438,68 @@ def Gate_TheLedgerParent_IsTheTreesHead():
         head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=repo,
                               capture_output=True, text=True).stdout.strip()
         assert [line[4] for line in _ledger(ledger)] == [head], _ledger(ledger)
+
+
+# --- who owns the gate ----------------------------------------------------------------------
+
+RED = ({"label": "test", "command": "exit 1"},)
+
+
+def Gate_GateProject_StepsAsideWithOneLine():
+    with _project_repository(RED, gate="project") as repo, tempfile.TemporaryDirectory() as elsewhere:
+        ledger = pathlib.Path(elsewhere) / "spec-gate.log"
+        completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo, ledger)
+        assert completed.returncode == 0, completed
+        notice = _notice(completed)["systemMessage"]
+        assert "owns its commit gate" in notice and len(notice.splitlines()) == 1, notice
+        assert [(line[1], line[5]) for line in _ledger(ledger)] == [("not-gated", "gate: project")], _ledger(ledger)
+
+
+def Gate_GateProjectWithoutPyYaml_StillStepsAside():
+    runner = ("import runpy, sys; sys.modules['yaml'] = None; "
+              f"runpy.run_path({str(GATE_PATH)!r}, run_name='__main__')")
+    with _project_repository(RED, gate="project") as repo, tempfile.TemporaryDirectory() as elsewhere:
+        ledger = pathlib.Path(elsewhere) / "spec-gate.log"
+        _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo, ledger, interpreter=[sys.executable, "-c", runner])
+        assert [line[5] for line in _ledger(ledger)] == ["gate: project"], _ledger(ledger)
+
+
+def Gate_GateProjectQuotedWithAComment_StepsAside():
+    with _project_repository(RED, gate="\"project\"   # our own hook") as repo:
+        completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo)
+        assert completed.returncode == 0, completed
+
+
+def Gate_GatePluginExplicit_RunsTheStages():
+    with _project_repository(RED, gate="plugin") as repo:
+        completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo)
+        assert completed.returncode == 2, completed
+
+
+def Gate_AContextWithoutADeclaration_DoesNotConflict():
+    with _project_repository(RED, gate="project") as repo:
+        directory = pathlib.Path(repo) / ".demo" / "contexts" / "web"
+        directory.mkdir(parents=True)
+        (directory / "context.yaml").write_text(_context_yaml(list(RED)))
+        completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo)
+        assert completed.returncode == 0, completed
+
+
+def Gate_GateConflict_Blocks():
+    with _project_repository(gate="project") as repo:
+        directory = pathlib.Path(repo) / ".demo" / "contexts" / "web"
+        directory.mkdir(parents=True)
+        (directory / "context.yaml").write_text(_context_yaml([], gate="plugin"))
+        completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo)
+        assert completed.returncode == 2, completed
+        assert "different gates" in completed.stderr, completed.stderr
+
+
+def Gate_GateUnknownValue_Blocks():
+    with _project_repository(gate="ours") as repo:
+        completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo)
+        assert completed.returncode == 2, completed
+        assert "must be plugin or project" in completed.stderr, completed.stderr
 
 
 def _cases():

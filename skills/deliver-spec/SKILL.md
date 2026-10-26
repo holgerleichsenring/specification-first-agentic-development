@@ -1,6 +1,6 @@
 ---
 name: deliver-spec
-description: "Deliver a finished spec: run the verify stages, commit as 'feat: … ({id})', push the spec branch, open the PR. Triggers after apply-spec, or on 'deliver the spec', 'ship it', 'open the PR'."
+description: "Deliver a finished spec: commit as 'feat: … ({id})' through the gate, read its verdict, push, open the PR. Triggers after apply-spec, or on 'deliver the spec', 'ship it', 'open the PR'."
 user-invocable: true
 ---
 
@@ -15,30 +15,43 @@ git branch --show-current          # must be spec/{id}
 gh auth status                     # must succeed
 ```
 
-A `phase/{id}` branch cut under 2.4 is accepted in 2.5: if it still carries `.{project}/phases/`, run update-project's `scripts/migrate-specs-layout.py` on it and commit first; push and open the PR on `phase/{id}` (until the script is removed).
+A `phase/{id}` branch cut under 2.4 is accepted: if it still carries `.{project}/phases/`, run update-project's `scripts/migrate-specs-layout.py` on it and commit first; push and open the PR on `phase/{id}` (until the script is removed).
 
 If `gh auth status` fails, stop **before pushing** and tell the user: `gh` must be installed and authenticated to open the pull request.
 
-## 2. Run the verify stages
+## 2. Commit through the gate
 
-Read `verify:` from every `.{project}/contexts/*/context.yaml`. Each stage is `{label, command, when_present?}`. For each stage, in order, from the **repository root**:
-
-- `when_present` set and that path (relative to the repository root) absent: skip the stage and say so — `skipped {label}: {when_present} not present`.
-- Otherwise run `command` through the shell. A non-zero exit stops delivery: report the label, the command and the tail of its output, then fix and re-run from the first stage.
-
-No `verify:` stages anywhere: say **"no verify stages declared — relying on the project's own gate"** and go on. A project's commit hook, if any, runs at step 3.
-
-## 3. Commit
-
-Stage the spec's work — code, tests, the spec now in `specs/done/`, `decisions/{id}.yaml`, the `context.yaml` entry — and commit once:
+Stage the spec's work: code, tests, the spec now in `specs/done/`, `decisions/{id}.yaml`, the `context.yaml` entry. Note HEAD, then commit once, with a literal `-m`:
 
 ```bash
 git add -A
 git status --short                 # nothing unrelated may ride along
+head=$(git rev-parse --short HEAD)
 git commit -m "feat: {short description} ({id})"
 ```
 
-Keep `({id})` exactly — the id in parentheses is what a project's commit gate keys on. If the gate blocks, fix the cause and commit again; never bypass it.
+Keep `({id})` exactly: the id in parentheses is what the commit gate keys on. Never pipe the commit and never build the message with `$(…)` or `-F -`; the gate cannot read those and lets the commit through unchecked.
+
+The plugin's gate runs every context's `verify:` stages at this commit, once. If it blocks, the commit did not happen: fix the cause and commit again. Never bypass it.
+
+## 3. Read the verdict
+
+The gate writes one line per spec commit to `spec-first-gate.log` in the git common directory, shared by all worktrees. Read the newest line for this spec, this tree and the HEAD you noted:
+
+```bash
+log="$(git rev-parse --path-format=absolute --git-common-dir)/spec-first-gate.log"
+awk -F'\t' -v id="{id}" -v tree="$(git rev-parse --show-toplevel)" -v head="$head" \
+  '$3 == id && $4 == tree && $5 == head' "$log" | tail -1
+```
+
+Fields: time, verdict, spec, tree, parent, detail.
+
+- **passed**: the verify stages ran and were green. Go on.
+- **not-gated** with `gate: project`: the project's own gate checked the commit. The commit exists, so it passed there. Go on, and say in the PR body that the project's gate checked it.
+- **not-gated** with any other detail, or **no line at all**: no gate checked this commit (hooks disabled, the hook timed out or could not start, PyYAML missing, no verify stages declared). Run the stages yourself now, as below. On a fix, `git commit --amend --no-edit`; the amend is gated again.
+- **blocked**: the commit did not happen. Fix the cause and go back to step 2.
+
+Running the stages by hand: read `verify:` from every `.{project}/contexts/*/context.yaml`, each `{label, command, when_present?}`, and run them in order from the **repository root**. `when_present` set and that path absent: skip the stage and say so, `skipped {label}: {when_present} not present`. A non-zero exit stops delivery: report the label, the command and the tail of its output. No stages anywhere: say **"no verify stages declared"** and go on.
 
 ## 4. Push and open the pull request
 
@@ -50,9 +63,9 @@ gh pr create --base {default-branch} --head spec/{id} \
 
 Write the body from the spec, in this order:
 
-- **Goal** — the spec's `goal:`.
-- **Done** — each `done:` criterion with how it was confirmed.
-- **Tests** — each `tests:` entry and the verify stages run (or skipped, with why).
-- **Decisions** — one line per entry of `decisions/{id}.yaml` (chose / over).
+- **Goal**: the spec's `goal:`.
+- **Done**: each `done:` criterion with how it was confirmed.
+- **Tests**: each `tests:` entry, and who ran the verify stages: the plugin's gate (the ledger line), the project's gate, or this skill by hand (with any skipped stage and why).
+- **Decisions**: one line per entry of `decisions/{id}.yaml` (chose / over).
 
 Report the PR URL to the user. Removing the worktree after merge is the user's call: `git worktree remove {path}`.
