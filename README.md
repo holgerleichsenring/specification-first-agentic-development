@@ -42,7 +42,8 @@ Then in Claude Code:
 | `/create-spec` | Plan a new feature or task; commit its spec on a spec branch in its own worktree |
 | `/review-spec` | Check the spec's evidence and get a fresh reviewer's verdict before any code |
 | `/apply-spec` | Implement the active spec, up to its done criteria |
-| `/deliver-spec` | Run the verify stages, commit, push and open the pull request |
+| `/deliver-spec` | Commit through the gate, read its verdict, push and open the pull request |
+| `/deliver-series` | Review a series, build it in parallel worktrees, merge, verify the merged tree, open one pull request |
 | `/log-decision` | Record an architectural decision |
 | `/update-project` | Sync with newer methodology versions |
 | `/spec-first-workflow` | Overview of the full methodology |

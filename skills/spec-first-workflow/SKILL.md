@@ -63,6 +63,7 @@ This plugin provides specialized skills for each part of the workflow:
 | `/spec-first:review-spec` | Checking a spec's evidence and getting a fresh reviewer's verdict before any code |
 | `/spec-first:apply-spec` | Implementing the active spec, up to its done criteria |
 | `/spec-first:deliver-spec` | Committing through the gate, reading its verdict, pushing and opening the pull request |
+| `/spec-first:deliver-series` | Taking a whole series from review to one pull request: grouped builders, one integration branch, merged-tree verify, CI |
 | `/spec-first:log-decision` | Recording an architectural or design decision |
 | `/spec-first:update-project` | Syncing methodology files with a newer plugin version (and migrating v1 → v2) |
 
