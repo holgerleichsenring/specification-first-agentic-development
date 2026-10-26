@@ -67,6 +67,10 @@ steps:
     modify:
       - "TypeName: what changes"
 
+upgrade_impact: "nothing"   # what an operator must change on update; otherwise opt-in, or why not
+
+proven_live: "what tests prove, and what only a live check shows"
+
 tests:
   - "Method_Scenario_Expected"
 
@@ -85,6 +89,9 @@ done:
 - **Decisions capture the non-obvious** — don't log that you used the project's language. Log why you chose pattern A over pattern B. Decisions are written as separate YAML files under `decisions/<spec-id>.yaml` during execution; the `decisions:` array in the spec captures decisions that were already made WHEN WRITING THE SPEC.
 - **`applies_to:` is free text** — no enum, no validation. Match the project's existing context names so readers can grep `contexts/<name>/` and find the relevant stack.
 - **Tests use AAA naming** — `Method_Scenario_Expected`.
+- **Characterise first**: a spec that consolidates copies of logic, or changes what existing code does on some input, starts with a step that pins every current copy on one input matrix, with a "was" column holding today's outcome per copy. Only then does it change the code. Every row whose outcome changes gets its reason in `decisions/{id}.yaml`. A spec that only adds new behaviour needs none of this.
+- **Upgrade impact**: `upgrade_impact:` says what an operator must change when they update. The expected answer is "nothing". Anything else is opt-in, so the default stays as it was, or the spec says why it cannot be.
+- **Proven live**: `proven_live:` says what the tests prove and what only a live check can show, so the pull request can say which is which.
 
 ### 5. Update context.yaml
 

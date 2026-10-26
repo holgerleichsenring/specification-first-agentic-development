@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.6.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.7.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,17 +36,18 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.6.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, then 3h |
-| 1.x.x   | 2.6.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, then 3h               |
-| 2.0.x   | 2.6.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, then 3h  |
-| 2.1.x   | 2.6.0  | 3d-3f, additive merge (3b), 3g, then 3h                           |
-| 2.2.x   | 2.6.0  | 3e, 3f, additive merge (3b), 3g, then 3h                          |
-| 2.3.x   | 2.6.0  | 3f, 3g, then 3h                                                   |
-| 2.4.x   | 2.6.0  | 3g, then 3h                                                       |
-| 2.5.x   | 2.6.0  | 3h                                                                |
-| 2.6.x   | 2.y.y  | additive/diff merge (no migration)                                |
+| 0.0.0   | 2.7.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, then 3i |
+| 1.x.x   | 2.7.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, then 3i               |
+| 2.0.x   | 2.7.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, then 3i  |
+| 2.1.x   | 2.7.0  | 3d-3f, additive merge (3b), 3g, 3h, then 3i                           |
+| 2.2.x   | 2.7.0  | 3e, 3f, additive merge (3b), 3g, 3h, then 3i                          |
+| 2.3.x   | 2.7.0  | 3f, 3g, 3h, then 3i                                                   |
+| 2.4.x   | 2.7.0  | 3g, 3h, then 3i                                                       |
+| 2.5.x   | 2.7.0  | 3h, then 3i                                                           |
+| 2.6.x   | 2.7.0  | 3i                                                                    |
+| 2.7.x   | 2.y.y  | additive/diff merge (no migration)                                    |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g and 3h. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g and 3h. For 2.1.x run 3d, 3e, 3f, 3b, 3g and 3h. For 2.2.x run 3e, 3f, 3b, 3g and 3h. For 2.3.x run 3f, 3g and 3h. For 2.4.x run 3g and 3h. For 2.5.x run 3h. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h and 3i. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h and 3i. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h and 3i. For 2.2.x run 3e, 3f, 3b, 3g, 3h and 3i. For 2.3.x run 3f, 3g, 3h and 3i. For 2.4.x run 3g, 3h and 3i. For 2.5.x run 3h and 3i. For 2.6.x run 3i. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -207,6 +208,17 @@ Exit 1 means refused and nothing changed: show the reason. Exit 0 with "nothing 
 ### 3h. 2.6.0: create-phase is gone
 
 Nothing in the project is renamed. If the root `CLAUDE.md` or any project document names `create-phase`, replace it with `create-spec`. The old skill name answered in 2.5.0 only; 2.6.0 removes it.
+
+### 3i. 2.7.0: the plugin gates spec commits
+
+From 2.7.0 the plugin ships a commit gate: a PreToolUse hook that, on every `git commit` whose message carries `({id})`, runs every context's `verify:` stages from the repository root and blocks the commit on the first red stage. Nothing in the project is renamed. Walk the operator through four checks:
+
+1. **Schemas.** Copy `templates/spec.schema.json` and `templates/context.schema.json` into `.{project}/` again. They declare `upgrade_impact`, `proven_live` and `gate`; the old copies refuse those keys.
+2. **Who owns the gate.** Ask whether the project already runs its own commit gate (a PreToolUse hook in `.claude/settings.json`, or another hook that runs the build and tests at commit). If it does, add `gate: project` at the top level of ONE `contexts/<name>/context.yaml`, so the plugin's hook steps aside and only one gate runs. Two contexts with different values block every spec commit. If it does not, nothing to add: the plugin's gate is the default.
+3. **The verify stages are the full proof.** With the plugin's gate, the stages are what runs at every spec commit and nothing else does. Check they cover build and tests; a project with none passes every commit with the notice "no verify stages declared".
+4. **Root `CLAUDE.md`.** Offer the new wording of steps 8 and 12 from `templates/prompt.md` (test what you changed while iterating; the full stages run once, at the spec commit), with the same before/after approval as 3c.2.
+
+The gate needs `python3` and PyYAML (as review-spec does). Without PyYAML it lets spec commits through with a notice and deliver-spec runs the stages itself. Its ledger is `spec-first-gate.log` in the git common directory, so nothing new appears in `git status`.
 
 ### 4. Ask approval
 

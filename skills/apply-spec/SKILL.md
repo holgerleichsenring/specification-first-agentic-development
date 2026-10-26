@@ -53,13 +53,17 @@ Follow the spec's `steps` array in order. For each step:
 
 **Order within each step**: contracts/interfaces first, then implementation, then DI wiring, then tests.
 
+**Characterise first** when the spec consolidates copies of logic or changes what existing code does on some input: before changing anything, write the test that runs every current copy on one input matrix and records today's outcome in a "was" column. Commit nothing that changes a row without its reason in `decisions/{id}.yaml`.
+
 ### Step 4: Build after each step
 
 Run the build after completing each step. Fix errors immediately — don't accumulate broken state.
 
-### Step 5: Verify, then review
+### Step 5: Test what you changed, then review
 
-After implementation is complete, run the **full** verification — not just the unit tests, but every deterministic check the project defines — the contexts' `verify:` stages first, then unit tests, CLI/pipeline dry-runs, and any separate integration/harness executable. Zero failures before moving on. A project may enforce these as a blocking commit gate (e.g. a PreToolUse hook on `git commit`); treat that as the floor, not the ceiling, so the commit is never the first time they run.
+While you iterate, run the build and the tests of what you changed: the affected test classes or files, not the whole suite. Zero failures before moving on.
+
+The full `verify:` stages run once, at the spec commit, by the plugin's commit gate (or by the project's own gate when a context declares `gate: project`). Do not run them here as well: a second full run costs time and proves nothing the gate does not. deliver-spec runs them itself only when no gate checked the commit.
 
 Then check the green code is *good* — a judgment pass, best delegated to a fresh-eyes subagent, because a separate context catches what the author's does not:
 

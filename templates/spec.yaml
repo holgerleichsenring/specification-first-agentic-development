@@ -18,6 +18,10 @@ steps:
       - "TypeName: what changes"
     path: "project or folder hint"
 
+upgrade_impact: "nothing"   # what an operator must change on update; anything else is opt-in or says why
+
+proven_live: "what only a live check shows, and whether it was done"
+
 tests:
   - "Method_Scenario_Expected"
 

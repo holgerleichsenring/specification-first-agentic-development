@@ -47,11 +47,11 @@ one line per memory, content never in the index.
 5. **Plan first** -- explore codebase, design approach, get user approval before coding.
 6. **Implement step by step** -- contracts/models first, then implementation, then wiring, then tests.
 7. **Build after each step** -- fix errors immediately, don't accumulate them.
-8. **Run ALL tests** -- the contexts' `verify:` stages and every other check; zero failures before moving on.
+8. **Test what you changed** -- the build and the affected tests while iterating; zero failures before moving on. The full `verify:` stages run once, at the spec commit, by the commit gate (the plugin's, or the project's own when a context declares `gate: project`).
 9. **Log decisions** -- one YAML per spec at `.yourproject/decisions/{id}.yaml`; each entry: what was chosen, what alternatives existed, and why.
 10. **Update state** -- move spec from `planned`/`active` to `done` in the relevant context's `context.yaml`.
 11. **Move to done** -- move the spec file from `active/` to `done/`.
-12. **Deliver** -- run deliver-spec: verify stages, one commit `feat: {short description} ({id})`, push, pull request.
+12. **Deliver** -- run deliver-spec: one commit `feat: {short description} ({id})` through the gate, its verdict read, push, pull request.
 
 ## Key Rules
 

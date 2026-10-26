@@ -11,7 +11,7 @@ You are working in a project that follows the Specification-First Agentic Develo
 ## Core Loop
 
 ```
-Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → deliver-spec (verify, commit, PR)
+Discuss → Write Spec → worktree + commit → review-spec → active/ → build → done/ → deliver-spec (commit through the gate, PR)
 ```
 
 ## Directory Layout (v2.5)
@@ -62,7 +62,8 @@ This plugin provides specialized skills for each part of the workflow:
 | `/spec-first:create-spec` | Planning a new feature, refactor, or task; commits the spec on a spec branch in its own worktree |
 | `/spec-first:review-spec` | Checking a spec's evidence and getting a fresh reviewer's verdict before any code |
 | `/spec-first:apply-spec` | Implementing the active spec, up to its done criteria |
-| `/spec-first:deliver-spec` | Running the verify stages, committing, pushing and opening the pull request |
+| `/spec-first:deliver-spec` | Committing through the gate, reading its verdict, pushing and opening the pull request |
+| `/spec-first:deliver-series` | Taking a whole series from review to one pull request: grouped builders, one integration branch, merged-tree verify, CI |
 | `/spec-first:log-decision` | Recording an architectural or design decision |
 | `/spec-first:update-project` | Syncing methodology files with a newer plugin version (and migrating v1 → v2) |
 
@@ -77,11 +78,15 @@ For every spec, follow this order:
 5. **Plan first** — explore the codebase(s) the spec touches (filtered by `applies_to:`), design the approach, get human approval before coding.
 6. **Implement step by step** — contracts/models first, then implementation, then wiring, then tests. Follow the relevant context's coding-principles.
 7. **Build after each step** — fix errors immediately, don't accumulate them.
-8. **Run ALL tests** — the contexts' `verify:` stages and every other check; zero failures before moving on.
+8. **Test what you changed**: the build and the affected tests while iterating, zero failures before moving on. The full `verify:` stages run once, at the spec commit, by the commit gate.
 9. **Log decisions** — one YAML per spec at `decisions/<spec-id>.yaml`, every non-obvious choice an entry in its `decisions:` list.
 10. **Update state** — move spec from `active` to `done` in the relevant context's `context.yaml`.
 11. **Move spec file** — move from `active/` to `done/`.
-12. **Deliver** — `/spec-first:deliver-spec`: runs the `verify:` stages, commits once as `feat: {short description} ({id})`, pushes and opens the pull request.
+12. **Deliver**: `/spec-first:deliver-spec` commits once as `feat: {short description} ({id})`, reads the gate's verdict, pushes and opens the pull request.
+
+## The Commit Gate
+
+The plugin ships a PreToolUse hook on Bash. On a `git commit` whose message carries `({id})` it runs every context's `verify:` stages from the repository root, blocks the commit on the first red stage, and writes one line to `spec-first-gate.log` in the git common directory. A project with its own commit gate puts `gate: project` at the top level of one `context.yaml`; the plugin's gate then steps aside, so exactly one gate checks each commit. A project with no `verify:` stages passes with a notice saying so.
 
 ## Key Rules
 
