@@ -53,6 +53,8 @@ Follow the spec's `steps` array in order. For each step:
 
 **Order within each step**: contracts/interfaces first, then implementation, then DI wiring, then tests.
 
+**Characterise first** when the spec consolidates copies of logic or changes what existing code does on some input: before changing anything, write the test that runs every current copy on one input matrix and records today's outcome in a "was" column. Commit nothing that changes a row without its reason in `decisions/{id}.yaml`.
+
 ### Step 4: Build after each step
 
 Run the build after completing each step. Fix errors immediately — don't accumulate broken state.

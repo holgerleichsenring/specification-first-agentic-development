@@ -67,5 +67,7 @@ Write the body from the spec, in this order:
 - **Done**: each `done:` criterion with how it was confirmed.
 - **Tests**: each `tests:` entry, and who ran the verify stages: the plugin's gate (the ledger line), the project's gate, or this skill by hand (with any skipped stage and why).
 - **Decisions**: one line per entry of `decisions/{id}.yaml` (chose / over).
+- **Upgrade impact**: the spec's `upgrade_impact:`, or "nothing an operator must change".
+- **Proven live**: the spec's `proven_live:`: what the tests prove, and what still needs a live check.
 
 Report the PR URL to the user. Removing the worktree after merge is the user's call: `git worktree remove {path}`.

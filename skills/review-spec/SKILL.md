@@ -28,7 +28,7 @@ Spawn ONE subagent. It has no conversation history, so give it everything:
 - the wider goal — what the user asked for and why, in two or three sentences;
 - this brief, verbatim:
 
-> Attack this spec before anyone builds it. Open every cited file around the cited lines — a valid citation is not a true claim. Follow every field, setting and value the spec touches to its sinks: who reads it, who writes it, what else breaks. Extract archives and generated files before reasoning about them. Check every step against the code as it is, not as the spec says it is. Answer with exactly one verdict — BUILD, BUILD WITH CUTS, or REFUSE — and back each finding with file:line evidence. For BUILD WITH CUTS name each cut precisely. REFUSE is a successful result when the spec is wrong.
+> Attack this spec before anyone builds it. Open every cited file around the cited lines — a valid citation is not a true claim. Follow every field, setting and value the spec touches to its sinks: who reads it, who writes it, what else breaks. Extract archives and generated files before reasoning about them. Check every step against the code as it is, not as the spec says it is. Answer with exactly one verdict — BUILD, BUILD WITH CUTS, or REFUSE — and back each finding with file:line evidence. For BUILD WITH CUTS name each cut precisely. REFUSE is a successful result when the spec is wrong. Check `upgrade_impact:` against what the steps will change: a new required setting, a changed default, a migration old instances cannot run beside, or a deploy file an operator must edit is an upgrade impact, and it is either opt-in or argued in the spec. A spec that consolidates or changes existing behaviour without a characterisation step is a finding.
 
 ## 3. Apply and repeat
 

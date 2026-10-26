@@ -162,6 +162,14 @@
         "items": { "type": "string" }
       }
     },
+    "upgrade_impact": {
+      "type": "string",
+      "description": "What an operator must change when they update to a release carrying this spec. Expected: 'nothing'. Anything else is opt-in (the default stays as it was) or says why it cannot be."
+    },
+    "proven_live": {
+      "type": "string",
+      "description": "What tests prove and what only a live check can show: which live check, against what, and whether it has been done."
+    },
     "tests": {
       "type": "array",
       "description": "Test method names, AAA naming convention: Method_Scenario_Expected",
