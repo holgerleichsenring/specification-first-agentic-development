@@ -79,7 +79,7 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.7.0"
+  version: "2.8.0"
 stack: {...}
 arch: {...}
 quality: {...}

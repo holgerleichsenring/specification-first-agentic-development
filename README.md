@@ -5,7 +5,7 @@
 A small set of files and habits for working with AI coding agents. Every piece of work starts as a spec, gets checked against the real code before anyone builds it, and ends as one commit and one pull request with its decisions on record. The files are YAML and Markdown and live in your repository. Any agent can follow the method. The Claude Code plugin takes care of the bookkeeping.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Plugin version](https://img.shields.io/badge/plugin-2.7.0-blue.svg)
+![Plugin version](https://img.shields.io/badge/plugin-2.8.0-blue.svg)
 
 **Website:** [spec-first.dev](https://spec-first.dev) · **Background reading:** [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/) · [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
 

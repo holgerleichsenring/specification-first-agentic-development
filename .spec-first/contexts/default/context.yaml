@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=../../../templates/context.schema.json
 meta:
   project: specification-first-agentic-development
-  version: 2.7.0
+  version: 2.8.0
   type: [plugin, methodology]
   purpose: "The spec-first method and its Claude Code plugin: skills, a commit gate, templates."
   workdir: "."
 
 methodology:
-  version: "2.7.0"
+  version: "2.8.0"
 
 stack:
   runtime: Python 3 (hooks and scripts), Claude Code plugin runtime
@@ -45,11 +45,11 @@ evidence_roots:
 
 state:
   done:
+    2026-10-27-84f4d: "Release 2.8.0: every version field, update-project 3j offering AGENTS.md and gate: git with the installer, migration table and paths end in 3j -> .spec-first/specs/done/2026-10-27-84f4d-release-2-8-0.yaml"
     2026-10-27-84f4c: "AGENTS.md is the agent-neutral instructions file, CLAUDE.md imports it; every step says how to do it by hand; bootstrap writes both; README and site name the git hook -> .spec-first/specs/done/2026-10-27-84f4c-agents-md-instructions.yaml"
     2026-10-27-84f4b: "Commit gate as a git commit-msg hook: --commit-msg mode, gate: git, install-git-hook.py copying the gate into each clone; PreToolUse steps aside only where the hook is installed -> .spec-first/specs/done/2026-10-27-84f4b-gate-git-hook.yaml"
     2026-10-27-84f4a: "Manifests: homepage spec-first.dev, repository GitHub -> .spec-first/specs/done/2026-10-27-84f4a-plugin-homepage.yaml"
     2026-10-27-8d39a: "The plugin repo runs its own method: .spec-first/ with contexts, verify stages, migrated p0001 and decisions, CLAUDE.md -> .spec-first/specs/done/2026-10-27-8d39a-methodology-self-hosting.yaml"
     p0001: "v2.0 layout: contexts/<name>/ per stack, one YAML decision file per spec -> .spec-first/specs/done/p0001-contexts-and-yaml-decisions.yaml"
   active: {}
-  planned:
-    2026-10-27-84f4d: "Release 2.8.0 with update-project step 3j -> .spec-first/specs/planned/2026-10-27-84f4d-release-2-8-0.yaml"
+  planned: {}
