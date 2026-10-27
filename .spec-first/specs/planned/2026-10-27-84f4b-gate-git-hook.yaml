@@ -42,25 +42,26 @@ decisions:
   - key: "commit-msg, not pre-commit: only commit-msg sees the final message with the spec id, and it can still block"
   - key: "The installer copies spec-gate.py beside the hook, so it survives plugin upgrades and works without the plugin"
   - key: "PreToolUse steps aside for gate: git only when this clone has our hook installed; otherwise it gates, so a fresh clone is never ungated"
-  - key: "Under Claude Code the stages then run inside the Bash call: deliver-spec sets its timeout to 600000 ms; longer suites keep gate: plugin"
+  - key: "Under Claude Code (CLAUDECODE=1) the hook runs inside a Bash call capped at 600 s: its deadline defaults to 570 s; longer suites keep gate: plugin"
+  - key: "POSIX only for the hook; the installer refuses on Windows"
 
 steps:
   - id: mode
-    action: "Add --commit-msg <file>: tree from git rev-parse, message without # lines and below the scissors line, notices to stderr, no shell-substitution check"
+    action: "Add --commit-msg <file>: no resolver, tree from git rev-parse, message without core.commentChar lines and the scissors tail, notices to stderr, no backtick rule"
   - id: env
     action: "In commit-msg mode drop GIT_DIR, GIT_INDEX_FILE, GIT_WORK_TREE, GIT_PREFIX before the stages run"
   - id: owner
-    action: "Add git to GATE_OWNERS; the git hook runs only for gate: git; PreToolUse steps aside for git only if the installed commit-msg carries our marker"
+    action: "Add git to GATE_OWNERS; the hook runs only for gate: git; PreToolUse steps aside only if the marked hook and its copy exist and the command has no -n/--no-verify/core.hooksPath; no ledger line then"
   - id: installer
-    action: "Add install-git-hook.py: hooks dir from git rev-parse --git-path hooks, copy the gate there, write commit-msg; refuse a foreign hook or a tracked hooks dir"
+    action: "Add install-git-hook.py: hooks dir from git rev-parse --git-path hooks; write the gate copy and commit-msg (LF); replace our own, refuse a foreign hook or a tracked hooks dir"
     new:
-      - "commit-msg: runs the copied gate; if the copy is missing it says so and lets the commit through"
+      - "commit-msg: marker line '# spec-first commit gate <version>'; finds python3 or python and the copy, else says so and exits 0"
   - id: skills
     action: "deliver-spec and deliver-series accept a passed line written by the git hook, and deliver-spec sets the Bash timeout for gate: git"
   - id: schema
     action: "Allow gate: git in context.schema.json and the context template comment"
   - id: tests
-    action: "Add hooks/test_git_hook.py; leave test_commit_message.py and test_spec_gate_marker.py unchanged and green"
+    action: "Add hooks/test_git_hook.py; existing tests stay green, except the one assertion on the gate-value error text, which now names git"
 
 upgrade_impact: "opt-in, with one caveat: a 2.7.0 plugin reads gate: git as unknown and blocks spec commits, so every teammate needs 2.8.0 first (84f4d says so)"
 proven_live: "a real git commit through the installed hook in a throwaway repo and in a worktree: blocks red, passes green"
@@ -73,6 +74,9 @@ tests:
   - "GitHook_BacktickInBody_IsNotFlagged"
   - "PreToolUse_GateGitWithHookInstalled_StepsAside"
   - "PreToolUse_GateGitWithoutHook_StillGates"
+  - "PreToolUse_GateGitNoVerify_StillGates"
+  - "GitHook_CopyAloneWithoutResolver_Runs"
+  - "Installer_OwnHook_IsReplaced"
   - "Installer_ForeignCommitMsgHook_Refuses"
 
 done:

@@ -33,11 +33,11 @@ decisions:
 
 steps:
   - id: template
-    action: "Rewrite templates/prompt.md agent-neutral: each workflow step says what to do, the plugin command in parentheses, the review brief included"
+    action: "Rewrite templates/prompt.md agent-neutral: each step says what to do, plugin command in parentheses, review brief, gate: git, evidence script path (python3, PyYAML)"
   - id: bootstrap
-    action: "bootstrap-project writes AGENTS.md (an existing one is merged after asking) and a CLAUDE.md that imports it; offers gate: git and the installer"
+    action: "bootstrap-project (lines 28, 143, 169): AGENTS.md, merged after asking if present, CLAUDE.md importing it; gate: git only for teams with other agents, with the 570 s cap"
   - id: readme
-    action: "README 'Without Claude Code': AGENTS.md; clone the plugin repo for the evidence script and the hook installer; the hook per clone, skipped by --no-verify"
+    action: "README 'Without Claude Code' and templates table: AGENTS.md; clone the plugin repo for the evidence script and installer; hook per clone, skipped by --no-verify"
   - id: site
     action: "Site tab and llms.txt: once installed in a clone, the git hook gates spec commits from any agent; --no-verify skips it"
   - id: series

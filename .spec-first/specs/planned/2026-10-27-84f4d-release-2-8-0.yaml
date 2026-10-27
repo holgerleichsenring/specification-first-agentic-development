@@ -35,11 +35,11 @@ decisions:
 
 steps:
   - id: versions
-    action: "Set 2.8.0 in plugin.json, both marketplace.json fields, the context template, bootstrap-project, this repo's meta and methodology versions, README badge"
+    action: "Set 2.8.0 in plugin.json, both marketplace.json fields, the context template, bootstrap-project, this repo's meta and both methodology versions, README badge"
   - id: update
-    action: "Add update-project 3j: AGENTS.md split, gate: git only after every teammate has 2.8.0, installer in every clone, schema copy; 3b/3c/3i read AGENTS.md"
+    action: "Add 3j: AGENTS.md split; gate: git once every teammate has 2.8.0, installer in every clone and after every upgrade, python3 and PyYAML; 3b/3c/3i read AGENTS.md"
   - id: current
-    action: "Point the current-version line and every migration-table target at 2.8.0, with a 2.7.x row for 3j"
+    action: "Current version and every table target 2.8.0; the 2.7.x row runs 3j, a new 2.8.x row is additive; the prose paths end in 3j; 3i's prompt.md step numbers checked"
 
 upgrade_impact: "opt-in: step 3j offers both changes and applies only what the operator approves"
 proven_live: "update-project 3j read against a 2.7.0 project layout; not run on a user's project here"
