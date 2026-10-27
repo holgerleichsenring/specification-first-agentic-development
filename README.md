@@ -1,334 +1,186 @@
 # Specification-First Agentic Development
 
-> Six months after shipping, nobody remembers why anything was built the way it was.
-> This methodology fixes that by making the AI document everything while it builds.
+> Your coding agent writes the code. This makes it write down why, too.
 
-A lightweight structure for AI-assisted development that eliminates context amnesia, architectural drift, and vanishing decision rationale. Battle-tested across **70+ specs** on a real production project.
+A small set of files and habits for working with AI coding agents. Every piece of work starts as a spec, gets checked against the real code before anyone builds it, and ends as one commit and one pull request with its decisions on record. The files are YAML and Markdown and live in your repository. Any agent can follow the method. The Claude Code plugin takes care of the bookkeeping.
 
-**Read the articles and thoughts behind**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Plugin version](https://img.shields.io/badge/plugin-2.7.0-blue.svg)
 
-- [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
-- [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/)
-
+**Background reading:** [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/) · [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
 
 ---
 
-## Quick Start: Claude Code Plugin
+## Why
 
-The fastest way to get started is the Claude Code plugin. Install it and you get 9 skills that guide you through the entire methodology, and a commit gate:
+An agent that writes code all day causes three problems:
 
-> **Official marketplace listing**: submitted, pending approval by Anthropic. Once approved, install will be a single command: `/plugin install spec-first`
+- **It forgets.** Each session starts cold. What was built yesterday, and why, is gone.
+- **It drifts.** Without written constraints, each session makes its own architectural calls, and they don't agree with each other.
+- **Nobody kept the reason.** The diff shows what changed. Why path A beat path B was said once, in a chat window that no longer exists.
 
-**Until then — install via custom marketplace:**
+Spec-first fixes all three by making the record part of the work. The agent reads it before it starts and adds to it before it commits.
+
+## How it works
+
+```
+discuss → create-spec → review-spec → apply-spec → deliver-spec
+            │              │             │             │
+            │              │             │             └─ commit gate runs verify:, one PR
+            │              │             └─ build in the spec's worktree, log decisions
+            │              └─ cited files and lines checked, then a fresh reviewer: BUILD / CUTS / REFUSE
+            └─ spec YAML on branch spec/{id}, in its own worktree
+```
+
+1. **The spec comes before the code.** It holds the goal, the steps, what the spec rests on (with file and line evidence), what an upgrade costs an operator, and what "done" means. No code until it exists.
+2. **The spec is reviewed before anyone builds it.** A script resolves every file and line the spec cites. A fresh subagent that never saw the conversation then attacks the spec against the code as it is, and gives one verdict: BUILD, BUILD WITH CUTS or REFUSE. A REFUSE costs you a spec. Without the review, the same mistake would have cost you the branch.
+3. **The build follows the rules.** The agent reads every `context.yaml` and `coding-principles.md` first. It builds in the spec's own worktree and logs each non-obvious choice: what it chose, what it chose over, and why.
+4. **Delivery goes through a gate.** One commit, `feat: … ({id})`. A hook runs every `verify:` stage your contexts declare and blocks the commit on the first red one. Every gated commit leaves one line in a ledger, so a spec commit without a line never met the gate.
+
+Restart your machine, restart the agent, open `context.yaml`, and you're back where you left off.
+
+## Built with it
+
+[Agent Smith](https://github.com/holgerleichsenring/agent-smith), an open source agentic software factory, is built entirely this way: **more than 1,300 specs done and close to 1,200 decision files**, each one traceable to the commit that delivered it. The method came out of that project, and the plugin's commit gate is ported from Agent Smith's own.
+
+[`examples/agent-smith/`](examples/agent-smith/) has real artifacts from that repository: a context, specs and decision files.
+
+---
+
+## Install (Claude Code)
 
 ```bash
-# In Claude Code — add the marketplace and install:
 /plugin marketplace add holgerleichsenring/specification-first-agentic-development
 /plugin install spec-first@specification-first-agentic-development
 ```
 
-**Alternative: local install**
+Or from a local clone:
 
 ```bash
 git clone https://github.com/holgerleichsenring/specification-first-agentic-development.git
 claude --plugin-dir /path/to/specification-first-agentic-development
 ```
 
-Then in Claude Code:
+Then run `/spec-first:bootstrap-project` in your repository. It reads your code and writes the contexts, the coding principles and the agent instructions from what it finds. It does not invent conventions.
+
+### Skills
 
 | Skill | What it does |
-|-------|-------------|
-| `/bootstrap-project` | Set up the methodology in your project |
-| `/create-spec` | Plan a new feature or task; commit its spec on a spec branch in its own worktree |
-| `/review-spec` | Check the spec's evidence and get a fresh reviewer's verdict before any code |
-| `/apply-spec` | Implement the active spec, up to its done criteria |
-| `/deliver-spec` | Commit through the gate, read its verdict, push and open the pull request |
-| `/deliver-series` | Review a series, build it in parallel worktrees, merge, verify the merged tree, open one pull request |
-| `/log-decision` | Record an architectural decision |
-| `/update-project` | Sync with newer methodology versions |
-| `/spec-first-workflow` | Overview of the full methodology |
+|---|---|
+| `/spec-first:bootstrap-project` | Sets up the method in a new or existing project |
+| `/spec-first:create-spec` | Writes a spec and commits it on `spec/{id}` in a new worktree |
+| `/spec-first:review-spec` | Runs the evidence check, then gets a fresh reviewer's verdict before any code is written |
+| `/spec-first:apply-spec` | Implements the active spec up to its done criteria |
+| `/spec-first:deliver-spec` | Commits through the gate, reads the verdict, pushes and opens the pull request |
+| `/spec-first:deliver-series` | Takes a whole series of specs to one pull request: review, parallel builders, merged-tree verify, CI |
+| `/spec-first:log-decision` | Records a design decision in the spec's decision file |
+| `/spec-first:update-project` | Brings a project up to a newer plugin version, including layout migrations |
+| `/spec-first:spec-first-workflow` | The method in one page, for the agent |
 
-**The commit gate.** The plugin ships a PreToolUse hook. On every `git commit` whose message carries the spec id in parentheses, `feat: … ({id})`, it runs the `verify:` stages of every `contexts/*/context.yaml` from the repository root and blocks the commit if one fails. It writes one line per spec commit to `spec-first-gate.log` in the git common directory, which `/deliver-spec` reads. A project that already runs its own commit gate adds `gate: project` to one `context.yaml`, and the plugin's gate steps aside, so only one gate runs. A project with no verify stages passes with a notice saying so.
+### The commit gate
 
-No framework required. The plugin is an optional convenience layer — the methodology works with any AI agent, the plugin just makes it easier with Claude Code.
-
----
-
-## The Problem
-
-When working with AI coding agents, three things go wrong repeatedly:
-
-- **Context amnesia**: the AI loses track of what was built and why between sessions
-- **Architectural drift**: without constraints, the AI makes inconsistent decisions
-- **Decision rationale vanishes**: six months later, nobody knows why a particular approach was chosen
-
-## The Solution
-
-Treat documentation as a first-class development artifact. Every feature starts as a specification. Every decision gets logged. The AI reads context files in a defined order before writing a single line of code.
-
-```
-Discuss → Write Spec → worktree → review-spec → active/ → done/ → deliver-spec (commit through the gate, PR)
-```
-
-In practice: restart your machine, restart your AI agent, open `context.yaml` and you're back in 30 seconds.
-
----
-
-## Real-World Proof
-
-The `examples/agent-smith/` directory contains real artifacts from [Agent Smith](https://github.com/holgerleichsenring/agent-smith), an AI orchestration framework built entirely with this methodology:
-
-- **70+ completed specs**, each with its logged decisions
-- **Every architectural decision** traceable to a spec
-- **Full documentation site** generated by the AI in ~15 minutes because all the reasoning was already captured
-
----
-
-## Core Principles
-
-### 1. Specification Before Code
-
-Every unit of work (called a **spec**) starts as a YAML file (schema-validated, IDE-autocompleted):
+The plugin installs a `PreToolUse` hook on Bash. It only acts on a `git commit` whose message carries a spec id in parentheses. It resolves the real message, so `-m`, `-F <file>`, `-C <rev>` and `--amend --no-edit` are all gated. It runs the `verify:` stages from the root of the tree the commit runs in:
 
 ```yaml
-# yaml-language-server: $schema=spec.schema.json
-spec: p03
-goal: "Add ticket providers so pipelines can pull work from GitHub/Jira"
+verify:
+  - label: build
+    command: "dotnet build"
+  - label: web
+    command: "cd web && npm test"
+    when_present: web/package.json
+```
 
-requires: ["p02"]
+If the repository already has a gate of its own, `gate: project` in one `context.yaml` makes the plugin's gate step aside, so each commit is checked once.
+
+## Without Claude Code
+
+Nothing here depends on the plugin. Copy [`templates/`](templates/) into your project as `.yourproject/`, fill in `contexts/default/context.yaml`, and point your agent at [`templates/prompt.md`](templates/prompt.md). Cursor, Codex, Copilot or a plain chat window can all follow it. They'll be missing the gate and the evidence script, so run those checks yourself.
+
+---
+
+## What's in the repository
+
+```
+.yourproject/
+  contexts/
+    default/                  # one per stack; a monorepo adds server/, client/, docs/ …
+      context.yaml            # stack, architecture, quality limits, verify:, state, workdir
+      coding-principles.md    # rules the agent reads every session
+  specs/
+    planned/  active/  done/  # {id}-{label}.yaml
+  decisions/
+    {id}.yaml                 # every decision one spec made
+  memory/
+    MEMORY.md                 # index, one line per fact
+    {name}.md                 # one fact per file: feedback, project or reference
+  series/                     # optional manifests when a tool cuts a series from a ticket
+```
+
+### A spec
+
+```yaml
+spec: 2026-10-27-8a3f
+goal: "Ticket providers so pipelines can pull work from GitHub and Jira"
+applies_to: server
+
+facts:
+  - claim: "Pipelines take work only from the CLI today"
+    evidence: "src/Host/Program.cs:40-58"
 
 decisions:
-  - key: "Adapter pattern over repository — read-mostly data, no need for UoW"
+  - key: "Adapter over repository: read-mostly data, no unit of work needed"
 
 steps:
   - id: contracts
-    action: "Define ITicketProvider and TicketDto in Contracts layer"
+    action: "Define ITicketProvider and TicketDto in Contracts"
     new:
       - "ITicketProvider: { GetOpenAsync, GetByIdAsync }"
-      - "TicketDto: { Id, Title, Body, Labels }"
-    path: "src/Contracts"
+
+upgrade_impact: "nothing: providers are opt-in per project"
+proven_live: "a real GitHub repo returns its open issues; done once by hand"
 
 tests:
   - "GitHubProvider_GetOpen_ReturnsMappedTickets"
 
 done:
-  - "GitHub provider returns tickets end-to-end"
-  - "All tests green"
+  - "GitHub provider returns tickets end to end"
 ```
 
-No code is written until the spec exists. The spec is the contract between human and AI.
+Ids are minted from the clock: today's UTC date plus four random hex digits. Two agents in two worktrees, or one with no network, never mint the same id. Specs cut from one piece of work share the number and add a letter (`…-8a3fa`, `…-8a3fb`). Older counter ids such as `p0042` stay valid.
 
-### 2. Central State in `context.yaml`
-
-A single file serves as the source of truth the AI reads it first, every time:
+### A decision
 
 ```yaml
-meta:
-  project: my-project
-  type: [api, backend]
-  purpose: "What this thing does"
-
-stack:
-  runtime: .NET 8
-  lang: C#
-  testing: [xUnit, FluentAssertions]
-
-state:
-  done:
-    p01: "Solution structure, domain entities, config loader"
-    p02: "Command/Handler pattern, 9 handler stubs"
-  active:
-    p03: "Providers: GitHub tickets, Claude agentic loop"
-  planned:
-    p04: "Pipeline execution, DI wiring"
-```
-
-The AI knows what exists, what's being built, and what's coming without re-reading every file.
-
-### 3. Decision Capture
-
-Every spec produces **one YAML file**, holding all of that spec's decisions in a list:
-
-```
-decisions/
-  p03.yaml       # every decision made within p03
-  p04.yaml
-  ...
-  r07.yaml       # run-attached decisions
-```
-
-Each file is structured:
-
-```yaml
-spec: p03
-
+spec: 2026-10-27-8a3f
 decisions:
-  - category: Architecture
-    chose: "Adapter pattern for ticket providers"
-    over: "Direct SDK coupling per provider"
-    reason: |
-      Lets GitHub/Jira/AzureDevOps swap behind one ITicketProvider without
-      touching application logic. Each SDK surface stays isolated in
-      Infrastructure; the rest of the codebase sees only the contract.
-    alternatives:
-      - "Repository pattern — rejected, overkill for read-mostly ticket data"
-
   - category: TradeOff
-    chose: "Raw HttpClient for GitHub API"
-    over: "Octokit SDK"
-    reason: |
-      Octokit adds 3 MB of transitive deps for 4 API calls we actually need.
+    chose: "Raw HttpClient for the GitHub API"
+    over: "Octokit"
+    reason: "Three megabytes of dependencies for four calls."
 ```
 
-`cat decisions/p03.yaml` shows every decision for that spec; `cat decisions/*.yaml` dumps everything. This transforms implicit tribal knowledge into explicit, searchable, structured history — one file per spec, decisions list inside.
+`cat decisions/*.yaml` gives you the project's reasoning, spec by spec, with no wiki to keep alive.
 
-### 4. Spec Workflow
+### Memory
 
-```
-planned/  →  active/  →  done/
-```
+A decision records a choice. A memory records a fact the next session needs and can't get from code or git: how the operator wants things done, a constraint outside the repository, or a pointer to something external. One file per fact, one index line each. The agent reads the index and opens an entry only when a line touches its task.
 
-- **Planned**: spec written, waiting for implementation
-- **Active**: currently being implemented (max one at a time)
-- **Done**: completed, archived, `context.yaml` updated
-
-### 5. Quality as Contract
-
-`coding-principles.md` isn't suggestions it's load-bearing constraints the AI reads before every session:
-
-```markdown
-## Hard Limits
-- Methods: max 20 lines
-- Classes: max 200 lines
-- One type per file
-
-## Naming
-- Handlers: `{Verb}{Noun}Handler`
-- Interfaces: `I{Name}` prefix
-
-## Architecture
-- No business logic in controllers
-- Interfaces in Contracts layer, implementations in Infrastructure
-```
-
----
-
-## Directory Structure (v2.0)
-
-```
-.yourproject/
-  contexts/                 # per-stack contexts (single-stack uses contexts/default/)
-    default/
-      context.yaml          # stack, arch, quality, state, workdir
-      coding-principles.md  # code quality rules (AI reads every session)
-    # Monorepo example:
-    # server/    { context.yaml (workdir: src/Server), coding-principles.md }
-    # client/    { context.yaml (workdir: client),     coding-principles.md }
-    # docs/      { context.yaml (workdir: docs),       coding-principles.md }
-  decisions/                # one YAML per spec; all decisions for that spec inside
-    {id}.yaml
-    r{NN}.yaml              # run-attached decisions
-  specs/
-    planned/                # upcoming specs
-      {id}-{label}.yaml
-    active/                 # current work (max 1)
-      {id}-{label}.yaml
-    done/                   # completed specs (historical reference)
-      {id}-{label}.yaml
-  series/                   # optional; {base}.yaml manifests written by tools
-  runs/                     # execution logs (optional, for automated agents)
-```
-
-**v1 → v2 upgrade**: existing projects on v1.x (flat root `context.yaml` + `coding-principles.md` + `decisions.md`) migrate via `/spec-first:update-project`, which runs the big-bang structural move + decisions-log split.
-
----
-
-## Getting Started
-
-### Option A: Bootstrap Prompt (recommended)
-
-Paste this into your AI agent (Claude Code, Cursor, ChatGPT, etc.):
-
-```
-I want to set up specification-first agentic development for this project.
-
-1. Create a `.yourproject/` directory (replace "yourproject" with my project name) with:
-   - contexts/default/context.yaml: fill in the stack, architecture, layers, quality rules,
-     naming conventions, and `meta.workdir: "."` for single-stack at the repo root. For
-     monorepos, add one contexts/<stack>/ per sub-tree (e.g. contexts/server/,
-     contexts/client/) with each `workdir:` pointing at that sub-tree.
-   - contexts/default/coding-principles.md: extract the actual conventions from the
-     existing code (language, limits, naming, patterns, testing style). For monorepos,
-     each contexts/<stack>/coding-principles.md is self-contained for its stack.
-   - decisions/: empty directory; one YAML per spec is written here during execution (all of that spec's decisions in a list inside).
-   - specs/planned/, specs/active/, specs/done/: empty directories
-
-2. Create a CLAUDE.md (or .cursor/prompt.md) with:
-   - Read order: glob contexts/*/context.yaml → glob contexts/*/coding-principles.md
-     → active spec → relevant decisions/<spec-id>.yaml
-   - The 12-step implementation workflow (spec first, a worktree per spec, review the
-     spec, plan, implement, test, log decisions as YAML, update state, ship as a PR)
-   - Key rules from the contexts' coding principles
-
-3. Analyze the codebase and populate each contexts/<name>/context.yaml with the actual
-   stack, architecture patterns, and layer structure you observe.
-
-Don't invent conventions — extract them from what's already here.
-```
-
-### Option B: Manual Setup
-
-1. Copy the `templates/` directory into your project
-2. Rename to match your project (e.g., `.myproject/`)
-3. Fill in `context.yaml` with your stack and conventions
-4. Write your first spec in `specs/planned/`
-5. Point your AI agent at `prompt.md`
-
----
-
-## Templates
+### Templates
 
 | File | Purpose |
 |---|---|
-| `contexts/default/context.yaml` | Per-stack metadata, architecture, spec tracking, `workdir:` field |
-| `contexts/default/coding-principles.md` | Per-stack code quality rules and conventions |
-| `decisions/p0001.yaml` | Canonical YAML shape for a spec's decision file |
-| `decision.schema.json` | JSON Schema for decision YAMLs (IDE autocompletion) |
-| `spec.yaml` | Template for a new spec |
-| `spec.schema.json` | JSON Schema for specs (IDE autocompletion, includes optional `applies_to:` field) |
-| `context.schema.json` | JSON Schema for `context.yaml` (open top level; declares `verify:` stages, `gate:` and `evidence_roots:`) |
-| `prompt.md` | AI agent instructions and workflow |
+| `contexts/default/context.yaml` | Per-stack metadata, architecture, quality limits, `verify:`, `gate:`, spec state |
+| `contexts/default/coding-principles.md` | Per-stack rules the agent follows |
+| `spec.yaml` + `spec.schema.json` | A new spec, with IDE autocompletion |
+| `decisions/p0001.yaml` + `decision.schema.json` | The decision-file shape |
+| `context.schema.json` | Schema for `context.yaml`: `verify:`, `gate:`, `evidence_roots:` |
+| `memory/` | The memory index and the entry shape |
+| `prompt.md` | Agent instructions for tools without the plugin |
 
----
-
-## Implementation Workflow
-
-The AI agent follows this order for every spec:
-
-1. Write the spec in `specs/planned/` and commit it on branch `spec/{id}` in a new worktree (`/create-spec`)
-2. Review the spec: an evidence script resolves every cited file and line, then a fresh reviewer answers BUILD, BUILD WITH CUTS or REFUSE (`/review-spec`)
-3. Read every `contexts/*/context.yaml`, every `contexts/*/coding-principles.md`, the active spec, and relevant `decisions/<spec-id>.yaml`
-4. Plan: explore the codebase(s) the spec touches (filtered by `applies_to:`), design approach, get human approval
-5. Implement: contracts first, then implementation, then wiring, then tests
-6. Build after each step — fix errors immediately
-7. Run the build and the tests of what you changed: 0 failures before moving on. The full `verify:` stages run once, at the spec commit
-8. Log decisions: append each non-obvious choice to `decisions/<spec-id>.yaml` (create the file on first decision; append to its `decisions:` array on subsequent ones)
-9. Update relevant `contexts/<name>/context.yaml` — move spec to done
-10. Move spec file to `done/`
-11. Deliver: one commit `feat: … ({id})` through the commit gate, push, open the pull request (`/deliver-spec`)
-
----
-
-## Background
-
-This methodology emerged from building [Agent Smith](https://github.com/holgerleichsenring/agent-smith), an AI orchestration framework, entirely with AI-assisted development across 70+ specs.
-
-The `examples/agent-smith/` directory shows exactly what it looks like in a mature project.
-
-📖 **[The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/)** — the full story behind this approach.
+Projects on an older layout (v1 flat files, or `phases/` before 2.5) migrate with `/spec-first:update-project`.
 
 ---
 
 ## License
 
-MIT
+MIT. Written by Holger Leichsenring and one language model.
