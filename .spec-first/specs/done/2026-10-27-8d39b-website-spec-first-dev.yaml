@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-8d39b
+goal: "A one-page website for spec-first.dev under website/, built like agent-smith.org (Eleventy, Vercel), quieter in look and as convincing, with its own context and verify stage."
+
+applies_to: "website"
+
+requires: ["2026-10-27-8d39a"]
+
+facts:
+  - claim: "agent-smith.org is Eleventy 3 with njk templates, src/static passed through, a canonicalPath filter"
+    evidence: "agent-smith:website/eleventy.config.js:1-20"
+  - claim: "Its build runs a link check as postbuild"
+    evidence: "agent-smith:website/package.json:5-13"
+  - claim: "The link check fails on any local href or src the build did not write"
+    evidence: "agent-smith:website/check-links.mjs:1-41"
+  - claim: "Vercel builds it with cleanUrls, no trailing slash and three security headers"
+    evidence: "agent-smith:website/vercel.json:1-17"
+  - claim: "The layout carries canonical, Open Graph, llms.txt alternate and JSON-LD naming the author as creator and copyright holder"
+    evidence: "agent-smith:website/src/_includes/layouts/base.njk:1-80"
+  - claim: "Fonts load from @fontsource on jsdelivr via @font-face in tokens.css"
+    evidence: "agent-smith:website/src/static/tokens.css:4-9"
+  - claim: "llms.txt, sitemap.xml and robots.txt are njk pages with their own permalinks"
+    evidence: "agent-smith:website/src/llms.txt.njk:1-6"
+  - claim: "The README already carries the loop and Agent Smith graphics the page restates"
+    evidence: "README.md:24-41"
+  - claim: "The marketplace entry's homepage is the GitHub repo"
+    evidence: ".claude-plugin/marketplace.json:23"
+  - claim: "Agent Smith counts: 1,332 specs done, 1,193 decision files, 654 spec ids with a passed gate line"
+    evidence: "observed: 2026-10-27 counted in the agent-smith repository (specs/done, decisions/, distinct passed ids in .claude/spec-gate.log)"
+
+assumptions:
+  - claim: "The operator creates a Vercel project on this repo with root directory website/ and points spec-first.dev at it"
+    check: "the project's first deployment answers on spec-first.dev"
+
+scope:
+  in: "website/, .spec-first/contexts/website/, a README link to spec-first.dev"
+  out: "Vercel and DNS (operator); marketplace homepage until the site answers; an agent-neutral prompt.md and a git pre-commit gate, follow-ups if wanted"
+
+decisions:
+  - key: "Site copy claims only what the code backs: the gate covers spec commits and its listed message forms; other agents get the files, not the skills or the gate"
+  - key: "Mock first: the operator approved the look as a published mock (2026-10-27) before the build"
+  - key: "Light paper look: Spectral display, IBM Plex Sans body, IBM Plex Mono for YAML, loaded from @fontsource on jsdelivr as agent-smith.org does"
+  - key: "Tokens live in tokens.css directly — agent-smith derives them from DESIGN.md for three consumers, this site is the only one"
+  - key: "Every mock (spec, verdict, decision, gate ledger) is HTML, not an image — readable, selectable, sharp on any screen"
+  - key: "One page with anchors; the README stays the reference"
+  - key: "Agent Smith counts drop the 94% line share; the copy says entirely built with (operator, 2026-10-27)"
+
+steps:
+  - id: scaffold
+    action: "Create website/ as agent-smith's: package.json (no build:tokens, prebuild or predev), package-lock.json from npm install, eleventy.config.js, check-links.mjs, vercel.json, .gitignore, src/_data/site.json"
+  - id: layout
+    action: "Write layouts/base.njk: meta, canonical, Open Graph image, JSON-LD (author = creator = copyright holder), nav, footer"
+  - id: page
+    action: "Write index.njk from the approved mock: series-board hero, six properties, the loop, spec and verdict, decisions, the gate, Agent Smith band, install for Claude Code and AGENTS.md agents"
+  - id: style
+    action: "Write tokens.css (hand-written, committed), styles.css, main.js (copy buttons, tabs, reduced motion respected), favicon.svg, og.svg and og.png rendered from it with rsvg-convert"
+  - id: machine
+    action: "Add llms.txt, sitemap.xml, robots.txt and a 404 page"
+  - id: context
+    action: "Add .spec-first/contexts/website/{context.yaml,coding-principles.md} with workdir website, verify: cd website && npm ci && npm run build (when_present website/package.json), and move the 8d39b state entry there"
+  - id: links
+    action: "Add a spec-first.dev link to the README and drop the 94% line from its Agent Smith text and graphic; marketplace homepage stays on GitHub until the site answers"
+
+upgrade_impact: "nothing to change: website/ (about 150 KB, og.png included) ships in the plugin cache; nothing in the plugin reads it"
+proven_live: "rendered in Chrome at 1440 and 375 px and checked by eye; the live domain waits for the operator's Vercel project"
+
+tests:
+  - "npm run build passes, link check included"
+
+done:
+  - "website builds with zero missing local targets"
+  - "no horizontal scroll at 375 px; every section readable"
+  - "JSON-LD names Holger Leichsenring as author, creator and copyright holder"
+  - "every number on the page matches the counted facts"
+  - "the og:image URL resolves to a file in _site (checked by hand)"
+  - "the website verify stage passes"

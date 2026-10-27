@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+{%- set pageTitle = title or (site.title + " · " + site.tagline) -%}
+{%- set pageDescription = description or site.description -%}
+{%- set pageUrl = site.url + (page.url | canonicalPath) %}
+<title>{{ pageTitle }}</title>
+<meta name="description" content="{{ pageDescription }}">
+<link rel="canonical" href="{{ pageUrl }}">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:title" content="{{ pageTitle }}">
+<meta property="og:description" content="{{ pageDescription }}">
+<meta property="og:url" content="{{ pageUrl }}">
+<meta property="og:image" content="{{ site.url }}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="spec-first: hand your agents a series of specs, get back verified pull requests">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ pageTitle }}">
+<meta name="twitter:description" content="{{ pageDescription }}">
+<meta name="twitter:image" content="{{ site.url }}/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "{{ site.url }}/#author",
+      "name": {{ site.author | dump | safe }},
+      "url": "{{ site.authorUrl }}",
+      "sameAs": ["{{ site.authorUrl }}", "{{ site.blogUrl }}"]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "{{ site.url }}/#software",
+      "name": {{ site.title | dump | safe }},
+      "alternateName": {{ site.tagline | dump | safe }},
+      "description": {{ site.description | dump | safe }},
+      "url": "{{ site.url }}/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any: a Claude Code plugin, and plain files for any coding agent",
+      "license": "https://opensource.org/licenses/MIT",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "codeRepository": "https://github.com/{{ site.githubRepo }}",
+      "image": "{{ site.url }}/og.png",
+      "author": { "@id": "{{ site.url }}/#author" },
+      "creator": { "@id": "{{ site.url }}/#author" },
+      "maintainer": { "@id": "{{ site.url }}/#author" },
+      "copyrightHolder": { "@id": "{{ site.url }}/#author" },
+      "copyrightYear": 2026
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ site.url }}/#website",
+      "name": {{ site.title | dump | safe }},
+      "url": "{{ site.url }}/",
+      "author": { "@id": "{{ site.url }}/#author" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="mark" href="/"><b aria-hidden="true">§</b>spec-first</a>
+    <ul>
+      <li><a href="/#method">The method</a></li>
+      <li><a href="/#review">Review</a></li>
+      <li><a href="/#gate">The gate</a></li>
+      <li><a href="/#built">Agent Smith</a></li>
+      <li><a href="https://github.com/{{ site.githubRepo }}">GitHub</a></li>
+    </ul>
+    <a class="btn btn-ink btn-sm" href="/#install">Install</a>
+  </div>
+</nav>
+
+{{ content | safe }}
+
+<footer>
+  <div class="wrap">
+    <span>spec-first · by {{ site.author }} · MIT License · © 2026</span>
+    <nav><a href="https://github.com/{{ site.githubRepo }}">GitHub</a><a href="{{ site.agentSmithUrl }}">Agent Smith</a><a href="{{ site.blogUrl }}">Blog</a></nav>
+  </div>
+</footer>
+
+<script src="/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#f5f6f3"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#17212c"/>
+  <g font-family="Spectral, Georgia, 'Times New Roman', serif" fill="#17212c">
+    <rect x="72" y="72" width="52" height="52" rx="10" fill="none" stroke="#17212c" stroke-width="3"/>
+    <text x="98" y="111" text-anchor="middle" font-size="36" font-weight="600">§</text>
+    <text x="142" y="108" font-family="Menlo, 'IBM Plex Mono', monospace" font-size="28" font-weight="600">spec-first</text>
+    <text x="72" y="250" font-size="66" font-weight="500">Hand your agents a series</text>
+    <text x="72" y="330" font-size="66" font-weight="500">of specs. Get back <tspan fill="#2448b8" font-style="italic">verified</tspan></text>
+    <text x="72" y="410" font-size="66" font-weight="500">pull requests.</text>
+  </g>
+  <g font-family="Menlo, 'IBM Plex Mono', monospace" font-size="22" fill="#66717d">
+    <text x="72" y="540">reviewed before the build · a worktree per spec · gated commits</text>
+  </g>
+  <g>
+    <rect x="860" y="270" width="268" height="150" rx="10" fill="#ffffff" stroke="#d8dcd6" stroke-width="2"/>
+    <g fill="#2c7a45">
+      <rect x="884" y="294" width="50" height="10" rx="2"/><rect x="940" y="294" width="50" height="10" rx="2"/><rect x="996" y="294" width="50" height="10" rx="2"/><rect x="1052" y="294" width="50" height="10" rx="2"/>
+      <rect x="884" y="324" width="50" height="10" rx="2"/><rect x="940" y="324" width="50" height="10" rx="2"/><rect x="996" y="324" width="50" height="10" rx="2"/>
+      <rect x="884" y="354" width="50" height="10" rx="2"/><rect x="940" y="354" width="50" height="10" rx="2"/>
+      <rect x="884" y="384" width="50" height="10" rx="2"/>
+    </g>
+    <g fill="#2448b8"><rect x="996" y="354" width="50" height="10" rx="2"/><rect x="940" y="384" width="50" height="10" rx="2"/></g>
+    <g fill="#e7eae5"><rect x="1052" y="324" width="50" height="10" rx="2"/><rect x="1052" y="354" width="50" height="10" rx="2"/><rect x="996" y="384" width="50" height="10" rx="2"/><rect x="1052" y="384" width="50" height="10" rx="2"/></g>
+  </g>
+</svg>

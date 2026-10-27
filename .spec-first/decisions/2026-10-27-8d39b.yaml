@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-8d39b
+
+decisions:
+  - category: Architecture
+    chose: "Port the approved single-file mock into Eleventy: tokens.css, styles.css, main.js, a base layout and one page"
+    over: "Rebuilding the page from scratch in agent-smith.org's components"
+    reason: |
+      The operator approved the mock's look and copy. Splitting it keeps every approved detail;
+      agent-smith.org's dark stage and components belong to Agent Smith's own identity.
+
+  - category: TradeOff
+    chose: "Fonts from @fontsource on jsdelivr, pinned to 5.1.1, in tokens.css"
+    over: "Google Fonts as in the mock"
+    reason: |
+      agent-smith.org loads its fonts the same way, and a pinned package URL cannot change under
+      the page. The mock used Google Fonts only because the artifact host allows nothing else.
+
+  - category: Tooling
+    chose: "No theme toggle: light by default, dark through prefers-color-scheme"
+    over: "Carrying the mock's [data-theme] block"
+    reason: |
+      That block served the artifact viewer's theme switch. The site has no switch, so the block
+      would be dead CSS.
+
+  - category: Tooling
+    chose: "Count 650+ specs through the gate, from distinct spec ids with a passed ledger line"
+    over: "800+ spec commits through the gate"
+    reason: |
+      The 810 passed lines include re-runs of the same spec, and the ledger starts 2026-08-24.
+      Distinct ids (654) count specs, which is what the sentence claims.
+
+  - category: TradeOff
+    chose: "Other agents get a setup prompt, AGENTS.md and the checks by hand, said plainly"
+    over: "Implying the skills and the gate work outside Claude Code"
+    reason: |
+      The skills and the PreToolUse gate exist only in the Claude Code plugin today. An
+      agent-neutral prompt.md and a git pre-commit gate are follow-ups if the operator wants them.
+
+  - category: Tooling
+    chose: "Series board example keeps dependent specs in one group"
+    over: "Spreading specs that require each other across groups"
+    reason: |
+      deliver-series cuts every group's worktree from the default branch, so a spec in another
+      group could not see the spec it requires. The example shows what the skill actually does.

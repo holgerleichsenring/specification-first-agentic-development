@@ -1,0 +1,30 @@
+---
+permalink: /llms.txt
+eleventyExcludeFromCollections: true
+---
+# {{ site.title }}: {{ site.tagline }}
+
+> {{ site.description }}
+
+spec-first is a method for working with AI coding agents, and a Claude Code plugin that runs it. Every piece of work starts as a spec in the repository. A script checks every file and line the spec cites, and a fresh reviewer answers BUILD, BUILD WITH CUTS or REFUSE before any code is written. Each spec is built on its own branch and worktree, logs its decisions, and is delivered as one commit through a gate that runs the project's verify stages. It is MIT licensed and written by {{ site.author }}.
+
+## Start here
+
+- [Website]({{ site.url }}/): the method on one page
+- [Source and README](https://github.com/{{ site.githubRepo }}): skills, hooks, templates and the full reference
+- [Templates](https://github.com/{{ site.githubRepo }}/tree/main/templates): context, spec, decision and memory shapes, and the agent instructions
+- [Agent Smith]({{ site.agentSmithUrl }}): the agentic software factory built with this method
+
+## Install
+
+- Claude Code: `/plugin marketplace add {{ site.githubRepo }}`, then `/plugin install spec-first@specification-first-agentic-development`
+- Other agents (Codex, Cursor, Copilot): copy the templates into `.{project}/` and write `AGENTS.md` from `templates/prompt.md`
+
+## Skills
+
+- create-spec: writes a spec and commits it on its own branch and worktree
+- review-spec: evidence check, then a fresh reviewer's verdict
+- apply-spec: builds the active spec up to its done criteria
+- deliver-spec: one commit through the gate, push, pull request
+- deliver-series: a whole series of specs to one pull request
+- log-decision, update-project, bootstrap-project, spec-first-workflow

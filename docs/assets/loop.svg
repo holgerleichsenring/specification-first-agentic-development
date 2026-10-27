@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 920" role="img" aria-labelledby="t d">
+  <title id="t">From idea to pull request, one spec at a time</title>
+  <desc id="d">The record in your repository (contexts, specs and decisions, memory) is read before every step. The loop runs create-spec, review-spec, apply-spec and deliver-spec in the spec's own worktree. A REFUSE sends the spec back to be rewritten. deliver-spec opens the pull request and writes decisions, spec state and memory back to the record.</desc>
+
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1L9 5L1 9Z" fill="context-stroke"/>
+    </marker>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22345a"/>
+      <stop offset="1" stop-color="#0f1b2d"/>
+    </linearGradient>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1b2a4a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <style>
+    text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .h1 { font-size: 36px; font-weight: 700; fill: #0f1b2d; }
+    .sub { font-size: 18px; fill: #5b6577; }
+    .sec { font-size: 14px; font-weight: 700; letter-spacing: 2.5px; }
+    .ct { font-size: 23px; font-weight: 700; fill: #0f1b2d; }
+    .cb { font-size: 16px; fill: #3c4657; }
+    .tag { font-size: 14px; fill: #2f7d6d; }
+    .pill { font-size: 13.5px; font-weight: 600; }
+    .lbl { font-size: 14px; font-weight: 600; }
+  </style>
+
+  <rect width="1360" height="920" rx="24" fill="#f5f6f9"/>
+
+  <text x="64" y="92" class="h1">From idea to pull request, one spec at a time</text>
+  <text x="64" y="130" class="sub">The agent reads the record before it starts and adds to it before it commits.</text>
+
+  <text x="64" y="204" class="sec" fill="#2f7d6d">THE RECORD · IN YOUR REPO</text>
+  <text x="530" y="204" class="sec" fill="#5b6577">THE LOOP · ONE WORKTREE PER SPEC</text>
+
+  <!-- record -->
+  <g filter="url(#sh)">
+    <rect x="64" y="228" width="360" height="150" rx="14" fill="#fff"/>
+    <rect x="64" y="402" width="360" height="150" rx="14" fill="#fff"/>
+    <rect x="64" y="576" width="360" height="150" rx="14" fill="#fff"/>
+  </g>
+  <rect x="64" y="228" width="6" height="150" rx="3" fill="#2f7d6d"/>
+  <rect x="64" y="402" width="6" height="150" rx="3" fill="#2f7d6d"/>
+  <rect x="64" y="576" width="6" height="150" rx="3" fill="#2f7d6d"/>
+
+  <text x="96" y="272" class="ct">contexts/</text>
+  <text x="96" y="304" class="cb">Stack, architecture, quality limits</text>
+  <text x="96" y="327" class="cb">and verify: stages, per stack</text>
+  <text x="96" y="358" class="tag">context.yaml · coding-principles.md</text>
+
+  <text x="96" y="446" class="ct">specs/ + decisions/</text>
+  <text x="96" y="478" class="cb">Every spec, and every choice it made:</text>
+  <text x="96" y="501" class="cb">what was chosen, over what, and why</text>
+  <text x="96" y="532" class="tag">planned · active · done</text>
+
+  <text x="96" y="620" class="ct">memory/</text>
+  <text x="96" y="652" class="cb">Facts the next session needs that</text>
+  <text x="96" y="675" class="cb">code and git can't tell it</text>
+  <text x="96" y="706" class="tag">one fact per file · one index line</text>
+
+  <!-- read first -->
+  <g fill="none" stroke="#9aa5b8" stroke-width="2.2">
+    <path d="M424 303 C 470 303, 470 420, 518 420" marker-end="url(#ah)"/>
+    <path d="M424 477 L 518 477" marker-end="url(#ah)"/>
+    <path d="M424 651 C 470 651, 470 534, 518 534" marker-end="url(#ah)"/>
+  </g>
+  <rect x="440" y="381" width="66" height="22" rx="11" fill="#f5f6f9"/>
+  <text x="473" y="397" class="lbl" fill="#5b6577" text-anchor="middle">read first</text>
+
+  <!-- loop cards -->
+  <g filter="url(#sh)">
+    <rect x="530" y="228" width="400" height="132" rx="14" fill="#fff"/>
+    <rect x="530" y="386" width="400" height="132" rx="14" fill="#fff"/>
+    <rect x="530" y="544" width="400" height="132" rx="14" fill="#fff"/>
+    <rect x="530" y="702" width="400" height="132" rx="14" fill="#fff"/>
+  </g>
+  <rect x="530" y="228" width="6" height="132" rx="3" fill="#3f8f4f"/>
+  <rect x="530" y="386" width="6" height="132" rx="3" fill="#3b5bdb"/>
+  <rect x="530" y="544" width="6" height="132" rx="3" fill="#7b4fc9"/>
+  <rect x="530" y="702" width="6" height="132" rx="3" fill="#c0672b"/>
+
+  <text x="562" y="272" class="ct">create-spec</text>
+  <rect x="790" y="250" width="116" height="30" rx="15" fill="#e3f4e6"/>
+  <text x="848" y="270" class="pill" fill="#2f7a3d" text-anchor="middle">before code</text>
+  <text x="562" y="306" class="cb">Goal, steps, facts with file:line</text>
+  <text x="562" y="329" class="cb">evidence, done criteria. Branch spec/{id}.</text>
+
+  <text x="562" y="430" class="ct">review-spec</text>
+  <rect x="796" y="408" width="110" height="30" rx="15" fill="#e4e9fb"/>
+  <text x="851" y="428" class="pill" fill="#3b5bdb" text-anchor="middle">fresh eyes</text>
+  <text x="562" y="464" class="cb">Every citation resolved, then a new</text>
+  <text x="562" y="487" class="cb">reviewer: BUILD, CUTS or REFUSE</text>
+
+  <text x="562" y="588" class="ct">apply-spec</text>
+  <rect x="786" y="566" width="120" height="30" rx="15" fill="#efe7fb"/>
+  <text x="846" y="586" class="pill" fill="#6a3fb8" text-anchor="middle">by the rules</text>
+  <text x="562" y="622" class="cb">Contracts, code, wiring, tests.</text>
+  <text x="562" y="645" class="cb">Each non-obvious choice logged.</text>
+
+  <text x="562" y="746" class="ct">deliver-spec</text>
+  <rect x="830" y="724" width="76" height="30" rx="15" fill="#fdf0d5"/>
+  <text x="868" y="744" class="pill" fill="#a8571f" text-anchor="middle">gated</text>
+  <text x="562" y="780" class="cb">One commit through the verify: gate,</text>
+  <text x="562" y="803" class="cb">pushed, pull request opened.</text>
+
+  <!-- steps -->
+  <g fill="none" stroke="#9aa5b8" stroke-width="2.2">
+    <path d="M730 362 L 730 382" marker-end="url(#ah)"/>
+    <path d="M730 520 L 730 540" marker-end="url(#ah)"/>
+    <path d="M730 678 L 730 698" marker-end="url(#ah)"/>
+  </g>
+
+  <!-- refuse -->
+  <path d="M930 470 C 985 470, 985 320, 936 320" fill="none" stroke="#3b5bdb" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+  <text x="992" y="400" class="lbl" fill="#3b5bdb">REFUSE:</text>
+  <text x="992" y="418" class="lbl" fill="#3b5bdb">rewrite</text>
+
+  <!-- result -->
+  <text x="1056" y="204" class="sec" fill="#5b6577">THE RESULT</text>
+  <rect x="1056" y="420" width="250" height="414" rx="24" fill="url(#navy)"/>
+  <circle cx="1181" cy="508" r="44" fill="#ffffff" fill-opacity="0.12"/>
+  <g transform="translate(1159 486) scale(2.75)" fill="#ffffff">
+    <path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"/>
+  </g>
+  <text x="1181" y="604" font-size="28" font-weight="700" fill="#fff" text-anchor="middle">Pull request</text>
+  <text x="1181" y="644" font-size="16" fill="#c9d3e6" text-anchor="middle">one commit per spec,</text>
+  <text x="1181" y="668" font-size="16" fill="#c9d3e6" text-anchor="middle">every stage green,</text>
+  <text x="1181" y="692" font-size="16" fill="#c9d3e6" text-anchor="middle">every decision on record</text>
+  <text x="1181" y="790" font-size="14" fill="#8fa0bf" text-anchor="middle">the why ships with the code</text>
+
+  <path d="M930 768 C 1000 768, 1010 740, 1050 740" fill="none" stroke="#c0672b" stroke-width="2.5" marker-end="url(#ah)"/>
+  <text x="962" y="800" class="lbl" fill="#a8571f">opens</text>
+
+  <!-- writes back -->
+  <path d="M730 836 C 730 900, 244 900, 244 734" fill="none" stroke="#c0672b" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+  <rect x="352" y="868" width="306" height="24" rx="12" fill="#f5f6f9"/>
+  <text x="505" y="885" class="lbl" fill="#a8571f" text-anchor="middle">writes back: decisions, spec state, memory</text>
+</svg>

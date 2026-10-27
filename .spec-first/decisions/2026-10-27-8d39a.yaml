@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-8d39a
+
+decisions:
+  - category: Architecture
+    chose: "Project directory .spec-first/"
+    over: ".specification-first-agentic-development/ after the repository name"
+    reason: |
+      The plugin is called spec-first, its commands are /spec-first:*, and the domain is
+      spec-first.dev. The gate globs any dot directory, so the name costs nothing to support.
+
+  - category: Tooling
+    chose: "CLAUDE.md points at the contexts' verify: stages instead of naming the commands"
+    over: "Listing the three unittest commands in CLAUDE.md"
+    reason: |
+      The website spec adds a fourth stage in its own context. A list in CLAUDE.md would go
+      stale with every new context; the contexts are the one place the stages are declared.
+
+  - category: Tooling
+    chose: "p0001 moves to done/ with its counter id and without a schema header"
+    over: "Adding a $schema line or renaming it to a date-minted id"
+    reason: |
+      It shipped as plugin 2.0. Its goal (1,308 characters) and its supersedes: key predate the
+      spec schema, so a header would only mark an archived file red. Counter ids are never renamed.
+    alternatives:
+      - "Keep it in planned/ - rejected, the layout it specifies has been in every release since 2.0"
+
+  - category: Tooling
+    chose: "p-sfad-plugin stays a decision file only, with no state.done entry"
+    over: "Listing it under state.done"
+    reason: |
+      There is no spec behind it, so a state entry would have no spec file to point at. Its id
+      also fails decision.schema.json; it is left as it is rather than renamed.

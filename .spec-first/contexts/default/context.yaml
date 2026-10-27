@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../../../templates/context.schema.json
+meta:
+  project: specification-first-agentic-development
+  version: 2.7.0
+  type: [plugin, methodology]
+  purpose: "The spec-first method and its Claude Code plugin: skills, a commit gate, templates."
+  workdir: "."
+
+methodology:
+  version: "2.7.0"
+
+stack:
+  runtime: Python 3 (hooks and scripts), Claude Code plugin runtime
+  lang: [Python, Markdown, JSON Schema, YAML]
+  testing: [unittest]
+  sdks: [PyYAML (optional; its absence is reported, never a silent pass)]
+
+arch:
+  style: [plugin]
+  layers:
+    - .claude-plugin  # plugin and marketplace manifests
+    - skills          # one SKILL.md per user intent, scripts beside the skill that runs them
+    - hooks           # PreToolUse commit gate and its message resolver
+    - templates       # the files a project copies: contexts, spec, decision, memory, prompt, schemas
+    - examples        # real artifacts from Agent Smith
+
+quality:
+  lang: english-only
+  principles: [stdlib-only scripts, tests beside the script, describe capabilities not prohibitions]
+
+# The plugin's own gate runs these from the repository root at every spec commit (plugin 2.7.0 and later).
+verify:
+  - label: hook-tests
+    command: "python3 -m unittest discover -s hooks -p 'test_*.py'"
+  - label: evidence-tests
+    command: "python3 -m unittest discover -s skills/review-spec/scripts -p 'test_*.py'"
+  - label: migrate-tests
+    command: "python3 -m unittest discover -s skills/update-project/scripts -p 'test_*.py'"
+
+gate: plugin
+
+# Other repositories a spec's evidence may cite as 'name:path:lines'.
+evidence_roots:
+  agent-smith: ../agent-smith
+
+state:
+  done:
+    2026-10-27-8d39a: "The plugin repo runs its own method: .spec-first/ with contexts, verify stages, migrated p0001 and decisions, CLAUDE.md -> .spec-first/specs/done/2026-10-27-8d39a-methodology-self-hosting.yaml"
+    p0001: "v2.0 layout: contexts/<name>/ per stack, one YAML decision file per spec -> .spec-first/specs/done/p0001-contexts-and-yaml-decisions.yaml"
+  active: {}
+  planned: {}
