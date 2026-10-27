@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-84f4b
+
+decisions:
+  - category: Architecture
+    chose: "A commit-msg hook running the same spec-gate.py with --commit-msg"
+    over: "A pre-commit hook, or a second gate implementation"
+    reason: |
+      Only commit-msg sees the final message, which carries the spec id, and it can still
+      block. One script keeps both gates on the same stages, owner rules and ledger.
+
+  - category: Architecture
+    chose: "The installer copies the gate beside the hook"
+    over: "A hook that calls the plugin's own spec-gate.py"
+    reason: |
+      The plugin cache is versioned and old versions are removed, and other agents have no
+      plugin at all. A copy keeps working; re-running the installer updates it.
+
+  - category: Architecture
+    chose: "PreToolUse steps aside for gate: git only when the marked hook and its copy are installed and the command does not skip hooks"
+    over: "Stepping aside whenever gate: git is declared"
+    reason: |
+      gate: git is committed, the hook lives per clone. A fresh clone, a teammate who skipped
+      the installer, or a --no-verify commit would otherwise reach main with no gate at all.
+
+  - category: Tooling
+    chose: "Drop GIT_DIR, GIT_INDEX_FILE, GIT_WORK_TREE and GIT_PREFIX before the stages run"
+    over: "Handing the hook's environment to the stages"
+    reason: |
+      A stage that runs git elsewhere, as this repo's own hook tests do, would act on the
+      repository being committed. The test GitHook_StageRunningGit_DoesNotTouchTheCommittedRepo pins it.
+
+  - category: TradeOff
+    chose: "570 s default deadline for the hook under Claude Code"
+    over: "The 1700 s deadline of the PreToolUse hook"
+    reason: |
+      Under Claude Code the hook runs inside one Bash call, capped at 600 s. A deadline past
+      the cap would let the call be killed with no ledger line and stages left running.
+
+  - category: TradeOff
+    chose: "A missing copy or python3 lets the commit through with a message"
+    over: "Blocking the commit"
+    reason: |
+      Blocking would stop every commit in the clone, spec or not. PreToolUse still gates
+      Claude Code's commits in that case, because it finds no working hook.

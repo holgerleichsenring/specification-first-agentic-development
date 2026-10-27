@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-84f4a
+
+decisions:
+  - category: Tooling
+    chose: "homepage spec-first.dev and repository GitHub in plugin.json; homepage only in the marketplace entry"
+    over: "Keeping the GitHub repository as the only link"
+    reason: |
+      A listing should lead to the explanation; the code stays one click away through
+      repository, and the marketplace entry's source already names the repository.

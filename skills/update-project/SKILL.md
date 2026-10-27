@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.7.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.8.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,18 +36,19 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.7.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, then 3i |
-| 1.x.x   | 2.7.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, then 3i               |
-| 2.0.x   | 2.7.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, then 3i  |
-| 2.1.x   | 2.7.0  | 3d-3f, additive merge (3b), 3g, 3h, then 3i                           |
-| 2.2.x   | 2.7.0  | 3e, 3f, additive merge (3b), 3g, 3h, then 3i                          |
-| 2.3.x   | 2.7.0  | 3f, 3g, 3h, then 3i                                                   |
-| 2.4.x   | 2.7.0  | 3g, 3h, then 3i                                                       |
-| 2.5.x   | 2.7.0  | 3h, then 3i                                                           |
-| 2.6.x   | 2.7.0  | 3i                                                                    |
-| 2.7.x   | 2.y.y  | additive/diff merge (no migration)                                    |
+| 0.0.0   | 2.8.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j |
+| 1.x.x   | 2.8.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j |
+| 2.0.x   | 2.8.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j |
+| 2.1.x   | 2.8.0  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j |
+| 2.2.x   | 2.8.0  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j |
+| 2.3.x   | 2.8.0  | 3f, 3g, 3h, 3i, then 3j |
+| 2.4.x   | 2.8.0  | 3g, 3h, 3i, then 3j |
+| 2.5.x   | 2.8.0  | 3h, 3i, then 3j |
+| 2.6.x   | 2.8.0  | 3i, then 3j                                                           |
+| 2.7.x   | 2.8.0  | 3j                                                                    |
+| 2.8.x   | 2.y.y  | additive/diff merge (no migration)                                    |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h and 3i. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h and 3i. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h and 3i. For 2.2.x run 3e, 3f, 3b, 3g, 3h and 3i. For 2.3.x run 3f, 3g, 3h and 3i. For 2.4.x run 3g, 3h and 3i. For 2.5.x run 3h and 3i. For 2.6.x run 3i. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h, 3i and 3j. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h, 3i and 3j. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h, 3i and 3j. For 2.2.x run 3e, 3f, 3b, 3g, 3h, 3i and 3j. For 2.3.x run 3f, 3g, 3h, 3i and 3j. For 2.4.x run 3g, 3h, 3i and 3j. For 2.5.x run 3h, 3i and 3j. For 2.6.x run 3i and 3j. For 2.7.x run 3j. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -139,7 +140,7 @@ For each methodology file, compare the user's version with the plugin's template
 | `decision.schema.json` | Schema fields and validation rules |
 | `spec.schema.json` | Schema fields and validation rules |
 | `context.schema.json` | Schema fields (`verify`, `evidence_roots`) |
-| `CLAUDE.md` / `prompt.md` | Workflow steps, read order, rules |
+| `AGENTS.md` (or `CLAUDE.md` before 2.8.0) / `prompt.md` | Workflow steps, read order, rules |
 
 Present a summary of what's new or changed per file. Be specific: "New field `meta.workdir` added to context.yaml", not "context.yaml was updated".
 
@@ -216,9 +217,18 @@ From 2.7.0 the plugin ships a commit gate: a PreToolUse hook that, on every `git
 1. **Schemas.** Copy `templates/spec.schema.json` and `templates/context.schema.json` into `.{project}/` again. They declare `upgrade_impact`, `proven_live` and `gate`; the old copies refuse those keys.
 2. **Who owns the gate.** Ask whether the project already runs its own commit gate (a PreToolUse hook in `.claude/settings.json`, or another hook that runs the build and tests at commit). If it does, add `gate: project` at the top level of ONE `contexts/<name>/context.yaml`, so the plugin's hook steps aside and only one gate runs. Two contexts with different values block every spec commit. If it does not, nothing to add: the plugin's gate is the default.
 3. **The verify stages are the full proof.** With the plugin's gate, the stages are what runs at every spec commit and nothing else does. Check they cover build and tests; a project with none passes every commit with the notice "no verify stages declared".
-4. **Root `CLAUDE.md`.** Offer the new wording of steps 8 and 12 from `templates/prompt.md` (test what you changed while iterating; the full stages run once, at the spec commit), with the same before/after approval as 3c.2.
+4. **Root instructions.** In `AGENTS.md` (or `CLAUDE.md` in a project that has not split yet), offer the new wording of steps 8 and 12 from `templates/prompt.md` (test what you changed while iterating; the full stages run once, at the spec commit), with the same before/after approval as 3c.2.
 
 The gate needs `python3` and PyYAML (as review-spec does). Without PyYAML it lets spec commits through with a notice and deliver-spec runs the stages itself. Its ledger is `spec-first-gate.log` in the git common directory, so nothing new appears in `git status`.
+
+### 3j. 2.8.0: AGENTS.md for every agent, and the gate as a git hook
+
+From 2.8.0 the instructions are agent-neutral and the commit gate can also run as a git commit-msg hook. Both are offers; apply only what the operator approves.
+
+1. **Schema.** Copy `templates/context.schema.json` into `.{project}/` again; it allows `gate: git`.
+2. **AGENTS.md.** Offer to move the root `CLAUDE.md`'s project instructions into a new root `AGENTS.md` based on `templates/prompt.md` (each step names its plugin command and says how to do it by hand, the review brief included), and to make `CLAUDE.md` start with `@AGENTS.md`, keeping only what holds for Claude Code alone. An existing `AGENTS.md` is merged, never overwritten. Show the before/after of both files and apply after approval, as in 3c.2. From here on, 3b, 3c.2 and 3i's step 4 edit `AGENTS.md`.
+3. **gate: git, only if the team uses other agents or commits by hand.** Before any context declares it, every teammate must be on plugin 2.8.0 or later: a 2.7.0 plugin reads `gate: git` as unknown and blocks every spec commit. Then add `gate: git` to ONE context and run `python3 <plugin>/hooks/install-git-hook.py` in every clone; re-run it after every plugin upgrade, so the copied gate stays current. The hook needs `python3` and PyYAML in each clone and runs on POSIX systems only. Under Claude Code its stages run inside one Bash call, so they must finish in 570 s; a project with a longer suite keeps the plugin's gate. Where a clone has no hook, or a commit uses `--no-verify`, the plugin's hook still gates Claude Code's commits.
+4. **Existing commit-msg hooks.** The installer refuses to replace a commit-msg hook it did not write (a git-secrets hook from a global git template is common). Merge the two by hand, or leave `gate:` on the plugin.
 
 ### 4. Ask approval
 

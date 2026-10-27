@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-84f4d
+
+decisions:
+  - category: Tooling
+    chose: "Minor release 2.8.0"
+    over: "A major release"
+    reason: |
+      gate: git and AGENTS.md are additions a project opts into; a 2.7.0 project that takes
+      neither keeps working unchanged.
+
+  - category: TradeOff
+    chose: "Step 3j offers both changes and names the order: every teammate on 2.8.0 before gate: git"
+    over: "Declaring gate: git as part of the upgrade"
+    reason: |
+      A 2.7.0 plugin blocks every spec commit on an unknown gate value. The order makes the
+      mixed-version window harmless; the hook and its python3 live per clone, so 3j asks for
+      the installer in every clone and again after each upgrade.
+
+  - category: Tooling
+    chose: "3j names existing commit-msg hooks (git-secrets from a global template) and leaves the merge to the operator"
+    over: "An installer option that chains foreign hooks"
+    reason: |
+      The spec asks the installer to refuse a foreign hook. Building it here showed the refusal
+      is common (a global git-secrets template on the operator's own machine), so the update
+      step says what to do; chaining is a follow-up if wanted.

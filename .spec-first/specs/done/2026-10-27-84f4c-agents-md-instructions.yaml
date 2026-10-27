@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-84f4c
+goal: "One agent-neutral AGENTS.md carries the method for every agent; CLAUDE.md imports it, each step says how to run it without the plugin, and README and site say the same."
+
+applies_to: "default + website"
+
+requires: ["2026-10-27-84f4b"]
+
+facts:
+  - claim: "The instructions template tells the agent to run review-spec and deliver-spec, which exist only in the plugin"
+    evidence: "templates/prompt.md:45-54"
+  - claim: "bootstrap-project writes CLAUDE.md from templates/prompt.md"
+    evidence: "skills/bootstrap-project/SKILL.md:143-150"
+  - claim: "The README sends other agents to templates/prompt.md and says they lack the gate"
+    evidence: "README.md:94-96"
+  - claim: "The site's other-agents tab says the gate exists only in the Claude Code plugin"
+    evidence: "website/src/index.njk:447-462"
+  - claim: "llms.txt names AGENTS.md written from templates/prompt.md"
+    evidence: "website/src/llms.txt.njk:21"
+  - claim: "The review brief a fresh reviewer gets lives in review-spec"
+    evidence: "skills/review-spec/SKILL.md:26-32"
+  - claim: "deliver-series reads the project rules from the root CLAUDE.md or prompt.md"
+    evidence: "skills/deliver-series/SKILL.md:54"
+
+scope:
+  in: "templates/prompt.md, bootstrap-project's write step, deliver-series' rules line, README section, site tab and llms.txt"
+  out: "a CLI or package for other agents; update-project's CLAUDE.md readers (84f4d)"
+
+decisions:
+  - key: "AGENTS.md is the one source; CLAUDE.md is a short file that imports it with @AGENTS.md and adds the plugin commands"
+  - key: "Each step names its plugin command and, beside it, what to do by hand: the evidence script, the review brief for a fresh session, the git hook"
+  - key: "templates/prompt.md keeps its name, so update-project and existing links stay valid"
+
+steps:
+  - id: template
+    action: "Rewrite templates/prompt.md agent-neutral: each step says what to do, plugin command in parentheses, review brief, gate: git, evidence script path (python3, PyYAML)"
+  - id: bootstrap
+    action: "bootstrap-project (lines 28, 143, 169): AGENTS.md, merged after asking if present, CLAUDE.md importing it; gate: git only for teams with other agents, with the 570 s cap"
+  - id: readme
+    action: "README 'Without Claude Code' and templates table: AGENTS.md; clone the plugin repo for the evidence script and installer; hook per clone, skipped by --no-verify"
+  - id: site
+    action: "Site tab and llms.txt: once installed in a clone, the git hook gates spec commits from any agent; --no-verify skips it"
+  - id: series
+    action: "deliver-series reads the rules from AGENTS.md, or CLAUDE.md in projects without one"
+  - id: self
+    action: "This repo: AGENTS.md from the template, CLAUDE.md imports it"
+
+upgrade_impact: "nothing to change: existing CLAUDE.md files keep working; update-project offers the split (2026-10-27-84f4d)"
+proven_live: "a Codex or Cursor session reading AGENTS.md is not run here; the template is checked by reading it"
+
+tests:
+  - "website build and link check pass"
+
+done:
+  - "templates/prompt.md names no skill without saying how to do the step by hand"
+  - "bootstrap-project writes AGENTS.md and a CLAUDE.md importing it"
+  - "site and README describe the git hook for other agents"
+  - "every verify stage passes"

@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-84f4a
+goal: "The plugin manifests point at spec-first.dev as homepage and keep the GitHub repository as repository, so a listing leads to the explanation and the code stays one click away."
+
+applies_to: "default"
+
+requires: []
+
+facts:
+  - claim: "plugin.json carries no homepage and no repository"
+    evidence: ".claude-plugin/plugin.json:1-10"
+  - claim: "The marketplace entry's homepage is the GitHub repository"
+    evidence: ".claude-plugin/marketplace.json:23"
+  - claim: "An official plugin sets homepage to its product page and repository to GitHub"
+    evidence: "observed: 2026-10-27 ~/.claude/plugins/marketplaces/claude-plugins-official/plugins/cwc-makers/.claude-plugin/plugin.json"
+  - claim: "spec-first.dev answers with the site from website/"
+    evidence: "observed: 2026-10-27 curl https://spec-first.dev returned the new hero after PR #18"
+
+scope:
+  in: ".claude-plugin/plugin.json, .claude-plugin/marketplace.json"
+  out: "the version number, which 2026-10-27-84f4d raises"
+
+decisions:
+  - key: "Marketplace entry gets homepage only; its source already names the repository"
+
+steps:
+  - id: plugin
+    action: "Add homepage https://spec-first.dev and repository https://github.com/holgerleichsenring/specification-first-agentic-development to plugin.json"
+  - id: marketplace
+    action: "Set the marketplace entry's homepage to https://spec-first.dev"
+
+upgrade_impact: "nothing: metadata only"
+proven_live: "both files parse as JSON; the listing shows the link once the operator updates the marketplace"
+
+tests:
+  - "python3 -m json.tool on both manifests"
+
+done:
+  - "plugin.json has homepage and repository; marketplace.json homepage is spec-first.dev"
+  - "both manifests parse"

@@ -415,7 +415,7 @@ description: "Hand your agents a series of specs and get back verified pull requ
         <div class="no" aria-hidden="true"><i>§</i>7</div>
         <div>
           <h2>Install</h2>
-          <p>In Claude Code the plugin does the bookkeeping and runs the gate. Other agents follow the same files through <code>AGENTS.md</code>, and you run the checks.</p>
+          <p>In Claude Code the plugin does the bookkeeping and runs the gate. Other agents follow the same files through <code>AGENTS.md</code>, and a git hook runs the same gate.</p>
         </div>
       </div>
       <div class="body-grid">
@@ -456,10 +456,11 @@ https://github.com/{{ site.githubRepo }}/tree/main/templates
    and the commands that build and test it as verify: stages. Invent nothing.
 2. Create .{project}/specs/planned, active and done, .{project}/decisions/
    and .{project}/memory/MEMORY.md.
-3. Write AGENTS.md from templates/prompt.md, with .{project}/ filled in.</pre>
+3. Write AGENTS.md from templates/prompt.md, with .{project}/ filled in.
+4. Add "gate: git" at the top level of that context.yaml.</pre>
               <div><button class="copy" type="button" data-copy="cmd4">Copy prompt</button></div></div></div>
-            <div><div class="inner"><h3>AGENTS.md carries the method</h3><p>Codex, Cursor and Copilot read <code>AGENTS.md</code> when a session starts. It holds the read order and the workflow, so every session starts from the record. Where it names a skill, such as review-spec, you do that step by hand.</p></div></div>
-            <div><div class="inner"><h3>Run the checks yourself</h3><p>The evidence check is a Python script in the repository, <code>skills/review-spec/scripts/check-evidence.py &lt;spec&gt;</code>, and needs PyYAML (<code>pip install pyyaml</code>). Run your <code>verify:</code> commands before each spec commit. The skills and the automatic gate exist only in the Claude Code plugin today.</p></div></div>
+            <div><div class="inner"><h3>AGENTS.md carries the method</h3><p>Codex, Cursor and Copilot read <code>AGENTS.md</code> when a session starts. It holds the read order and the workflow, and every step says how to do it by hand, the review brief for a fresh session included.</p></div></div>
+            <div><div class="inner"><h3>The gate as a git hook</h3><p>Clone the spec-first repository once, then run <code>python3 &lt;clone&gt;/hooks/install-git-hook.py</code> in each clone of your project. The commit-msg hook runs your <code>verify:</code> stages on every commit that names a spec, from any agent or the terminal. <code>git commit --no-verify</code> skips it. The evidence check is <code>skills/review-spec/scripts/check-evidence.py</code> in the same clone and needs PyYAML.</p></div></div>
           </div>
         </div>
       </div>

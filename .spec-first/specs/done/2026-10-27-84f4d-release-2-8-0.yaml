@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-84f4d
+goal: "Release 2.8.0: the git hook gate and AGENTS.md reach existing projects through an update-project step, and every version field says 2.8.0."
+
+applies_to: "default"
+
+requires: ["2026-10-27-84f4a", "2026-10-27-84f4b", "2026-10-27-84f4c"]
+
+facts:
+  - claim: "plugin.json carries version 2.7.0"
+    evidence: ".claude-plugin/plugin.json:3"
+  - claim: "The marketplace entry carries version 2.7.0"
+    evidence: ".claude-plugin/marketplace.json:19"
+  - claim: "The context template carries methodology.version 2.7.0"
+    evidence: "templates/contexts/default/context.yaml:11"
+  - claim: "update-project names the current version and walks one step per release"
+    evidence: "skills/update-project/SKILL.md:21"
+  - claim: "The last release step is 3i for 2.7.0"
+    evidence: "skills/update-project/SKILL.md:212-221"
+  - claim: "The migration table targets 2.7.0 in every row"
+    evidence: "skills/update-project/SKILL.md:39-47"
+  - claim: "update-project reads and patches the root CLAUDE.md in 3b, 3c and 3i"
+    evidence: "skills/update-project/SKILL.md:142"
+  - claim: "The marketplace metadata and bootstrap-project carry 2.7.0 too"
+    evidence: ".claude-plugin/marketplace.json:9"
+  - claim: "bootstrap-project writes methodology.version 2.7.0"
+    evidence: "skills/bootstrap-project/SKILL.md:82"
+
+scope:
+  in: "version fields, update-project step 3j, this repo's contexts, README version badge"
+  out: "a git tag or GitHub release, which the operator cuts"
+
+decisions:
+  - key: "Minor version: gate: git and AGENTS.md are additions; nothing a 2.7.0 project has stops working"
+
+steps:
+  - id: versions
+    action: "Set 2.8.0 in plugin.json, both marketplace.json fields, the context template, bootstrap-project, this repo's meta and both methodology versions, README badge"
+  - id: update
+    action: "Add 3j: AGENTS.md split; gate: git once every teammate has 2.8.0, installer in every clone and after every upgrade, python3 and PyYAML; 3b/3c/3i read AGENTS.md"
+  - id: current
+    action: "Current version and every table target 2.8.0; the 2.7.x row runs 3j, a new 2.8.x row is additive; the prose paths end in 3j; 3i's prompt.md step numbers checked"
+
+upgrade_impact: "opt-in: step 3j offers both changes and applies only what the operator approves"
+proven_live: "update-project 3j read against a 2.7.0 project layout; not run on a user's project here"
+
+tests:
+  - "every verify stage passes"
+
+done:
+  - "every version field says 2.8.0"
+  - "update-project has step 3j and names 2.8.0 as current"

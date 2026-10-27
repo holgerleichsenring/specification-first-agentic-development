@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The spec-first commit gate (PreToolUse hook on Bash).
+"""The spec-first commit gate: a PreToolUse hook on Bash, and a git commit-msg hook.
 
 It fires on every Bash call and gates only a `git commit` whose message carries a
 spec id in parentheses, e.g. `feat: ... (2026-08-24-8a3f)`: the form deliver-spec
@@ -15,6 +15,14 @@ one of its context.yaml files; the gate then steps aside in one line, so exactly
 checks the commit. Absent, or `gate: plugin`, this gate runs. Two different values, or any
 other value, block until the declaration is fixed.
 
+`gate: git` hands the gate to a git commit-msg hook, which install-git-hook.py writes into
+a clone together with a copy of this script. Started as `spec-gate.py --commit-msg <file>`,
+the copy reads the final message from the file git hands it, so every agent and every
+commit typed by hand meets the same stages. It runs only where `gate: git` is declared.
+The PreToolUse hook steps aside for `gate: git` only when this clone has the hook and its
+copy installed and the command does not skip hooks (-n, --no-verify, core.hooksPath);
+otherwise it gates the commit itself, so a fresh clone is never left ungated.
+
 Every spec commit it recognises leaves one line in the ledger, whether it passed, was
 blocked or was let through unchecked: time, verdict, spec id, tree, the tree's HEAD (the
 new commit's parent) and a detail. A spec commit with no line never met the gate. The
@@ -28,6 +36,10 @@ exits 0.
 Environment: SPEC_GATE_LOG names another ledger file, SPEC_GATE_DEADLINE the seconds all
 stages may take together (default 1700, below the hook's timeout of 1800, so a slow
 suite blocks instead of being cancelled, which would let the commit through unchecked).
+A commit-msg run under Claude Code (CLAUDECODE=1) sits inside one Bash call, capped at
+600 s, so its default is 570.
+
+POSIX only: the stages run in their own process group, killed at the deadline.
 """
 
 import glob
@@ -45,6 +57,14 @@ HOOKS_DIR = os.path.dirname(os.path.abspath(__file__))
 EXIT_BLOCK = 2
 LEDGER_NAME = "spec-first-gate.log"
 DEFAULT_DEADLINE = 1700
+BASH_CALL_DEADLINE = 570
+HOOK_MARKER = "# spec-first commit gate"
+HOOK_COPY = "spec-first-gate.py"
+# What a commit-msg hook inherits from git and must not hand to a stage: a stage that runs
+# git elsewhere (a test fixture's temp repository) would otherwise act on this repository.
+GIT_HOOK_VARIABLES = ("GIT_DIR", "GIT_INDEX_FILE", "GIT_WORK_TREE", "GIT_PREFIX")
+# A command that keeps git from running its hooks: the commit-msg hook would never see it.
+SKIPS_HOOKS = re.compile(r"(?:^|\s)(?:--no-verify|-[A-Za-z]*n[A-Za-z]*)(?=\s|$)|core\.hooksPath")
 TAIL_LINES = 40
 PREFIX = "[spec-first gate]"
 
@@ -71,7 +91,7 @@ COMMIT_SHAPE = re.compile(
 SHELL_SUBSTITUTION = re.compile(r"\$\(|`")
 # Read by a line scan, not by YAML, so the declaration holds where PyYAML is missing.
 GATE_DECLARATION = re.compile(r"^gate:[ \t]*(['\"]?)([^'\"#\s]*)\1[ \t]*(?:#.*)?$", re.MULTILINE)
-GATE_OWNERS = ("plugin", "project")
+GATE_OWNERS = ("plugin", "project", "git")
 
 
 def _load_resolver():
@@ -91,9 +111,10 @@ def _git(tree, *args):
 
 
 class Gate:
-    def __init__(self, command, cwd):
+    def __init__(self, command, cwd, mode="tool"):
         self.command = command
         self.cwd = cwd
+        self.mode = mode  # "tool": the PreToolUse hook; "git": the commit-msg hook
         self.message = ""
         self.tree = None
         self.notices = []
@@ -182,7 +203,8 @@ class Gate:
         return self.gate()
 
     def unmarked(self):
-        if SHELL_SUBSTITUTION.search(self.message):
+        # A message git hands the hook in a file never went through a shell.
+        if self.mode == "tool" and SHELL_SUBSTITUTION.search(self.message):
             return self.not_gated(
                 self.cwd, "message built by a shell substitution",
                 f"the commit message is built by the shell ({self.message[:60]}); its text never "
@@ -258,7 +280,7 @@ class Gate:
         unknown = {path: value for path, value in declared.items() if value not in GATE_OWNERS}
         if unknown:
             named = ", ".join(f"{path}: {value or '(empty)'}" for path, value in unknown.items())
-            return self.block("unknown gate value", f"gate: must be plugin or project ({named}).")
+            return self.block("unknown gate value", f"gate: must be plugin, project or git ({named}).")
         if len(set(declared.values())) > 1:
             named = ", ".join(f"{path}: {value}" for path, value in declared.items())
             return self.block("conflicting gate declarations",
@@ -268,6 +290,19 @@ class Gate:
             return self.not_gated(
                 self.tree, "gate: project",
                 f"this project owns its commit gate (gate: project in {where}); the spec-first gate steps aside.")
+        if self.mode == "git":
+            if "git" in declared.values():
+                return None
+            self.log("this repository does not declare gate: git, so the commit-msg hook steps aside; "
+                     "the Claude Code plugin's gate, if installed, checks spec commits.")
+            return 0
+        if "git" in declared.values():
+            if git_hook_installed(self.tree) and not SKIPS_HOOKS.search(self.command):
+                # No ledger line here: the commit-msg hook writes the one line this commit gets.
+                self.notify("gate: git; the commit-msg hook gates this commit.")
+                return 0
+            self.notify("gate: git is declared, but this clone has no spec-first commit-msg hook "
+                        "or the command skips hooks; the plugin gates this commit itself.")
         return None
 
     def stages_of(self, document, context):
@@ -285,7 +320,7 @@ class Gate:
         return None, found
 
     def run_stages(self, stages):
-        deadline = time.monotonic() + float(os.environ.get("SPEC_GATE_DEADLINE", DEFAULT_DEADLINE))
+        deadline = time.monotonic() + deadline_seconds(self.mode)
         ran, skipped = [], []
         self.log(f"spec commit detected; gating {self.tree}: {', '.join(s['label'] for s in stages)}")
         for stage in stages:
@@ -307,6 +342,67 @@ class Gate:
         self.record("passed", self.tree, detail)
         self.notify(f"passed {', '.join(ran) or 'no stage'} for {self.spec_id()}")
         return 0
+
+
+def deadline_seconds(mode):
+    if os.environ.get("SPEC_GATE_DEADLINE"):
+        return float(os.environ["SPEC_GATE_DEADLINE"])
+    if mode == "git" and os.environ.get("CLAUDECODE") == "1":
+        return float(BASH_CALL_DEADLINE)
+    return float(DEFAULT_DEADLINE)
+
+
+def git_hook_installed(tree):
+    """True when this clone's hooks directory holds our commit-msg hook and the gate copy
+    it runs: only then does the commit-msg hook really gate the commit."""
+    hooks = _git(tree, "rev-parse", "--git-path", "hooks")
+    if not hooks:
+        return False
+    hooks = hooks if os.path.isabs(hooks) else os.path.join(tree, hooks)
+    try:
+        with open(os.path.join(hooks, "commit-msg"), encoding="utf-8") as handle:
+            marked = HOOK_MARKER in handle.read(2048)
+    except OSError:
+        return False
+    return marked and os.path.isfile(os.path.join(hooks, HOOK_COPY))
+
+
+def final_message(text, tree):
+    """The message git will record: comment lines and everything below the scissors line of
+    `git commit -v` removed, with the comment character the repository configured."""
+    char = _git(tree, "config", "core.commentChar") or "#"
+    if char == "auto" or len(char) != 1:
+        char = "#"
+    scissors = f"{char} ------------------------ >8 ------------------------"
+    lines = []
+    for line in text.splitlines():
+        if line == scissors:
+            break
+        if not line.startswith(char):
+            lines.append(line)
+    return "\n".join(lines).strip("\n")
+
+
+def run_commit_msg(path):
+    """The commit-msg hook: git runs it from the work tree's top level with the message file."""
+    tree = _git(".", "rev-parse", "--show-toplevel")
+    if tree is None:
+        print(f"{PREFIX} cannot resolve the git tree to gate", file=sys.stderr)
+        return EXIT_BLOCK
+    for variable in GIT_HOOK_VARIABLES:
+        os.environ.pop(variable, None)
+    try:
+        with open(path, encoding="utf-8") as handle:
+            text = handle.read()
+    except OSError as error:
+        print(f"{PREFIX} cannot read the commit message ({error}); not gated.", file=sys.stderr)
+        return 0
+    gate = Gate("", tree, mode="git")
+    gate.message = final_message(text, tree)
+    if not SPEC_MARKER.search(gate.message):
+        return gate.unmarked()
+    gate.tree = tree
+    return gate.gate()
 
 
 def run_stage(command, tree, budget):
@@ -338,6 +434,8 @@ def tail(text):
 
 
 def main():
+    if len(sys.argv) == 3 and sys.argv[1] == "--commit-msg":
+        return run_commit_msg(sys.argv[2])
     try:
         payload = json.load(sys.stdin)
     except ValueError:

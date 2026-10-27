@@ -18,7 +18,7 @@ spec-first is a method for working with AI coding agents, and a Claude Code plug
 ## Install
 
 - Claude Code: `/plugin marketplace add {{ site.githubRepo }}`, then `/plugin install spec-first@specification-first-agentic-development`
-- Other agents (Codex, Cursor, Copilot): copy the templates into `.{project}/` and write `AGENTS.md` from `templates/prompt.md`
+- Other agents (Codex, Cursor, Copilot): copy the templates into `.{project}/`, write `AGENTS.md` from `templates/prompt.md`, declare `gate: git` and run `hooks/install-git-hook.py` in each clone, so a git commit-msg hook gates spec commits
 
 ## Skills
 

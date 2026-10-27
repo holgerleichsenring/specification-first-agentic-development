@@ -8,7 +8,7 @@ meta:
                                       # Monorepo example: "src/Server", "client", "docs"
 
 methodology:
-  version: "2.7.0"                    # Spec-First methodology version (used by update-project)
+  version: "2.8.0"                    # Spec-First methodology version (used by update-project)
 
 stack:
   runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...
@@ -50,8 +50,10 @@ quality:
 #     command: "cd web && npm test"
 #     when_present: web/package.json   # stage skipped (and reported) when this path is absent
 
-# Who gates a spec commit: plugin (the default) or project. Set project in ONE context when the
-# repository runs its own commit gate, so the plugin's gate steps aside and only one gate runs.
+# Who gates a spec commit: plugin (the default), project or git. Set it in ONE context.
+#   project: the repository runs its own commit gate; the plugin's gate steps aside.
+#   git:     a git commit-msg hook gates spec commits from every agent and from the terminal.
+#            Install it in each clone: python3 <plugin>/hooks/install-git-hook.py
 # gate: project
 
 # Other repositories a spec's evidence may cite as 'name:path:lines' -- path relative to the repo root;

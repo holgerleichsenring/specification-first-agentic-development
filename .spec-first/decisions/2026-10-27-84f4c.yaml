@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-84f4c
+
+decisions:
+  - category: Architecture
+    chose: "AGENTS.md is the one instructions file; CLAUDE.md imports it with @AGENTS.md"
+    over: "Two parallel files, or CLAUDE.md alone"
+    reason: |
+      Codex, Cursor and Copilot read AGENTS.md; Claude Code follows the import. One source
+      cannot drift, and a project that only uses Claude Code loses nothing.
+
+  - category: TradeOff
+    chose: "Each workflow step names its plugin command and says how to do it by hand"
+    over: "Separate instructions per agent"
+    reason: |
+      The steps are the same for every agent; only who runs them differs. The review brief
+      sits in the template verbatim, so a fresh session gets the reviewer's exact text.
+
+  - category: Tooling
+    chose: "templates/prompt.md keeps its name"
+    over: "Renaming it to templates/AGENTS.md"
+    reason: |
+      update-project, bootstrap-project and existing links name prompt.md; the file's first
+      paragraph says it becomes AGENTS.md.
