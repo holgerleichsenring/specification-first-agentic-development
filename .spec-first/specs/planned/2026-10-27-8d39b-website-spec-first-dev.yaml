@@ -33,10 +33,11 @@ assumptions:
     check: "the project's first deployment answers on spec-first.dev"
 
 scope:
-  in: "website/, contexts/website/, README and marketplace homepage pointing at spec-first.dev"
-  out: "Vercel project and DNS (the operator's); docs beyond one page, which a later spec adds if wanted"
+  in: "website/, .spec-first/contexts/website/, a README link to spec-first.dev"
+  out: "Vercel project and DNS (the operator's); the marketplace homepage, switched once spec-first.dev answers; docs beyond one page"
 
 decisions:
+  - key: "Mock first: the operator approves the look as a published mock before the build"
   - key: "Light paper look: serif display, Inter body, mono for YAML — a spec reads like a document, Agent Smith's dark stage stays its own"
   - key: "Tokens live in tokens.css directly — agent-smith derives them from DESIGN.md for three consumers, this site is the only one"
   - key: "Every mock (spec, verdict, decision, gate ledger) is HTML, not an image — readable, selectable, sharp on any screen"
@@ -44,19 +45,19 @@ decisions:
 
 steps:
   - id: scaffold
-    action: "Create website/ as agent-smith's: package.json, eleventy.config.js, check-links.mjs, vercel.json, .gitignore, src/_data/site.json"
+    action: "Create website/ as agent-smith's: package.json (no build:tokens, prebuild or predev), package-lock.json from npm install, eleventy.config.js, check-links.mjs, vercel.json, .gitignore, src/_data/site.json"
   - id: layout
     action: "Write layouts/base.njk: meta, canonical, Open Graph image, JSON-LD (author = creator = copyright holder), nav, footer"
   - id: page
     action: "Write index.njk: hero, three problems, the loop, the spec, the review, decisions and memory, the gate, Agent Smith band, install, any agent, footer"
   - id: style
-    action: "Write tokens.css, styles.css, main.js (copy buttons, reveal on scroll, reduced motion respected), favicon.svg, og.png"
+    action: "Write tokens.css (hand-written, committed), styles.css, main.js (copy buttons, tabs, reduced motion respected), favicon.svg, og.svg and og.png rendered from it with rsvg-convert"
   - id: machine
     action: "Add llms.txt, sitemap.xml, robots.txt and a 404 page"
   - id: context
-    action: "Add contexts/website/{context.yaml,coding-principles.md} with workdir website and verify: cd website && npm ci && npm run build, when_present website/package.json"
+    action: "Add .spec-first/contexts/website/{context.yaml,coding-principles.md} with workdir website, verify: cd website && npm ci && npm run build (when_present website/package.json), and move the 8d39b state entry there"
   - id: links
-    action: "Point README and marketplace.json homepage at https://spec-first.dev"
+    action: "Add a spec-first.dev link to the README; the marketplace homepage stays on GitHub until the site answers"
 
 upgrade_impact: "nothing: a new directory; the plugin payload is unchanged"
 proven_live: "rendered in Chrome at 1440 and 375 px and checked by eye; the live domain waits for the operator's Vercel project"
@@ -69,4 +70,5 @@ done:
   - "no horizontal scroll at 375 px; every section readable"
   - "JSON-LD names Holger Leichsenring as author, creator and copyright holder"
   - "every number on the page matches the counted facts"
+  - "the og:image URL resolves to a file in _site"
   - "the website verify stage passes"

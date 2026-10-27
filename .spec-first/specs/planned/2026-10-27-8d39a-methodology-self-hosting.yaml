@@ -47,11 +47,11 @@ steps:
   - id: principles
     action: "Write coding-principles.md from the code as it is: stdlib only (PyYAML optional, absence reported), unittest cases beside the script, skill descriptions under 200 characters, English"
   - id: migrate
-    action: "git mv specs/planned/p0001-*.yaml to .spec-first/specs/done/ and decisions/*.yaml to .spec-first/decisions/; fix their $schema relative paths"
+    action: "git mv specs/planned/p0001-*.yaml to .spec-first/specs/done/ and decisions/*.yaml to .spec-first/decisions/; fix the $schema path of the two decision files; p0001 stays without a schema header, it predates the schema"
   - id: state
-    action: "List p0001 and p-sfad-plugin under state.done in contexts/default/context.yaml with pointers"
+    action: "List p0001 under state.done in contexts/default/context.yaml with its pointer; p-sfad-plugin is a decision file only and its id fails decision.schema.json, which stays as it is"
   - id: instructions
-    action: "Write CLAUDE.md from templates/prompt.md with .spec-first/ substituted and the three verify commands named"
+    action: "Write CLAUDE.md from templates/prompt.md with .spec-first/ substituted, pointing at the contexts' verify: stages instead of naming commands"
 
 upgrade_impact: "nothing: users of the plugin never see .spec-first/; the root specs/ and decisions/ were never read by any skill"
 proven_live: "the verify stages run green by hand at the spec commit, because the installed plugin (2.6.0) has no gate"
@@ -61,6 +61,6 @@ tests:
 
 done:
   - "find specs decisions -maxdepth 0 at the repo root finds nothing"
-  - ".spec-first/contexts/default/context.yaml validates against templates/context.schema.json"
+  - ".spec-first/contexts/default/context.yaml validates against templates/context.schema.json (jsonschema, installed for the check)"
   - "every -> pointer in state: resolves to a file"
   - "the three verify stages pass"
