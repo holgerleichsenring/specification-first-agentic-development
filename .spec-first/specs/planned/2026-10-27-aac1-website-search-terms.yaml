@@ -23,8 +23,12 @@ facts:
     evidence: "website/src/llms.txt.njk:1-8"
   - claim: "The reading section is the last section of the page"
     evidence: "website/src/index.njk:471"
-  - claim: "README and both manifests describe the plugin as 'Specification-First Agentic Development'"
+  - claim: "The README opens with 'Specification-First Agentic Development'"
     evidence: "README.md:1-5"
+  - claim: "plugin.json describes the plugin as 'Specification-First Agentic Development'"
+    evidence: ".claude-plugin/plugin.json:4"
+  - claim: "marketplace.json carries metadata.description and the plugin entry's description"
+    evidence: ".claude-plugin/marketplace.json:8"
 
 scope:
   in: "page title and description, site.json, kicker, a new FAQ section with FAQPage JSON-LD, SoftwareApplication alternateName and keywords, llms.txt, README lead, manifest descriptions"
@@ -34,18 +38,20 @@ decisions:
   - key: "No hidden text: search engines treat hidden keywords as spam; the terms go into visible copy, a FAQ and structured data"
   - key: "A FAQ answers the questions people search with ('specification-driven development?'); FAQPage markup lets Bing show the answers"
   - key: "Descriptions stay 120 to 155 characters, under Bing's limit with a margin"
+  - key: "FAQ lives in _data/faq.json; the section and the FAQPage JSON-LD render from it, so they cannot drift"
+  - key: "FAQ defines the terms and describes this method only, no comparison with other tools; 'specification-driven' is hyphenated"
 
 steps:
   - id: meta
     action: "Title 'Spec-first agentic development · spec-first.dev'; description under 155 characters naming both terms; site.json follows"
   - id: kicker
-    action: "Kicker reads 'Spec-first agentic development, specification-driven'"
+    action: "Kicker reads 'Spec-first agentic development'"
   - id: faq
-    action: "Add a FAQ section before the reading section: what it is, specification-driven vs spec-first, other agents, vibe coding, what a spec holds"
+    action: "Add _data/faq.json and a FAQ section §8 before reading (now §9): what it is, both terms defined, other agents, vibe coding, what a spec holds"
   - id: jsonld
-    action: "SoftwareApplication alternateName lists both terms, keywords added; FAQPage from the same questions and answers"
+    action: "SoftwareApplication alternateName becomes a list with both terms, keywords added; FAQPage rendered from faq.json"
   - id: text
-    action: "llms.txt, README lead and the two manifest descriptions name both terms"
+    action: "llms.txt, README lead, plugin.json description, marketplace metadata.description and plugin entry description name both terms"
 
 upgrade_impact: "nothing: site copy and metadata only"
 proven_live: "Bing's live URL test after deploy shows no meta-description error"
@@ -56,6 +62,6 @@ tests:
 done:
   - "meta description between 120 and 155 characters"
   - "both terms appear in title or description, visible copy, FAQ, JSON-LD and llms.txt"
-  - "FAQPage JSON-LD parses and matches the visible FAQ"
-  - "no element hides text"
+  - "FAQPage JSON-LD in the built page parses as JSON"
+  - "no element this spec adds hides text"
   - "the website verify stage passes"
