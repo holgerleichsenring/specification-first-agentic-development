@@ -62,7 +62,7 @@ Wait for every builder's notification. Do not predict a result that has not arri
 
 ## 5. Check what the builders report
 
-For every spec: a commit exists with `({id})` in its subject, and a `passed` ledger line (or `gate: project`) names that spec, that tree and that commit's parent. A spec without one never met a gate; run its stages by hand on its branch before merging it.
+For every spec: a commit exists with `({id})` in its subject, and a `passed` ledger line, from the plugin's hook or with `gate: git` from the commit-msg hook (or `gate: project`), names that spec, that tree and that commit's parent. A spec without one never met a gate; run its stages by hand on its branch before merging it.
 
 ## 6. Merge into one integration branch
 

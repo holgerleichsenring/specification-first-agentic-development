@@ -32,6 +32,8 @@ git commit -m "feat: {short description} ({id})"
 
 Keep `({id})` exactly: the id in parentheses is what the commit gate keys on. Never pipe the commit and never build the message with `$(…)` or `-F -`; the gate cannot read those and lets the commit through unchecked.
 
+With `gate: git` the stages run inside this Bash call, in the commit-msg hook: give the call a timeout of 600000 ms. The hook's own deadline is 570 s, so a slow suite blocks with a ledger line instead of being cut off.
+
 The plugin's gate runs every context's `verify:` stages at this commit, once. If it blocks, the commit did not happen: fix the cause and commit again. Never bypass it.
 
 ## 3. Read the verdict
@@ -46,7 +48,7 @@ awk -F'\t' -v id="{id}" -v tree="$(git rev-parse --show-toplevel)" -v head="$hea
 
 Fields: time, verdict, spec, tree, parent, detail.
 
-- **passed**: the verify stages ran and were green. Go on.
+- **passed**: the verify stages ran and were green. Go on. With `gate: git` the line comes from the commit-msg hook; it counts the same.
 - **not-gated** with `gate: project`: the project's own gate checked the commit. The commit exists, so it passed there. Go on, and say in the PR body that the project's gate checked it.
 - **not-gated** with any other detail, or **no line at all**: no gate checked this commit (hooks disabled, the hook timed out or could not start, PyYAML missing, no verify stages declared). Run the stages yourself now, as below. On a fix, `git commit --amend --no-edit`; the amend is gated again.
 - **blocked**: the commit did not happen. Fix the cause and go back to step 2.

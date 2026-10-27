@@ -21,8 +21,8 @@
     },
     "gate": {
       "type": "string",
-      "enum": ["plugin", "project"],
-      "description": "Who gates a spec commit. plugin (the default when no context declares it): the plugin's PreToolUse hook runs the verify stages. project: the repository runs its own commit gate and the plugin's hook steps aside. Declare it in one context; two different values block every spec commit."
+      "enum": ["plugin", "project", "git"],
+      "description": "Who gates a spec commit. plugin (the default when no context declares it): the plugin's PreToolUse hook runs the verify stages. project: the repository runs its own commit gate and the plugin's hook steps aside. git: the commit-msg hook that hooks/install-git-hook.py writes into each clone runs the stages, for every agent and for commits typed by hand; the plugin's hook steps aside where that hook is installed. Every teammate needs plugin 2.8.0 or later before a context declares git. Declare it in one context; two different values block every spec commit."
     },
     "evidence_roots": {
       "type": "object",

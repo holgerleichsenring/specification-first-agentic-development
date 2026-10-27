@@ -499,7 +499,7 @@ def Gate_GateUnknownValue_Blocks():
     with _project_repository(gate="ours") as repo:
         completed = _run_gate(f'git commit -m "{MARKER_MESSAGE}"', repo)
         assert completed.returncode == 2, completed
-        assert "must be plugin or project" in completed.stderr, completed.stderr
+        assert "must be plugin, project or git" in completed.stderr, completed.stderr
 
 
 def _cases():
