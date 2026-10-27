@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../templates/decision.schema.json
+# yaml-language-server: $schema=../../templates/decision.schema.json
 spec: p0001
 
 decisions:
