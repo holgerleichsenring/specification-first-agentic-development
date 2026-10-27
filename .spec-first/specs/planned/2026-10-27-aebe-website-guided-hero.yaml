@@ -17,8 +17,12 @@ facts:
     evidence: "website/src/static/main.js:19-51"
   - claim: "The README loop graphic shows contexts/ as the first record card"
     evidence: "docs/assets/loop.svg:49-62"
-  - claim: "Contexts are written once, when bootstrap-project sets a project up"
-    evidence: "skills/bootstrap-project/SKILL.md:1-4"
+  - claim: "Each spec adds its state line to context.yaml: create-spec as planned, apply-spec moves it to done"
+    evidence: "skills/create-spec/SKILL.md:96-103"
+  - claim: "apply-spec moves the spec to done in context.yaml"
+    evidence: "skills/apply-spec/SKILL.md:101-107"
+  - claim: "The install tab handler binds every [role=tab] on the page"
+    evidence: "website/src/static/main.js:13-16"
   - claim: "The operator approved the scene, motion and layout as a published mock"
     evidence: "observed: 2026-10-27 artifact mock version 7, approved in conversation"
 
@@ -30,7 +34,10 @@ decisions:
   - key: "Headline 'Vibe coding is dead. Talk it through, the rest is guided.' (operator); parallel and verified move into the lede"
   - key: "Background work is shown as Claude Code tool rows in the chat, not a separate panel (operator: as in VS Code)"
   - key: "The scene is HTML with a step timeline in main.js; without JS or with reduced motion it rests on the review step"
-  - key: "The record shows what grows per spec; contexts become one line naming bootstrap-project"
+  - key: "The record shows what grows per spec; a note says bootstrap-project writes the contexts and each spec adds a state line"
+  - key: "The scene keeps a fixed VS Code palette as custom properties on .vsc, like .ledger and .band: it is dark in both themes"
+  - key: "Scene shows only what the skills do: spec written before the worktree, planned to active to done, npm run dev before the browser"
+  - key: "Step pills are buttons with aria-pressed, not tabs; the install tab handler is scoped to .tabs"
 
 steps:
   - id: hero
@@ -38,13 +45,13 @@ steps:
   - id: series
     action: "Move the series board into a new section §2 after the six properties; renumber the following clauses"
   - id: record
-    action: "Record shows specs/, decisions/, memory/ plus a note that bootstrap-project writes the context once"
+    action: "Record shows specs/, decisions/, memory/ plus a note: bootstrap-project writes the contexts from your code, each spec adds one state line"
   - id: style
-    action: "Add the scene, bubble, motion and simple-browser styles to styles.css with the 375 px rules"
+    action: "Add the scene, bubble, motion and simple-browser styles to styles.css; bubble space only above 760 px; no dead or duplicate rules"
   - id: script
-    action: "Add the scene timeline to main.js: typing, running tool rows, files written line by line, review marks, app tick, pills, loop"
+    action: "Add the scene timeline to main.js (typing, tool rows, files line by line, review marks, app tick, pills, loop); scope the install tab handler to .tabs"
   - id: readme
-    action: "loop.svg record cards become specs/, decisions/, memory/; update the README alt text"
+    action: "loop.svg record cards become specs/, decisions/, memory/, its desc follows; README alt text checked"
 
 upgrade_impact: "nothing to change: site and README only"
 proven_live: "rendered in Chrome at 1440x900 across all five steps and at 375 px; live once Vercel deploys main"
@@ -58,4 +65,5 @@ done:
   - "without JS the scene shows the review step complete"
   - "no horizontal scroll at 375 px"
   - "no contexts/ card in the site record or in loop.svg"
+  - "install tabs switch, every Copy button copies, the board animates in its section"
   - "the website verify stage passes"
