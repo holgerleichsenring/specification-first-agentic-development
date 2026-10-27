@@ -1,7 +1,7 @@
 {
   "name": "spec-first",
   "version": "2.8.0",
-  "description": "Specification-First Agentic Development — structured AI-assisted development with per-stack contexts/, YAML decisions, specs, and context persistence.",
+  "description": "Spec-first agentic development (specification-driven agentic development): specs reviewed against your code, built in worktrees, gated commits, decisions on record.",
   "author": {
     "name": "Holger Leichsenring",
     "url": "https://codingsoul.org"

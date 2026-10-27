@@ -1,0 +1,26 @@
+[
+  {
+    "q": "What is spec-first agentic development?",
+    "a": "A way of working with AI coding agents in which every change starts as a written spec in your repository. A fresh reviewer checks the spec against your code before anything is built, the agent builds it on its own branch and worktree, and the commit lands only when your checks pass."
+  },
+  {
+    "q": "What does specification-driven agentic development mean here?",
+    "a": "The spec drives the work from start to finish. It names the goal, the facts it rests on with file and line, the steps and the done criteria, and the agent builds to exactly that. Spec-first agentic development is specification-driven agentic development in which the spec is reviewed against the code before the first line is written."
+  },
+  {
+    "q": "Do I need Claude Code?",
+    "a": "No. The Claude Code plugin runs the steps as commands. Codex, Cursor, Copilot or a terminal follow the same files through AGENTS.md, and a git commit-msg hook runs the same commit gate in every clone where it is installed."
+  },
+  {
+    "q": "How does it differ from vibe coding?",
+    "a": "You still describe the feature in your own words and talk it through. After that, the agent works from a reviewed spec instead of from the last prompt, logs each decision with its reason, and a commit lands only when your build and tests pass."
+  },
+  {
+    "q": "What does a spec contain?",
+    "a": "A one-sentence goal, the facts it rests on with file and line, the steps, what an upgrade costs an operator, and the done criteria. The decisions made while building go into a separate YAML file next to it."
+  },
+  {
+    "q": "What does it cost?",
+    "a": "Nothing. The method, the templates and the Claude Code plugin are MIT licensed."
+  }
+]

@@ -5,7 +5,7 @@
     "email": "mail@holger-leichsenring.de"
   },
   "metadata": {
-    "description": "Specification-First Agentic Development — structured AI-assisted development with context persistence, specs, and decision capture.",
+    "description": "Spec-first agentic development, also called specification-driven agentic development: specs reviewed against your code, gated commits, decisions on record.",
     "version": "2.8.0"
   },
   "plugins": [
@@ -15,7 +15,7 @@
         "source": "url",
         "url": "https://github.com/holgerleichsenring/specification-first-agentic-development.git"
       },
-      "description": "9 skills and a commit gate for the Spec-First methodology: bootstrap projects, create specs in their own worktree, review specs against the code, apply them, deliver them as a pull request or a whole series as one, log decisions, sync methodology updates. The gate runs the verify stages at every spec commit.",
+      "description": "9 skills and a commit gate for spec-first agentic development (specification-driven): bootstrap projects, create specs in their own worktree, review specs against the code, apply them, deliver them as a pull request or a whole series as one, log decisions, sync methodology updates. The gate runs the verify stages at every spec commit.",
       "version": "2.8.0",
       "author": {
         "name": "Holger Leichsenring"

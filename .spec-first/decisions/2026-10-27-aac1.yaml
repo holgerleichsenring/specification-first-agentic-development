@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-aac1
+
+decisions:
+  - category: TradeOff
+    chose: "The search terms go into visible copy, a FAQ and structured data"
+    over: "Hidden text, as the operator first suggested"
+    reason: |
+      Bing and Google treat hidden keywords as spam and can drop a page from the index. A FAQ
+      answers the questions people search with, and FAQPage markup lets Bing show the answers.
+
+  - category: Architecture
+    chose: "One data file, _data/faq.json, renders both the FAQ section and the FAQPage JSON-LD"
+    over: "Writing the answers twice"
+    reason: |
+      The structured data must match the visible text. Rendering both from one source means
+      they cannot drift, without a separate check in the build.
+
+  - category: Tooling
+    chose: "A 139-character meta description"
+    over: "The 210-character one Bing flagged"
+    reason: |
+      Bing reports descriptions outside roughly 25 to 160 characters. 139 leaves room and still
+      names both terms.
