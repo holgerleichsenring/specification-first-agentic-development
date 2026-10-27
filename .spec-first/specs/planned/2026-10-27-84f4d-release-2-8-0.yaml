@@ -17,6 +17,14 @@ facts:
     evidence: "skills/update-project/SKILL.md:21"
   - claim: "The last release step is 3i for 2.7.0"
     evidence: "skills/update-project/SKILL.md:212-221"
+  - claim: "The migration table targets 2.7.0 in every row"
+    evidence: "skills/update-project/SKILL.md:39-47"
+  - claim: "update-project reads and patches the root CLAUDE.md in 3b, 3c and 3i"
+    evidence: "skills/update-project/SKILL.md:142"
+  - claim: "The marketplace metadata and bootstrap-project carry 2.7.0 too"
+    evidence: ".claude-plugin/marketplace.json:9"
+  - claim: "bootstrap-project writes methodology.version 2.7.0"
+    evidence: "skills/bootstrap-project/SKILL.md:82"
 
 scope:
   in: "version fields, update-project step 3j, this repo's contexts, README version badge"
@@ -27,11 +35,11 @@ decisions:
 
 steps:
   - id: versions
-    action: "Set 2.8.0 in plugin.json, marketplace.json, the context template, this repo's contexts and the README badge"
+    action: "Set 2.8.0 in plugin.json, both marketplace.json fields, the context template, bootstrap-project, this repo's meta and methodology versions, README badge"
   - id: update
-    action: "Add update-project step 3j for 2.8.0: offer gate: git with the installer, offer AGENTS.md with CLAUDE.md importing it, copy the context schema"
+    action: "Add update-project 3j: AGENTS.md split, gate: git only after every teammate has 2.8.0, installer in every clone, schema copy; 3b/3c/3i read AGENTS.md"
   - id: current
-    action: "Point update-project's current-version line at 2.8.0"
+    action: "Point the current-version line and every migration-table target at 2.8.0, with a 2.7.x row for 3j"
 
 upgrade_impact: "opt-in: step 3j offers both changes and applies only what the operator approves"
 proven_live: "update-project 3j read against a 2.7.0 project layout; not run on a user's project here"

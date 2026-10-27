@@ -17,48 +17,65 @@ facts:
     evidence: "hooks/spec-gate.py:247-271"
   - claim: "Notices go out as Claude Code JSON on stdout, which a git hook has no reader for"
     evidence: "hooks/spec-gate.py:145-151"
-  - claim: "The marker and the unmarked-subject notice are decided from the message text alone"
+  - claim: "unmarked() treats any backtick as a shell-built message"
     evidence: "hooks/spec-gate.py:184-199"
+  - claim: "Stages run with the caller's environment, which in a git hook carries GIT_DIR and GIT_INDEX_FILE"
+    evidence: "hooks/spec-gate.py:312-318"
+  - claim: "A commit-msg hook in a worktree runs from the worktree top with GIT_DIR and GIT_INDEX_FILE set"
+    evidence: "observed: 2026-10-27 probe repo in the scratchpad, run by the series reviewer"
+  - claim: "This repo's hook tests run git init and commit in temp repos with the inherited environment"
+    evidence: "hooks/test_commit_message.py:37-46"
+  - claim: "deliver-spec reads the verdict per owner: passed, not-gated with gate: project, blocked"
+    evidence: "skills/deliver-spec/SKILL.md:50-52"
+  - claim: "deliver-series accepts a passed line or gate: project per spec"
+    evidence: "skills/deliver-series/SKILL.md:65"
   - claim: "The schema allows gate: plugin and project only"
     evidence: "templates/context.schema.json:22-26"
   - claim: "Test fixtures build throwaway projects with verify stages and a gate declaration"
     evidence: "hooks/test_commit_message.py:96-110"
 
 scope:
-  in: "hooks/spec-gate.py (commit-msg mode, gate: git), hooks/install-git-hook.py, tests, context schema and template comment"
-  out: "agent instructions that name the hook (2026-10-27-84f4c); the release (2026-10-27-84f4d)"
+  in: "spec-gate.py commit-msg mode and gate: git, install-git-hook.py, tests, schema and template comment, deliver-spec and deliver-series verdicts"
+  out: "agent instructions (84f4c); the release and update step (84f4d)"
 
 decisions:
   - key: "commit-msg, not pre-commit: only commit-msg sees the final message with the spec id, and it can still block"
-  - key: "gate: git owns the gate; the Claude Code hook steps aside for it, and the git hook steps aside unless it is declared, so one gate runs"
-  - key: "The installer writes the hook pointing at this spec-gate.py and refuses to overwrite a foreign commit-msg hook"
+  - key: "The installer copies spec-gate.py beside the hook, so it survives plugin upgrades and works without the plugin"
+  - key: "PreToolUse steps aside for gate: git only when this clone has our hook installed; otherwise it gates, so a fresh clone is never ungated"
+  - key: "Under Claude Code the stages then run inside the Bash call: deliver-spec sets its timeout to 600000 ms; longer suites keep gate: plugin"
 
 steps:
   - id: mode
-    action: "Add a --commit-msg <file> entry: tree from git rev-parse in the cwd, message from the file without # lines, notices to stderr"
+    action: "Add --commit-msg <file>: tree from git rev-parse, message without # lines and below the scissors line, notices to stderr, no shell-substitution check"
+  - id: env
+    action: "In commit-msg mode drop GIT_DIR, GIT_INDEX_FILE, GIT_WORK_TREE, GIT_PREFIX before the stages run"
   - id: owner
-    action: "Add git to GATE_OWNERS; the PreToolUse hook steps aside for git, the commit-msg hook runs only for git and says so otherwise"
+    action: "Add git to GATE_OWNERS; the git hook runs only for gate: git; PreToolUse steps aside for git only if the installed commit-msg carries our marker"
   - id: installer
-    action: "Add hooks/install-git-hook.py: resolve core.hooksPath or the common dir's hooks/, write commit-msg, refuse a foreign one"
+    action: "Add install-git-hook.py: hooks dir from git rev-parse --git-path hooks, copy the gate there, write commit-msg; refuse a foreign hook or a tracked hooks dir"
     new:
-      - "install-git-hook.py: one stdlib script, exit codes in its docstring"
+      - "commit-msg: runs the copied gate; if the copy is missing it says so and lets the commit through"
+  - id: skills
+    action: "deliver-spec and deliver-series accept a passed line written by the git hook, and deliver-spec sets the Bash timeout for gate: git"
   - id: schema
-    action: "Allow gate: git in context.schema.json and describe it in the context template comment"
+    action: "Allow gate: git in context.schema.json and the context template comment"
   - id: tests
-    action: "Add hooks/test_git_hook.py with the fixtures: passed, blocked, not declared, unmarked, installer refuses a foreign hook"
+    action: "Add hooks/test_git_hook.py; leave test_commit_message.py and test_spec_gate_marker.py unchanged and green"
 
-upgrade_impact: "opt-in: nothing changes until a context declares gate: git and the hook is installed"
-proven_live: "a real git commit in a throwaway repo, through the installed hook, blocks on a red stage and passes on green"
+upgrade_impact: "opt-in, with one caveat: a 2.7.0 plugin reads gate: git as unknown and blocks spec commits, so every teammate needs 2.8.0 first (84f4d says so)"
+proven_live: "a real git commit through the installed hook in a throwaway repo and in a worktree: blocks red, passes green"
 
 tests:
   - "GitHook_GreenStages_CommitLandsAndLedgerSaysPassed"
   - "GitHook_RedStage_CommitIsBlocked"
+  - "GitHook_StageRunningGit_DoesNotTouchTheCommittedRepo"
   - "GitHook_GateNotDeclaredGit_StepsAsideWithANotice"
-  - "GitHook_MessageWithoutMarker_PassesSilently"
-  - "PreToolUse_GateGit_StepsAside"
+  - "GitHook_BacktickInBody_IsNotFlagged"
+  - "PreToolUse_GateGitWithHookInstalled_StepsAside"
+  - "PreToolUse_GateGitWithoutHook_StillGates"
   - "Installer_ForeignCommitMsgHook_Refuses"
 
 done:
   - "a commit typed in a terminal in a gate: git project is gated by the hook"
-  - "with gate: git the Claude Code hook steps aside, so one gate runs"
-  - "all hook tests pass"
+  - "with gate: git and the hook installed, the Claude Code hook steps aside; without the hook it gates"
+  - "the existing hook tests pass unchanged, the new ones pass"

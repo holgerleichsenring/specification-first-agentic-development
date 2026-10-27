@@ -19,10 +19,12 @@ facts:
     evidence: "website/src/llms.txt.njk:21"
   - claim: "The review brief a fresh reviewer gets lives in review-spec"
     evidence: "skills/review-spec/SKILL.md:26-32"
+  - claim: "deliver-series reads the project rules from the root CLAUDE.md or prompt.md"
+    evidence: "skills/deliver-series/SKILL.md:54"
 
 scope:
-  in: "templates/prompt.md, bootstrap-project's write step, README section, site other-agents tab and llms.txt"
-  out: "a CLI or package for other agents; the skills themselves"
+  in: "templates/prompt.md, bootstrap-project's write step, deliver-series' rules line, README section, site tab and llms.txt"
+  out: "a CLI or package for other agents; update-project's CLAUDE.md readers (84f4d)"
 
 decisions:
   - key: "AGENTS.md is the one source; CLAUDE.md is a short file that imports it with @AGENTS.md and adds the plugin commands"
@@ -33,11 +35,13 @@ steps:
   - id: template
     action: "Rewrite templates/prompt.md agent-neutral: each workflow step says what to do, the plugin command in parentheses, the review brief included"
   - id: bootstrap
-    action: "bootstrap-project writes AGENTS.md from the template and a CLAUDE.md that imports it, and offers gate: git plus the hook installer"
+    action: "bootstrap-project writes AGENTS.md (an existing one is merged after asking) and a CLAUDE.md that imports it; offers gate: git and the installer"
   - id: readme
-    action: "README 'Without Claude Code': AGENTS.md, the evidence script, the git hook installer"
+    action: "README 'Without Claude Code': AGENTS.md; clone the plugin repo for the evidence script and the hook installer; the hook per clone, skipped by --no-verify"
   - id: site
-    action: "Site other-agents tab and llms.txt: the hook gates every agent's commits; drop 'only in the Claude Code plugin' for the gate"
+    action: "Site tab and llms.txt: once installed in a clone, the git hook gates spec commits from any agent; --no-verify skips it"
+  - id: series
+    action: "deliver-series reads the rules from AGENTS.md, or CLAUDE.md in projects without one"
   - id: self
     action: "This repo: AGENTS.md from the template, CLAUDE.md imports it"
 
