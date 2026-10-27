@@ -436,3 +436,12 @@ pre.prompt { margin: 0; padding: 16px 18px; background: var(--paper); border: 1p
 }
 .hero-split > *, .hero-row2 > * { min-width: 0; }
 @media (max-width: 640px) { .hero-row2 .cmd { flex-basis: 100%; } }
+
+/* questions */
+.faq { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.faq details { border-bottom: 1px solid var(--rule); padding-block: 4px; }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; padding-block: 14px; font-family: var(--display); font-size: 21px; color: var(--ink); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--mono); color: var(--cobalt); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { margin: 0 0 16px; max-width: 46em; color: var(--ink-soft); }

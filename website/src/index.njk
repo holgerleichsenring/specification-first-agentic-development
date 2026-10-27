@@ -1,12 +1,12 @@
 ---
 layout: layouts/base.njk
-title: "spec-first · Specification-First Agentic Development"
-description: "Hand your agents a series of specs and get back verified pull requests. Each spec is reviewed against your code before it is built, runs in its own worktree, and lands only through a gate that runs your checks."
+title: "Spec-first agentic development · spec-first.dev"
+description: "Spec-first agentic development is specification-driven development for AI coding agents: reviewed specs, isolated worktrees, gated commits."
 ---
 <header class="hero hero-ide" id="top">
   <div class="wrap">
     <div class="hero-text">
-      <p class="kicker">Specification-First Agentic Development</p>
+      <p class="kicker">Spec-first agentic development</p>
       <h1>Vibe coding is dead. <em>Talk it through, the rest is guided.</em></h1>
       <div class="hero-split">
         <p class="lede">Describe the feature in your own words. Four commands write the spec, check it against your code, build it in its own worktree and deliver it through your checks. Run several side by side and get back verified pull requests.</p>
@@ -468,10 +468,30 @@ https://github.com/{{ site.githubRepo }}/tree/main/templates
   </section>
 
 
-  <section id="reading">
+  <section id="faq">
     <div class="wrap">
       <div class="clause">
         <div class="no" aria-hidden="true"><i>§</i>8</div>
+        <div>
+          <h2>Questions about spec-first agentic development</h2>
+          <p>Specification-driven agentic development, in short answers.</p>
+        </div>
+      </div>
+      <div class="faq body-grid">
+        {%- for item in faq %}
+        <details{% if loop.first %} open{% endif %}>
+          <summary>{{ item.q }}</summary>
+          <p>{{ item.a }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="reading">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>9</div>
         <div><h2>Where it comes from</h2></div>
       </div>
       <div class="reading body-grid">

@@ -42,7 +42,8 @@
       "@type": "SoftwareApplication",
       "@id": "{{ site.url }}/#software",
       "name": {{ site.title | dump | safe }},
-      "alternateName": {{ site.tagline | dump | safe }},
+      "alternateName": {{ site.alternateNames | dump | safe }},
+      "keywords": {{ site.keywords | dump | safe }},
       "description": {{ site.description | dump | safe }},
       "url": "{{ site.url }}/",
       "applicationCategory": "DeveloperApplication",
@@ -65,6 +66,17 @@
       "url": "{{ site.url }}/",
       "author": { "@id": "{{ site.url }}/#author" }
     }
+    {%- if page.url == "/" %},
+    {
+      "@type": "FAQPage",
+      "@id": "{{ site.url }}/#faq",
+      "mainEntity": [
+        {%- for item in faq %}
+        { "@type": "Question", "name": {{ item.q | dump | safe }}, "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | dump | safe }} } }{% if not loop.last %},{% endif %}
+        {%- endfor %}
+      ]
+    }
+    {%- endif %}
   ]
 }
 </script>

@@ -29,6 +29,7 @@ verify:
 
 state:
   done:
+    2026-10-27-aac1: "spec-first.dev: 139-character meta description, both search terms in title, kicker, a FAQ with FAQPage JSON-LD from _data/faq.json, alternateName list, llms.txt, README and manifests -> .spec-first/specs/done/2026-10-27-aac1-website-search-terms.yaml"
     2026-10-27-aebe: "Hero is an animated VS Code + Claude Code scene building a todo app through the four commands, with step bubbles; series board in its own section; record without contexts -> .spec-first/specs/done/2026-10-27-aebe-website-guided-hero.yaml"
     2026-10-27-8d39b: "spec-first.dev: one Eleventy page under website/ from the approved mock, llms.txt, og image, website verify stage -> .spec-first/specs/done/2026-10-27-8d39b-website-spec-first-dev.yaml"
   active: {}

@@ -1,7 +1,9 @@
 {
   "title": "spec-first",
-  "tagline": "Specification-First Agentic Development",
-  "description": "Hand your agents a series of specs and get back verified pull requests. Each spec is reviewed against your code before it is built, runs in its own worktree, and lands only through a gate that runs your checks.",
+  "tagline": "Spec-first agentic development",
+  "alternateNames": ["Spec-first agentic development", "Specification-first agentic development", "Specification-driven agentic development"],
+  "keywords": "spec-first agentic development, specification-driven agentic development, specification-first development, spec-driven development, AI coding agents, Claude Code plugin, AGENTS.md",
+  "description": "Spec-first agentic development is specification-driven development for AI coding agents: reviewed specs, isolated worktrees, gated commits.",
   "url": "https://spec-first.dev",
   "author": "Holger Leichsenring",
   "authorUrl": "https://github.com/holgerleichsenring",
