@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-258f
+goal: "spec-first.dev counts visits with Google Analytics 4 only after a visitor accepts a consent banner; the imprint stays off until a postal address is set."
+
+applies_to: "website"
+
+requires: ["2026-10-27-aac1"]
+
+facts:
+  - claim: "Every page shares one layout whose footer nav holds GitHub, Agent Smith and Blog and which loads main.js at the end of the body"
+    evidence: "website/src/_includes/layouts/base.njk:102-109"
+  - claim: "site.json holds names, URLs and the author; no analytics id and no legal details"
+    evidence: "website/src/_data/site.json:1-13"
+  - claim: "The build copies src/static whole and the sitemap lists collections.all"
+    evidence: "website/eleventy.config.js:2, website/src/sitemap.xml.njk:7-11"
+  - claim: "npm run build runs check-links.mjs as postbuild against a fixed _site root"
+    evidence: "website/package.json:8, website/check-links.mjs:8"
+  - claim: "The website verify stage runs npm ci and npm run build"
+    evidence: ".spec-first/contexts/website/context.yaml:25-28"
+
+scope:
+  in: >
+    site.json analyticsId G-T9WX5BRSXC and legal { name, email } as the operator gave them. eleventy.config.js decides
+    once: with legal.name and legal.email the layout renders a bottom-left non-modal consent dialog (Decline and Accept
+    of equal weight, the approved mock's copy, link to /privacy/), loads consent.js (rendered from a template, deferred)
+    and the footer Privacy and Privacy settings links, and /privacy/ renders; without them none of it renders and the
+    build prints 'analytics off: legal details missing in site.json'. /imprint/ and its footer link render only with
+    legal.address as well; otherwise the build prints 'imprint off: no postal address in site.json'. gtag.js loads only
+    on Accept with Google signals and ad personalisation off; the choice lives in localStorage (a failing store asks
+    again); declining after accepting stops loading and deletes _ga cookies. check-consent.mjs proves the committed
+    state and fixture builds without legal, without an address and with one; check-links.mjs takes a root.
+  out: "A postal address (the operator will supply a c/o or service address later). Any other tracking."
+
+decisions:
+  - key: "Imprint withheld, not published incomplete: § 5 DDG requires a postal address and the operator gave none"
+  - key: "consent.js renders from a template, so a build without legal details has no googletagmanager string at all"
+  - key: "check-consent.mjs builds copies of website/ in a temp directory with fixture site.json; no test seam in config"
+
+upgrade_impact: "nothing: a static site; the banner appears for visitors on the next deploy"
+proven_live: "After deploy a real browser shows the banner, no request to googletagmanager.com before Accept, and the visit in GA4 Realtime after it; /imprint/ needs the address first"
+
+steps:
+  - id: config
+    action: "site.json analyticsId and legal; eleventy.config.js computes the analytics and imprint flags, ignores the templates that are off, prints the off lines"
+  - id: banner
+    action: "base.njk banner, script tag and footer links behind the flags; src/consent.js.njk; banner styles from tokens, reduced motion, 400 px"
+  - id: pages
+    action: "privacy.njk and imprint.njk, each opening with a one-line draft comment"
+  - id: check
+    action: "check-links.mjs takes an optional root; check-consent.mjs; postbuild runs both"
+
+tests:
+  - "npm run build in website: link check and check-consent pass for the committed state and the three fixtures"
+
+done:
+  - "Without site.legal no googletagmanager reference exists in _site, and no privacy page, imprint or footer links render"
+  - "With name and email: every page carries the consent dialog, gtag appears only in consent.js, /privacy/ renders and is in the sitemap, no imprint"
+  - "With an address as well: /imprint/ renders, is linked from the footer and listed in the sitemap"
+  - "The website verify stage passes"

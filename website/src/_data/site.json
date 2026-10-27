@@ -9,5 +9,10 @@
   "authorUrl": "https://github.com/holgerleichsenring",
   "githubRepo": "holgerleichsenring/specification-first-agentic-development",
   "agentSmithUrl": "https://agent-smith.org",
-  "blogUrl": "https://codingsoul.org"
+  "blogUrl": "https://codingsoul.org",
+  "analyticsId": "G-T9WX5BRSXC",
+  "legal": {
+    "name": "Holger Leichsenring",
+    "email": "mail@holger-leichsenring.de"
+  }
 }
