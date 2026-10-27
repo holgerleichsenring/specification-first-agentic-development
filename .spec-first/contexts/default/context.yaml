@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../../templates/context.schema.json
+meta:
+  project: specification-first-agentic-development
+  type: [plugin, methodology]
+  purpose: "The spec-first method and its Claude Code plugin: skills, a commit gate, templates."
+  workdir: "."
+
+methodology:
+  version: "2.7.0"
+
+# Other repositories a spec's evidence may cite as 'name:path:lines'.
+evidence_roots:
+  agent-smith: ../agent-smith
+
+state:
+  done: {}
+  active: {}
+  planned:
+    2026-10-27-8d39a: "The plugin repo runs its own method under .spec-first/ -> .spec-first/specs/planned/2026-10-27-8d39a-methodology-self-hosting.yaml"
+    2026-10-27-8d39b: "spec-first.dev, a one-page website under website/ -> .spec-first/specs/planned/2026-10-27-8d39b-website-spec-first-dev.yaml"

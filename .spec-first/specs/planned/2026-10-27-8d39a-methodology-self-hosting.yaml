@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-8d39a
+goal: "The plugin repo runs its own method: a .spec-first/ tree with contexts, verify stages, migrated legacy specs and decisions, and a CLAUDE.md, laid out as the templates prescribe."
+
+applies_to: "default"
+
+requires: []
+
+facts:
+  - claim: "The commit gate finds contexts under any dot directory of the tree, so .spec-first/ is picked up without changes"
+    evidence: "hooks/spec-gate.py:213-218"
+  - claim: "The evidence check reads evidence_roots from the same contexts glob"
+    evidence: "skills/review-spec/scripts/check-evidence.py:242-248"
+  - claim: "The hook tests run with stdlib unittest from the repo root"
+    evidence: "hooks/test_spec_gate_marker.py:8"
+  - claim: "The migration script's tests are unittest cases as well"
+    evidence: "skills/update-project/scripts/test_migrate_specs_layout.py:1-10"
+  - claim: "The only spec in the repo lives at the root in specs/planned, and it is the v2.0 layout the plugin shipped long ago"
+    evidence: "specs/planned/p0001-contexts-and-yaml-decisions.yaml:2-5"
+  - claim: "Two decision files sit at the root, outside any project directory"
+    evidence: "decisions/p0001.yaml:2"
+  - claim: "The second root decision file carries the plugin's founding choices"
+    evidence: "decisions/p-sfad-plugin.yaml:2"
+  - claim: "The context template carries verify:, gate: and state: as the shape a project fills in"
+    evidence: "templates/contexts/default/context.yaml:44-66"
+  - claim: "The agent instructions template is the source for a project's CLAUDE.md"
+    evidence: "templates/prompt.md:1-12"
+  - claim: "The installed plugin in this session is 2.6.0, which has no commit gate hook"
+    evidence: "observed: 2026-10-27 ~/.claude/plugins/cache/specification-first-agentic-development/spec-first/ holds only 2.6.0"
+
+scope:
+  in: ".spec-first/ (contexts/default, memory index, specs, decisions), the move of the root specs/ and decisions/, CLAUDE.md"
+  out: "the website context, which 8d39b adds with its own verify stage; any change to skills, hooks or templates"
+
+decisions:
+  - key: "Project directory .spec-first/ — matches the plugin name, and the gate's '.*' glob finds it"
+  - key: "p0001 goes to done/, not active/ — the v2.0 layout it specifies shipped in 2.0; the counter id stays as it is"
+  - key: "Root specs/ and decisions/ are moved, not copied — one record, and the root stays the plugin's payload"
+
+steps:
+  - id: tree
+    action: "Create .spec-first/ with contexts/default/{context.yaml,coding-principles.md}, memory/MEMORY.md, specs/{planned,active,done}/, decisions/"
+  - id: context
+    action: "Complete contexts/default/context.yaml (committed with the specs as a skeleton) from the repo: Python 3 stdlib hooks and scripts, Markdown skills, JSON schemas; methodology.version 2.7.0; gate: plugin"
+    new:
+      - "verify: hook-tests, evidence-tests, migrate-tests — each python3 -m unittest discover on its directory"
+  - id: principles
+    action: "Write coding-principles.md from the code as it is: stdlib only (PyYAML optional, absence reported), unittest cases beside the script, skill descriptions under 200 characters, English"
+  - id: migrate
+    action: "git mv specs/planned/p0001-*.yaml to .spec-first/specs/done/ and decisions/*.yaml to .spec-first/decisions/; fix their $schema relative paths"
+  - id: state
+    action: "List p0001 and p-sfad-plugin under state.done in contexts/default/context.yaml with pointers"
+  - id: instructions
+    action: "Write CLAUDE.md from templates/prompt.md with .spec-first/ substituted and the three verify commands named"
+
+upgrade_impact: "nothing: users of the plugin never see .spec-first/; the root specs/ and decisions/ were never read by any skill"
+proven_live: "the verify stages run green by hand at the spec commit, because the installed plugin (2.6.0) has no gate"
+
+tests:
+  - "the three verify commands pass from the repo root"
+
+done:
+  - "find specs decisions -maxdepth 0 at the repo root finds nothing"
+  - ".spec-first/contexts/default/context.yaml validates against templates/context.schema.json"
+  - "every -> pointer in state: resolves to a file"
+  - "the three verify stages pass"

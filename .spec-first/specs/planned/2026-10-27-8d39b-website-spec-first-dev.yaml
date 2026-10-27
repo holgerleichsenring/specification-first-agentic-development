@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-8d39b
+goal: "A one-page website for spec-first.dev under website/, built like agent-smith.org (Eleventy, Vercel), quieter in look and as convincing, with its own context and verify stage."
+
+applies_to: "website"
+
+requires: ["2026-10-27-8d39a"]
+
+facts:
+  - claim: "agent-smith.org is Eleventy 3 with njk templates, src/static passed through, a canonicalPath filter"
+    evidence: "agent-smith:website/eleventy.config.js:1-20"
+  - claim: "Its build runs a link check as postbuild"
+    evidence: "agent-smith:website/package.json:5-13"
+  - claim: "The link check fails on any local href or src the build did not write"
+    evidence: "agent-smith:website/check-links.mjs:1-41"
+  - claim: "Vercel builds it with cleanUrls, no trailing slash and three security headers"
+    evidence: "agent-smith:website/vercel.json:1-17"
+  - claim: "The layout carries canonical, Open Graph, llms.txt alternate and JSON-LD naming the author as creator and copyright holder"
+    evidence: "agent-smith:website/src/_includes/layouts/base.njk:1-80"
+  - claim: "Fonts load from @fontsource on jsdelivr via @font-face in tokens.css"
+    evidence: "agent-smith:website/src/static/tokens.css:4-9"
+  - claim: "llms.txt, sitemap.xml and robots.txt are njk pages with their own permalinks"
+    evidence: "agent-smith:website/src/llms.txt.njk:1-6"
+  - claim: "The README already carries the loop and Agent Smith graphics the page restates"
+    evidence: "README.md:24-41"
+  - claim: "The marketplace entry's homepage is the GitHub repo"
+    evidence: ".claude-plugin/marketplace.json:23"
+  - claim: "Agent Smith counts: 1,332 specs done, 1,193 decision files, 94% of changed lines in spec commits, 810 gated commits"
+    evidence: "observed: 2026-10-27 counted in the agent-smith repository (specs/done, decisions/, git log --numstat, .claude/spec-gate.log)"
+
+assumptions:
+  - claim: "The operator creates a Vercel project on this repo with root directory website/ and points spec-first.dev at it"
+    check: "the project's first deployment answers on spec-first.dev"
+
+scope:
+  in: "website/, contexts/website/, README and marketplace homepage pointing at spec-first.dev"
+  out: "Vercel project and DNS (the operator's); docs beyond one page, which a later spec adds if wanted"
+
+decisions:
+  - key: "Light paper look: serif display, Inter body, mono for YAML — a spec reads like a document, Agent Smith's dark stage stays its own"
+  - key: "Tokens live in tokens.css directly — agent-smith derives them from DESIGN.md for three consumers, this site is the only one"
+  - key: "Every mock (spec, verdict, decision, gate ledger) is HTML, not an image — readable, selectable, sharp on any screen"
+  - key: "One page with anchors — the method fits on it, and the README stays the reference"
+
+steps:
+  - id: scaffold
+    action: "Create website/ as agent-smith's: package.json, eleventy.config.js, check-links.mjs, vercel.json, .gitignore, src/_data/site.json"
+  - id: layout
+    action: "Write layouts/base.njk: meta, canonical, Open Graph image, JSON-LD (author = creator = copyright holder), nav, footer"
+  - id: page
+    action: "Write index.njk: hero, three problems, the loop, the spec, the review, decisions and memory, the gate, Agent Smith band, install, any agent, footer"
+  - id: style
+    action: "Write tokens.css, styles.css, main.js (copy buttons, reveal on scroll, reduced motion respected), favicon.svg, og.png"
+  - id: machine
+    action: "Add llms.txt, sitemap.xml, robots.txt and a 404 page"
+  - id: context
+    action: "Add contexts/website/{context.yaml,coding-principles.md} with workdir website and verify: cd website && npm ci && npm run build, when_present website/package.json"
+  - id: links
+    action: "Point README and marketplace.json homepage at https://spec-first.dev"
+
+upgrade_impact: "nothing: a new directory; the plugin payload is unchanged"
+proven_live: "rendered in Chrome at 1440 and 375 px and checked by eye; the live domain waits for the operator's Vercel project"
+
+tests:
+  - "npm run build passes, link check included"
+
+done:
+  - "website builds with zero missing local targets"
+  - "no horizontal scroll at 375 px; every section readable"
+  - "JSON-LD names Holger Leichsenring as author, creator and copyright holder"
+  - "every number on the page matches the counted facts"
+  - "the website verify stage passes"
