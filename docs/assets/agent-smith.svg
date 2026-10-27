@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 340" role="img" aria-labelledby="t d">
   <title id="t">Built this way: Agent Smith</title>
-  <desc id="d">Agent Smith, an open source agentic software factory, is built entirely spec-first: more than 1,300 specs done, more than 1,190 decision files, more than 1,400 commits that name their spec, more than 800 commits through the gate. Counted in the Agent Smith repository in October 2026.</desc>
+  <desc id="d">Agent Smith, an open source agentic software factory, is built spec-first: more than 1,300 specs done, more than 1,190 decision files, 94% of all changed lines came in through a spec, more than 800 commits through the gate. Counted in the Agent Smith repository in October 2026.</desc>
 
   <defs>
     <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1">
@@ -38,8 +38,8 @@
   <text x="968" y="128" class="num">1,190+</text>
   <text x="968" y="158" class="unit">decision files: chose, over, why</text>
 
-  <text x="588" y="260" class="num">1,400+</text>
-  <text x="588" y="290" class="unit">commits that name their spec</text>
+  <text x="588" y="260" class="num">94%</text>
+  <text x="588" y="290" class="unit">of all changed lines came via a spec</text>
 
   <text x="968" y="260" class="num">800+</text>
   <text x="968" y="290" class="unit">spec commits through the gate</text>

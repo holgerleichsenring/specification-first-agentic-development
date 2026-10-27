@@ -34,7 +34,7 @@ Restart your machine, restart the agent, open `context.yaml`, and you're back wh
 
 ## Built with it
 
-<a href="https://github.com/holgerleichsenring/agent-smith"><img src="docs/assets/agent-smith.svg" alt="Agent Smith, built spec-first: more than 1,300 specs done, 1,190+ decision files, 1,400+ commits that name their spec, 800+ spec commits through the gate." width="100%"></a>
+<a href="https://github.com/holgerleichsenring/agent-smith"><img src="docs/assets/agent-smith.svg" alt="Agent Smith, built spec-first: more than 1,300 specs done, 1,190+ decision files, 94% of all changed lines came in through a spec, 800+ spec commits through the gate." width="100%"></a>
 
 [Agent Smith](https://github.com/holgerleichsenring/agent-smith) is an open source agentic software factory: you drop a ticket into your tracker, and a verified pull request comes back with its reasoning and its cost. Agent Smith is built with this method, and the method came out of that project. Its specs, decisions and gate are the long-run test for everything in this plugin; the plugin's commit gate is ported from Agent Smith's own.
 
