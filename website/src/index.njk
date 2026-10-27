@@ -3,35 +3,179 @@ layout: layouts/base.njk
 title: "spec-first · Specification-First Agentic Development"
 description: "Hand your agents a series of specs and get back verified pull requests. Each spec is reviewed against your code before it is built, runs in its own worktree, and lands only through a gate that runs your checks."
 ---
-<header class="hero" id="top">
+<header class="hero hero-ide" id="top">
   <div class="wrap">
-    <div>
+    <div class="hero-text">
       <p class="kicker">Specification-First Agentic Development</p>
-      <h1>Hand your agents a series of specs. Get back <em>verified</em> pull requests.</h1>
-      <p class="lede">Each spec is checked against your code before anyone builds it. Each gets its own branch and worktree, so agents work side by side without colliding. A spec commit lands only when your checks pass, and the reasoning ends up on record along the way.</p>
-      <div class="cmd">
-        <code id="cmd1"><span>/plugin marketplace add</span> holgerleichsenring/specification-first-agentic-development</code>
-        <button class="copy" type="button" data-copy="cmd1">Copy</button>
+      <h1>Vibe coding is dead. <em>Talk it through, the rest is guided.</em></h1>
+      <div class="hero-split">
+        <p class="lede">Describe the feature in your own words. Four commands write the spec, check it against your code, build it in its own worktree and deliver it through your checks. Run several side by side and get back verified pull requests.</p>
+        <div>
+          <div class="hero-row2">
+            <div class="cmd">
+              <code id="cmd1"><span>/plugin marketplace add</span> holgerleichsenring/specification-first-agentic-development</code>
+              <button class="copy" type="button" data-copy="cmd1">Copy</button>
+            </div>
+            <a class="btn btn-ink" href="#install">Install</a>
+          </div>
+          <div class="facts"><span>MIT licensed</span><span>Plain YAML and Markdown in your repo</span><span>Claude Code plugin, or any agent</span></div>
+        </div>
       </div>
-      <div class="cta">
-        <a class="btn btn-ink" href="#install">Install</a>
-        <a class="btn btn-line" href="#method">See how it works</a>
-      </div>
-      <div class="facts"><span>MIT licensed</span><span>Plain YAML and Markdown in your repo</span><span>Claude Code plugin, or any agent</span></div>
     </div>
-
-    <div>
-      <div class="board" aria-label="Example: a series of five specs delivered as one pull request">
-        <div class="board-head"><b>deliver-series 2026-10-27-8a3f</b><span>5 specs · 3 groups</span><span class="pill ok" id="b-state">building</span></div>
-        <div class="cols" aria-hidden="true"><span></span><span>Spec</span><span>Group</span><span class="stg"><span>review</span><span>build</span><span>gate</span><span>merge</span></span></div>
-        <div class="row" data-s="a"><span class="id">a</span><span class="t"><b>tickets-provider-contract</b><small>requires nothing</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
-        <div class="row" data-s="b"><span class="id">b</span><span class="t"><b>tickets-github-provider</b><small>requires a</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
-        <div class="row" data-s="c"><span class="id">c</span><span class="t"><b>tickets-jira-provider</b><small>requires a</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
-        <div class="row" data-s="d"><span class="id">d</span><span class="t"><b>settings-provider-page</b><small>requires nothing</small></span><span class="lane g2"><i></i>2</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
-        <div class="row" data-s="e"><span class="id">e</span><span class="t"><b>ci-restore-cache</b><small>requires nothing</small></span><span class="lane g3"><i></i>3</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
-        <div class="board-foot"><p id="b-foot"><b>3 worktrees</b> building in parallel · every spec commit through the gate</p><span class="pr" id="b-pr">PR #42</span></div>
+    <div class="hero-scene">
+      <div class="ide-steps" role="group" aria-label="Steps of the example">
+        <button type="button" data-step="0" aria-pressed="false"><b>1</b>Describe</button>
+        <button type="button" data-step="1" aria-pressed="false"><b>2</b>/create-spec</button>
+        <button type="button" data-step="2" aria-pressed="true"><b>3</b>/review-spec</button>
+        <button type="button" data-step="3" aria-pressed="false"><b>4</b>/apply-spec</button>
+        <button type="button" data-step="4" aria-pressed="false"><b>5</b>/deliver-spec</button>
       </div>
-      <p class="board-note">An example run of <code>/spec-first:deliver-series</code>. Specs that share no file are built at the same time; specs that depend on each other share a group.</p>
+
+      <div class="ide-stage">
+        <div class="bubble b0" data-show="0" hidden><b>You talk, it listens</b>You describe the app in your own words. Before asking anything, the agent reads your memory and the repository, so it only asks what neither can answer.</div>
+        <div class="bubble b1" data-show="1" hidden><b>The spec comes first</b>create-spec writes goal, facts with file and line, steps and done criteria, on a fresh branch in its own worktree. No code yet.</div>
+        <div class="bubble b2" data-show="2"><b>A second pair of eyes</b>A script checks that every cited file and line exists. Then a new agent with no chat history attacks the spec against the code, and its cuts are applied before anything is built.</div>
+        <div class="bubble b3" data-show="3" hidden><b>Built by the spec</b>apply-spec works through the steps, writes the tests the spec names, and logs every choice that wasn't obvious in decisions/.</div>
+        <div class="bubble b4" data-show="4" hidden><b>Only green lands</b>The commit goes through the gate: build and tests have to pass. Then the branch is pushed and the pull request opens with the spec inside.</div>
+
+      <div class="vsc" data-step="2" aria-label="Example: building a todo app with spec-first in VS Code">
+        <div class="vsc-title"><span class="vsc-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="vsc-search">todo-app</span></div>
+        <div class="vsc-main">
+          <div class="vsc-act" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="1.6"/></svg>
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="19" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 7v10M18 10c0 4-6 3-12 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="4" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="13" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="13" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+
+          <nav class="vsc-side" aria-label="Explorer">
+            <div class="vsc-h">Explorer</div>
+            <div class="t d">todo-app</div>
+            <div class="t d l1">.spec-first</div>
+            <div class="t d l2">decisions</div>
+            <div class="t f l3 new" id="e-dec" data-show="3-4" hidden>2026-10-27-7b2d.yaml</div>
+            <div class="t d l2">memory</div>
+            <div class="t f l3">feedback-stack.md</div>
+            <div class="t f l3">MEMORY.md</div>
+            <div class="t d l2">specs</div>
+            <div class="t d l3" id="e-planned" data-show="1-2">planned</div>
+            <div class="t d l3" id="e-active" data-show="9" hidden>active</div>
+            <div class="t d l3" id="e-done" data-show="3-4" hidden>done</div>
+            <div class="t f l4 new on" id="e-spec" data-show="1-4">2026-10-27-7b2d-todos-first-version.yaml</div>
+            <div class="t d l1">src</div>
+            <div class="t f l2 new" id="e-todos" data-show="3-4" hidden>todos.ts</div>
+            <div class="t f l2 new" id="e-test" data-show="3-4" hidden>todos.test.ts</div>
+            <div class="t f l2 new" id="e-list" data-show="3-4" hidden>TodoList.ts</div>
+            <div class="t f l2">main.ts</div>
+            <div class="t f l1">package.json</div>
+          </nav>
+
+          <div class="vsc-editor">
+            <div class="vsc-tabs">
+              <span class="tab" id="t-main" data-tab="main">main.ts</span>
+              <span class="tab on" id="t-spec" data-tab="spec" data-show="1-4">2026-10-27-7b2d-todos-first-version.yaml</span>
+              <span class="tab" id="t-code" data-tab="code" data-show="3-4" hidden>todos.ts</span>
+              <span class="tab" id="t-app" data-tab="app" data-show="4" hidden>Simple Browser · localhost:5173</span>
+            </div>
+            <div class="vsc-crumb" data-pane="main" data-show="0" hidden>src › main.ts</div>
+            <div class="vsc-crumb" data-pane="spec" data-show="1-2">.spec-first › specs › planned › 2026-10-27-7b2d-todos-first-version.yaml</div>
+            <div class="vsc-crumb" data-pane="code" data-show="3" hidden>src › todos.ts</div>
+<pre class="vsc-code" id="p-main" data-pane="main" data-show="0" hidden><span class="ln"><span class="k">import</span> <span class="s">'./style.css'</span></span>
+<span class="ln"></span>
+<span class="ln"><span class="k">const</span> app = document.querySelector&lt;<span class="ty">HTMLDivElement</span>&gt;(<span class="s">'#app'</span>)!</span>
+<span class="ln">app.innerHTML = <span class="s">`&lt;h1&gt;Todos&lt;/h1&gt;`</span></span>
+<span class="ln"></span>
+<span class="ln"><span class="c">// Vite starter: nothing else here yet</span></span></pre>
+<pre class="vsc-code" id="p-spec" data-pane="spec" data-show="1-2"><span class="ln"><span class="k">spec:</span> 2026-10-27-7b2d</span>
+<span class="ln"><span class="k">goal:</span> <span class="s">"A first todo app: add, tick off, filter, kept on reload"</span></span>
+<span class="ln"><span class="k">facts:</span></span>
+<span class="ln">  - <span class="k">claim:</span> <span class="s">"The app is an empty Vite starter"</span></span>
+<span class="ln">    <span class="k">evidence:</span> <span class="c">src/main.ts:1-6</span><span class="ok" id="m-ok1" data-show="2"> ✓</span></span>
+<span class="ln">  - <span class="k">claim:</span> <span class="s">"TypeScript, tests with Vitest"</span></span>
+<span class="ln">    <span class="k">evidence:</span> <span class="c">.spec-first/memory/feedback-stack.md</span><span class="ok" id="m-ok2" data-show="2"> ✓</span></span>
+<span class="ln"><span class="k">steps:</span></span>
+<span class="ln">  - <span class="k">id:</span> store <span class="cm"># todos.ts, saved to localStorage</span></span>
+<span class="ln">  - <span class="k">id:</span> list <span class="cm"># TodoList.ts: add, tick, filter</span></span>
+<span class="ln cut struck" id="m-strike">  - <span class="k">id:</span> drag-to-reorder<span class="vnote red" id="m-cut" data-show="2">cut by review: not asked for</span></span>
+<span class="ln"><span class="k">done:</span></span>
+<span class="ln">  - <span class="s">"Add, tick off and delete a todo"</span></span>
+<span class="ln">  - <span class="s">"Filter all, open, done"</span></span>
+<span class="ln">  - <span class="s">"Todos survive a reload"</span></span>
+<span class="ln" id="m-add" data-show="2">  - <span class="s">"An empty title is rejected"</span><span class="vnote green">added by review</span></span></pre>
+<pre class="vsc-code" id="p-code" data-pane="code" data-show="3" hidden><span class="ln"><span class="k">export type</span> <span class="ty">Todo</span> = { id: <span class="ty">string</span>; title: <span class="ty">string</span>; done: <span class="ty">boolean</span> }</span>
+<span class="ln"></span>
+<span class="ln"><span class="k">const</span> KEY = <span class="s">'todos'</span></span>
+<span class="ln"></span>
+<span class="ln"><span class="k">export function</span> load(): <span class="ty">Todo</span>[] {</span>
+<span class="ln">  <span class="k">return</span> JSON.parse(localStorage.getItem(KEY) ?? <span class="s">'[]'</span>)</span>
+<span class="ln">}</span>
+<span class="ln"></span>
+<span class="ln"><span class="k">export function</span> add(todos: <span class="ty">Todo</span>[], title: <span class="ty">string</span>): <span class="ty">Todo</span>[] {</span>
+<span class="ln">  <span class="k">if</span> (!title.trim()) <span class="k">return</span> todos  <span class="cm">// done criterion: empty title rejected</span></span>
+<span class="ln">  <span class="k">return</span> [...todos, { id: crypto.randomUUID(), title: title.trim(), done: <span class="k">false</span> }]</span>
+<span class="ln">}</span></pre>
+            <div class="vsc-app" id="p-app" data-pane="app" data-show="4" hidden>
+              <div class="app-card">
+                <h4>Todos</h4>
+                <div class="app-add"><span>What needs doing?</span><i>Add</i></div>
+                <div class="app-filter"><span class="on">All</span><span>Open</span><span>Done</span></div>
+                <ul>
+                  <li class="is-done"><i></i>Write the spec</li>
+                  <li class="is-done"><i></i>Review it against the code</li>
+                  <li id="app-tick"><i></i>Buy coffee beans</li>
+                  <li><i></i>Book the train to Hamburg</li>
+                </ul>
+                <p id="app-count">2 open · saved in this browser</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="vsc-claude" aria-label="Claude Code panel">
+            <div class="vsc-h">Claude Code</div>
+            <div class="cc-log">
+              <div id="c1" data-show="0-4" class="cc-you">I want a small todo app. Add todos, tick them off, filter open and done. Browser only, no backend.</div>
+              <div id="c2" data-show="0-4" class="cc-tool"><b>Read</b> .spec-first/memory/MEMORY.md</div>
+              <div id="c3" data-show="0-4" class="cc-tool"><b>Read</b> src/main.ts</div>
+              <div id="c4" data-show="0-4" class="cc-ai">It's an empty Vite starter, and I'll use TypeScript and Vitest as you prefer. Should todos survive a reload?</div>
+              <div id="c5" data-show="0-4" class="cc-you">Yes, localStorage is fine.</div>
+
+              <div id="c6" class="cc-you cc-cmd" data-show="1-4">/spec-first:create-spec</div>
+              <div id="c8" class="cc-tool" data-show="1-4"><b>Write</b> 2026-10-27-7b2d-todos-first-version.yaml</div>
+              <div id="c27" data-show="1-4" class="cc-ai">Here is the spec. Shall I put it on its own branch?</div>
+              <div id="c28" data-show="1-4" class="cc-you">Looks right, go.</div>
+              <div id="c7" class="cc-tool" data-show="1-4"><b>Bash</b> git worktree add -b spec/2026-10-27-7b2d …</div>
+              <div id="c9" class="cc-ai" data-show="1-4">Spec 2026-10-27-7b2d is on its own branch: 3 steps, 3 done criteria.</div>
+
+              <div id="c10" class="cc-you cc-cmd" data-show="2-4">/spec-first:review-spec</div>
+              <div id="c11" class="cc-tool" data-show="2-4"><b>Bash</b> check-evidence.py <span>evidence resolves: 1 spec</span></div>
+              <div id="c12" class="cc-tool agent" data-show="2-4"><b>Agent</b> Review spec 2026-10-27-7b2d <span>fresh context</span></div>
+              <div id="c13" class="cc-tool" data-show="2-4"><b>Edit</b> 2026-10-27-7b2d-todos-first-version.yaml</div>
+              <div id="c14" class="cc-ai" data-show="2-4">BUILD WITH CUTS. Drag to reorder is out, a check for empty titles is in. Both applied.</div>
+
+              <div id="c15" class="cc-you cc-cmd" data-show="3-4" hidden>/spec-first:apply-spec</div>
+              <div id="c29" data-show="3-4" hidden class="cc-ai">Plan: the store first, then the list, then the tests. Go?</div>
+              <div id="c30" data-show="3-4" hidden class="cc-you">Go.</div>
+              <div id="c16" class="cc-tool" data-show="3-4" hidden><b>Write</b> src/todos.ts</div>
+              <div id="c17" class="cc-tool" data-show="3-4" hidden><b>Write</b> src/TodoList.ts</div>
+              <div id="c18" class="cc-tool" data-show="3-4" hidden><b>Write</b> src/todos.test.ts</div>
+              <div id="c19" class="cc-tool" data-show="3-4" hidden><b>Bash</b> npm test <span>9 passed</span></div>
+              <div id="c20" class="cc-tool" data-show="3-4" hidden><b>Write</b> .spec-first/decisions/2026-10-27-7b2d.yaml</div>
+              <div id="c21" class="cc-ai" data-show="3-4" hidden>Built and tested. One decision on record: localStorage over IndexedDB, because a few hundred todos fit easily.</div>
+
+              <div id="c22" class="cc-you cc-cmd" data-show="4" hidden>/spec-first:deliver-spec</div>
+              <div id="c23" class="cc-tool" data-show="4" hidden><b>Bash</b> git commit -m "feat: a first todo app (2026-10-27-7b2d)" <span>gate: build, test passed</span></div>
+              <div id="c24" class="cc-tool" data-show="4" hidden><b>Bash</b> gh pr create <span>#12</span></div>
+              <div id="c26" data-show="4" hidden class="cc-tool"><b>Bash</b> npm run dev <span>localhost:5173</span></div>
+              <div id="c25" class="cc-ai" data-show="4" hidden>The gate passed and pull request #12 is open. The app runs on localhost:5173.</div>
+            </div>
+            <div class="cc-input"><span id="cc-typed">/spec-first:apply-spec</span><i class="caret" aria-hidden="true"></i></div>
+          </aside>
+        </div>
+        <div class="vsc-status"><span class="br">⎇ <span id="br-main" data-show="0" hidden>main</span><span id="br-spec" data-show="1-4">spec/2026-10-27-7b2d</span></span><span>⊘ 0 problems</span><span class="r">Claude Code</span></div>
+      </div>
+      </div>
+      <p class="vsc-note">The rows with a dot are what the skills do on their own: reading, writing, checking, building. You type the lines in boxes.</p>
+
     </div>
   </div>
 </header>
@@ -65,10 +209,32 @@ description: "Hand your agents a series of specs and get back verified pull requ
   </section>
 
 
-  <section id="method">
+  <section id="series">
     <div class="wrap">
       <div class="clause">
         <div class="no" aria-hidden="true"><i>§</i>2</div>
+        <div>
+          <h2>A whole series, side by side</h2>
+          <p>Cut a bigger change into a series of specs. <code>/spec-first:deliver-series</code> reviews all of them, builds the groups that share no file at the same time, verifies the merged tree and opens one pull request.</p>
+        </div>
+      </div>
+      <div class="body-grid"><div class="board" aria-label="Example: a series of five specs delivered as one pull request">
+        <div class="board-head"><b>deliver-series 2026-10-27-8a3f</b><span>5 specs · 3 groups</span><span class="pill ok" id="b-state">building</span></div>
+        <div class="cols" aria-hidden="true"><span></span><span>Spec</span><span>Group</span><span class="stg"><span>review</span><span>build</span><span>gate</span><span>merge</span></span></div>
+        <div class="row" data-s="a"><span class="id">a</span><span class="t"><b>tickets-provider-contract</b><small>requires nothing</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="b"><span class="id">b</span><span class="t"><b>tickets-github-provider</b><small>requires a</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="c"><span class="id">c</span><span class="t"><b>tickets-jira-provider</b><small>requires a</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="d"><span class="id">d</span><span class="t"><b>settings-provider-page</b><small>requires nothing</small></span><span class="lane g2"><i></i>2</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="e"><span class="id">e</span><span class="t"><b>ci-restore-cache</b><small>requires nothing</small></span><span class="lane g3"><i></i>3</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="board-foot"><p id="b-foot"><b>3 worktrees</b> building in parallel · every spec commit through the gate</p><span class="pr" id="b-pr">PR #42</span></div>
+      </div>
+      <p class="board-note">An example run of <code>/spec-first:deliver-series</code>. Specs that share no file are built at the same time; specs that depend on each other share a group.</p></div>
+    </div>
+  </section>
+  <section id="method">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>3</div>
         <div>
           <h2>One spec, from idea to pull request</h2>
           <p>Four skills take a piece of work through its own branch and worktree. Each one leaves a file behind for the next step and for whoever reads the history later.</p>
@@ -82,11 +248,12 @@ description: "Hand your agents a series of specs and get back verified pull requ
           <div class="step"><h3>deliver-spec</h3><p>One commit through the gate, pushed, pull request opened.</p><div class="out">feat: … ({id})</div></div>
         </div>
         <div class="record">
-          <div class="cap"><b>The record</b>read before every step, written back after</div>
-          <div class="rec"><code>contexts/</code><p>Stack, architecture, limits and verify stages, per stack.</p></div>
-          <div class="rec"><code>specs/ + decisions/</code><p>Every spec, and what it chose over what, and why.</p></div>
-          <div class="rec"><code>memory/</code><p>Facts the next session needs that git can't tell it.</p></div>
+          <div class="cap"><b>The record</b>grows with every spec, read before every step</div>
+          <div class="rec"><code>specs/</code><p>Every spec, from planned to done, with its facts and done criteria.</p></div>
+          <div class="rec"><code>decisions/</code><p>What each spec chose, what it chose over, and why.</p></div>
+          <div class="rec"><code>memory/</code><p>What you told the agent once, so you don't say it twice.</p></div>
         </div>
+        <p class="note"><code>/spec-first:bootstrap-project</code> writes the contexts once from your code: stack, rules and the checks a commit must pass. After that, each spec adds one line of state.</p>
       </div>
     </div>
   </section>
@@ -94,7 +261,7 @@ description: "Hand your agents a series of specs and get back verified pull requ
   <section id="review">
     <div class="wrap">
       <div class="clause">
-        <div class="no" aria-hidden="true"><i>§</i>3</div>
+        <div class="no" aria-hidden="true"><i>§</i>4</div>
         <div>
           <h2>A spec is reviewed before anyone builds it</h2>
           <p>A REFUSE costs you one spec. Without the review, the same mistake would have cost you the branch.</p>
@@ -139,6 +306,7 @@ description: "Hand your agents a series of specs and get back verified pull requ
             <div class="finding"><span class="k">CUT 2</span><p>Paging is missing: GitHub returns 30 issues per page. <code>GitHubClient.cs:88</code> Add a done criterion.</p></div>
           </div>
         </div>
+        </div>
         <div class="three-pts">
           <div><h3>Every citation is checked</h3><p>A script opens each file and line the spec cites. A claim nobody checked in the code has to be listed as an assumption.</p></div>
           <div><h3>The reviewer starts fresh</h3><p>A new agent with no conversation history reads the code as it is, not as the spec says it is.</p></div>
@@ -151,7 +319,7 @@ description: "Hand your agents a series of specs and get back verified pull requ
   <section id="decisions">
     <div class="wrap">
       <div class="clause">
-        <div class="no" aria-hidden="true"><i>§</i>4</div>
+        <div class="no" aria-hidden="true"><i>§</i>5</div>
         <div>
           <h2>The reasoning comes along for free</h2>
           <p>Nobody has to write documentation afterwards. While it builds, the agent logs each choice that wasn't obvious: what it chose, what it chose over, and why. One file per spec, next to the code.</p>
@@ -185,7 +353,7 @@ description: "Hand your agents a series of specs and get back verified pull requ
   <section id="gate">
     <div class="wrap">
       <div class="clause">
-        <div class="no" aria-hidden="true"><i>§</i>5</div>
+        <div class="no" aria-hidden="true"><i>§</i>6</div>
         <div>
           <h2>Nothing lands past a red stage</h2>
           <p>The plugin's commit gate runs every verify stage your contexts declare when a commit names its spec. All green, it commits. The first red stage blocks it, and its output goes back to the agent.</p>
@@ -244,7 +412,7 @@ description: "Hand your agents a series of specs and get back verified pull requ
   <section id="install">
     <div class="wrap">
       <div class="clause">
-        <div class="no" aria-hidden="true"><i>§</i>6</div>
+        <div class="no" aria-hidden="true"><i>§</i>7</div>
         <div>
           <h2>Install</h2>
           <p>In Claude Code the plugin does the bookkeeping and runs the gate. Other agents follow the same files through <code>AGENTS.md</code>, and you run the checks.</p>
@@ -302,7 +470,7 @@ https://github.com/{{ site.githubRepo }}/tree/main/templates
   <section id="reading">
     <div class="wrap">
       <div class="clause">
-        <div class="no" aria-hidden="true"><i>§</i>7</div>
+        <div class="no" aria-hidden="true"><i>§</i>8</div>
         <div><h2>Where it comes from</h2></div>
       </div>
       <div class="reading body-grid">
