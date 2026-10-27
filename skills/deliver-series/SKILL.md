@@ -51,7 +51,7 @@ Spawn one background subagent per group. It has no conversation history, so put 
 
 - the worktree path and branch, and that it works only there (absolute paths, no `cd` into other checkouts);
 - the specs in build order, with their paths;
-- the project's rules: the root `CLAUDE.md` or `prompt.md`, each context's coding principles, and the decisions files its specs require;
+- the project's rules: the root `AGENTS.md` (or `CLAUDE.md` in a project without one), each context's coding principles, and the decisions files its specs require;
 - the instruction to run `/spec-first:apply-spec` for each spec, then commit it exactly as deliver-spec step 2 says: one commit per spec, `feat: {short description} ({id})`, a literal `-m`, never piped, never built with `$(...)`, and the commit command on its own (no heredoc in the same command line);
 - after each commit, read the gate's ledger line for that spec (deliver-spec step 3). No line means the gate never ran on that commit: run the verify stages by hand and say so;
 - the gates of all builders share one machine. A timing-bound test that fails under that load and passes alone is re-run once and named in the report, not hidden;

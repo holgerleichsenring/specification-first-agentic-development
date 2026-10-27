@@ -93,7 +93,12 @@ If the repository already has a gate of its own, `gate: project` in one `context
 
 ## Without Claude Code
 
-Nothing here depends on the plugin. Copy [`templates/`](templates/) into your project as `.yourproject/`, fill in `contexts/default/context.yaml`, and point your agent at [`templates/prompt.md`](templates/prompt.md). Cursor, Codex, Copilot or a plain chat window can all follow it. They'll be missing the gate and the evidence script, so run those checks yourself.
+The method doesn't need the plugin. Codex, Cursor, Copilot and a plain terminal follow the same files:
+
+1. Copy [`templates/`](templates/) into your project as `.yourproject/` and fill in `contexts/default/context.yaml`.
+2. Write `AGENTS.md` at the root from [`templates/prompt.md`](templates/prompt.md). Most coding agents read it when a session starts, and Claude Code reads it through a `CLAUDE.md` that holds `@AGENTS.md`. Each step in it says how to do the step by hand.
+3. Clone this repository once. It holds the evidence check (`skills/review-spec/scripts/check-evidence.py`, needs python3 and PyYAML) and the gate as a git hook.
+4. Set `gate: git` in one context and run `python3 <clone>/hooks/install-git-hook.py` in each clone of your project. The commit-msg hook then runs the `verify:` stages on every commit whose message names a spec, whichever agent made it. Hooks are per clone and `git commit --no-verify` skips them, so every teammate installs it and nobody skips it on a spec commit.
 
 ---
 
@@ -174,7 +179,7 @@ A decision records a choice. A memory records a fact the next session needs and 
 | `decisions/p0001.yaml` + `decision.schema.json` | The decision-file shape |
 | `context.schema.json` | Schema for `context.yaml`: `verify:`, `gate:`, `evidence_roots:` |
 | `memory/` | The memory index and the entry shape |
-| `prompt.md` | Agent instructions for tools without the plugin |
+| `prompt.md` | The basis for `AGENTS.md`: read order and workflow for any agent, with each plugin step also described by hand |
 
 Projects on an older layout (v1 flat files, or `phases/` before 2.5) migrate with `/spec-first:update-project`.
 
