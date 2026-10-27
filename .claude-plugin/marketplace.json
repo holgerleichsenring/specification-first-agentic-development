@@ -20,7 +20,7 @@
       "author": {
         "name": "Holger Leichsenring"
       },
-      "homepage": "https://github.com/holgerleichsenring/specification-first-agentic-development",
+      "homepage": "https://spec-first.dev",
       "license": "MIT",
       "keywords": ["methodology", "specification-first", "specs", "decision-log", "context-persistence"]
     }

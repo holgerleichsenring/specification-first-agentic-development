@@ -6,5 +6,7 @@
     "name": "Holger Leichsenring",
     "url": "https://codingsoul.org"
   },
+  "homepage": "https://spec-first.dev",
+  "repository": "https://github.com/holgerleichsenring/specification-first-agentic-development",
   "skills": "./skills/"
 }
