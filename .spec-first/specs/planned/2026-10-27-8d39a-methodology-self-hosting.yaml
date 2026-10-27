@@ -53,7 +53,7 @@ steps:
   - id: instructions
     action: "Write CLAUDE.md from templates/prompt.md with .spec-first/ substituted, pointing at the contexts' verify: stages instead of naming commands"
 
-upgrade_impact: "nothing: users of the plugin never see .spec-first/; the root specs/ and decisions/ were never read by any skill"
+upgrade_impact: "nothing to change: .spec-first/ and CLAUDE.md ship in the plugin cache like the root specs/ did, and nothing in the plugin reads them"
 proven_live: "the verify stages run green by hand at the spec commit, because the installed plugin (2.6.0) has no gate"
 
 tests:

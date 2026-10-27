@@ -25,8 +25,8 @@ facts:
     evidence: "README.md:24-41"
   - claim: "The marketplace entry's homepage is the GitHub repo"
     evidence: ".claude-plugin/marketplace.json:23"
-  - claim: "Agent Smith counts: 1,332 specs done, 1,193 decision files, 810 gated commits"
-    evidence: "observed: 2026-10-27 counted in the agent-smith repository (specs/done, decisions/, git log --numstat, .claude/spec-gate.log)"
+  - claim: "Agent Smith counts: 1,332 specs done, 1,193 decision files, 654 spec ids with a passed gate line"
+    evidence: "observed: 2026-10-27 counted in the agent-smith repository (specs/done, decisions/, distinct passed ids in .claude/spec-gate.log)"
 
 assumptions:
   - claim: "The operator creates a Vercel project on this repo with root directory website/ and points spec-first.dev at it"
@@ -34,11 +34,12 @@ assumptions:
 
 scope:
   in: "website/, .spec-first/contexts/website/, a README link to spec-first.dev"
-  out: "Vercel project and DNS (the operator's); the marketplace homepage, switched once spec-first.dev answers; docs beyond one page"
+  out: "Vercel and DNS (operator); marketplace homepage until the site answers; an agent-neutral prompt.md and a git pre-commit gate, follow-ups if wanted"
 
 decisions:
+  - key: "Site copy claims only what the code backs: the gate covers spec commits and its listed message forms; other agents get the files, not the skills or the gate"
   - key: "Mock first: the operator approved the look as a published mock (2026-10-27) before the build"
-  - key: "Light paper look: serif display, Inter body, mono for YAML — a spec reads like a document, Agent Smith's dark stage stays its own"
+  - key: "Light paper look: Spectral display, IBM Plex Sans body, IBM Plex Mono for YAML, loaded from @fontsource on jsdelivr as agent-smith.org does"
   - key: "Tokens live in tokens.css directly — agent-smith derives them from DESIGN.md for three consumers, this site is the only one"
   - key: "Every mock (spec, verdict, decision, gate ledger) is HTML, not an image — readable, selectable, sharp on any screen"
   - key: "One page with anchors; the README stays the reference"
@@ -60,7 +61,7 @@ steps:
   - id: links
     action: "Add a spec-first.dev link to the README and drop the 94% line from its Agent Smith text and graphic; marketplace homepage stays on GitHub until the site answers"
 
-upgrade_impact: "nothing: a new directory; the plugin payload is unchanged"
+upgrade_impact: "nothing to change: website/ (about 150 KB, og.png included) ships in the plugin cache; nothing in the plugin reads it"
 proven_live: "rendered in Chrome at 1440 and 375 px and checked by eye; the live domain waits for the operator's Vercel project"
 
 tests:
@@ -71,5 +72,5 @@ done:
   - "no horizontal scroll at 375 px; every section readable"
   - "JSON-LD names Holger Leichsenring as author, creator and copyright holder"
   - "every number on the page matches the counted facts"
-  - "the og:image URL resolves to a file in _site"
+  - "the og:image URL resolves to a file in _site (checked by hand)"
   - "the website verify stage passes"
