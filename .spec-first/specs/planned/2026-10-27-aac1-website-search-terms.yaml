@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-aac1
+goal: "spec-first.dev passes Bing's meta-description check and names spec-first agentic development and specification-driven agentic development where readers and search engines see them."
+
+applies_to: "website"
+
+requires: []
+
+facts:
+  - claim: "The page's meta description is 210 characters long"
+    evidence: "website/src/index.njk:4"
+  - claim: "Bing reports 'Meta Description too long or too short' for https://spec-first.dev/"
+    evidence: "observed: 2026-10-27 Bing Webmaster Tools URL inspection, Live URL tab, screenshot from the operator"
+  - claim: "Title and site tagline read 'Specification-First Agentic Development'"
+    evidence: "website/src/index.njk:3"
+  - claim: "site.json carries the description and tagline that JSON-LD and llms.txt use"
+    evidence: "website/src/_data/site.json:3-4"
+  - claim: "The JSON-LD names one alternateName from the tagline"
+    evidence: "website/src/_includes/layouts/base.njk:42-47"
+  - claim: "The kicker above the headline repeats the tagline"
+    evidence: "website/src/index.njk:9"
+  - claim: "llms.txt opens with the title, tagline and description"
+    evidence: "website/src/llms.txt.njk:1-8"
+  - claim: "The reading section is the last section of the page"
+    evidence: "website/src/index.njk:471"
+  - claim: "README and both manifests describe the plugin as 'Specification-First Agentic Development'"
+    evidence: "README.md:1-5"
+
+scope:
+  in: "page title and description, site.json, kicker, a new FAQ section with FAQPage JSON-LD, SoftwareApplication alternateName and keywords, llms.txt, README lead, manifest descriptions"
+  out: "hidden text of any kind; other pages"
+
+decisions:
+  - key: "No hidden text: search engines treat hidden keywords as spam; the terms go into visible copy, a FAQ and structured data"
+  - key: "A FAQ answers the questions people search with ('specification-driven development?'); FAQPage markup lets Bing show the answers"
+  - key: "Descriptions stay 120 to 155 characters, under Bing's limit with a margin"
+
+steps:
+  - id: meta
+    action: "Title 'Spec-first agentic development · spec-first.dev'; description under 155 characters naming both terms; site.json follows"
+  - id: kicker
+    action: "Kicker reads 'Spec-first agentic development, specification-driven'"
+  - id: faq
+    action: "Add a FAQ section before the reading section: what it is, specification-driven vs spec-first, other agents, vibe coding, what a spec holds"
+  - id: jsonld
+    action: "SoftwareApplication alternateName lists both terms, keywords added; FAQPage from the same questions and answers"
+  - id: text
+    action: "llms.txt, README lead and the two manifest descriptions name both terms"
+
+upgrade_impact: "nothing: site copy and metadata only"
+proven_live: "Bing's live URL test after deploy shows no meta-description error"
+
+tests:
+  - "website build and link check pass"
+
+done:
+  - "meta description between 120 and 155 characters"
+  - "both terms appear in title or description, visible copy, FAQ, JSON-LD and llms.txt"
+  - "FAQPage JSON-LD parses and matches the visible FAQ"
+  - "no element hides text"
+  - "the website verify stage passes"
