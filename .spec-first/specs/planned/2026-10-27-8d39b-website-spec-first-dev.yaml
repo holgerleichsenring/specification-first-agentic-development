@@ -25,7 +25,7 @@ facts:
     evidence: "README.md:24-41"
   - claim: "The marketplace entry's homepage is the GitHub repo"
     evidence: ".claude-plugin/marketplace.json:23"
-  - claim: "Agent Smith counts: 1,332 specs done, 1,193 decision files, 94% of changed lines in spec commits, 810 gated commits"
+  - claim: "Agent Smith counts: 1,332 specs done, 1,193 decision files, 810 gated commits"
     evidence: "observed: 2026-10-27 counted in the agent-smith repository (specs/done, decisions/, git log --numstat, .claude/spec-gate.log)"
 
 assumptions:
@@ -37,11 +37,12 @@ scope:
   out: "Vercel project and DNS (the operator's); the marketplace homepage, switched once spec-first.dev answers; docs beyond one page"
 
 decisions:
-  - key: "Mock first: the operator approves the look as a published mock before the build"
+  - key: "Mock first: the operator approved the look as a published mock (2026-10-27) before the build"
   - key: "Light paper look: serif display, Inter body, mono for YAML — a spec reads like a document, Agent Smith's dark stage stays its own"
   - key: "Tokens live in tokens.css directly — agent-smith derives them from DESIGN.md for three consumers, this site is the only one"
   - key: "Every mock (spec, verdict, decision, gate ledger) is HTML, not an image — readable, selectable, sharp on any screen"
-  - key: "One page with anchors — the method fits on it, and the README stays the reference"
+  - key: "One page with anchors; the README stays the reference"
+  - key: "Agent Smith counts drop the 94% line share; the copy says entirely built with (operator, 2026-10-27)"
 
 steps:
   - id: scaffold
@@ -49,7 +50,7 @@ steps:
   - id: layout
     action: "Write layouts/base.njk: meta, canonical, Open Graph image, JSON-LD (author = creator = copyright holder), nav, footer"
   - id: page
-    action: "Write index.njk: hero, three problems, the loop, the spec, the review, decisions and memory, the gate, Agent Smith band, install, any agent, footer"
+    action: "Write index.njk from the approved mock: series-board hero, six properties, the loop, spec and verdict, decisions, the gate, Agent Smith band, install for Claude Code and AGENTS.md agents"
   - id: style
     action: "Write tokens.css (hand-written, committed), styles.css, main.js (copy buttons, tabs, reduced motion respected), favicon.svg, og.svg and og.png rendered from it with rsvg-convert"
   - id: machine
@@ -57,7 +58,7 @@ steps:
   - id: context
     action: "Add .spec-first/contexts/website/{context.yaml,coding-principles.md} with workdir website, verify: cd website && npm ci && npm run build (when_present website/package.json), and move the 8d39b state entry there"
   - id: links
-    action: "Add a spec-first.dev link to the README; the marketplace homepage stays on GitHub until the site answers"
+    action: "Add a spec-first.dev link to the README and drop the 94% line from its Agent Smith text and graphic; marketplace homepage stays on GitHub until the site answers"
 
 upgrade_impact: "nothing: a new directory; the plugin payload is unchanged"
 proven_live: "rendered in Chrome at 1440 and 375 px and checked by eye; the live domain waits for the operator's Vercel project"
