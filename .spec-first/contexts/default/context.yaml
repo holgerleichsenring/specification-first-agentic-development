@@ -48,4 +48,8 @@ state:
     2026-10-27-8d39a: "The plugin repo runs its own method: .spec-first/ with contexts, verify stages, migrated p0001 and decisions, CLAUDE.md -> .spec-first/specs/done/2026-10-27-8d39a-methodology-self-hosting.yaml"
     p0001: "v2.0 layout: contexts/<name>/ per stack, one YAML decision file per spec -> .spec-first/specs/done/p0001-contexts-and-yaml-decisions.yaml"
   active: {}
-  planned: {}
+  planned:
+    2026-10-27-84f4a: "Manifests: homepage spec-first.dev, repository GitHub -> .spec-first/specs/planned/2026-10-27-84f4a-plugin-homepage.yaml"
+    2026-10-27-84f4b: "Commit gate as a git commit-msg hook, gate: git -> .spec-first/specs/planned/2026-10-27-84f4b-gate-git-hook.yaml"
+    2026-10-27-84f4c: "AGENTS.md as the agent-neutral instructions, CLAUDE.md imports it -> .spec-first/specs/planned/2026-10-27-84f4c-agents-md-instructions.yaml"
+    2026-10-27-84f4d: "Release 2.8.0 with update-project step 3j -> .spec-first/specs/planned/2026-10-27-84f4d-release-2-8-0.yaml"

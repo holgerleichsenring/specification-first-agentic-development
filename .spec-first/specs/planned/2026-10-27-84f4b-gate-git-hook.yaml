@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-84f4b
+goal: "The commit gate also runs as a git commit-msg hook, declared with gate: git, so spec commits are gated for Codex, Cursor, Copilot and commits typed by hand."
+
+applies_to: "default"
+
+requires: []
+
+facts:
+  - claim: "The gate reads its command from Claude Code's PreToolUse JSON on stdin and nothing else"
+    evidence: "hooks/spec-gate.py:340-351"
+  - claim: "The decision after the message is known is gate(): contexts, owner, PyYAML, stages"
+    evidence: "hooks/spec-gate.py:212-245"
+  - claim: "Owners are plugin and project; project makes the gate step aside, an unknown value blocks"
+    evidence: "hooks/spec-gate.py:74"
+  - claim: "Owner resolution blocks on unknown or conflicting values and steps aside for project"
+    evidence: "hooks/spec-gate.py:247-271"
+  - claim: "Notices go out as Claude Code JSON on stdout, which a git hook has no reader for"
+    evidence: "hooks/spec-gate.py:145-151"
+  - claim: "The marker and the unmarked-subject notice are decided from the message text alone"
+    evidence: "hooks/spec-gate.py:184-199"
+  - claim: "The schema allows gate: plugin and project only"
+    evidence: "templates/context.schema.json:22-26"
+  - claim: "Test fixtures build throwaway projects with verify stages and a gate declaration"
+    evidence: "hooks/test_commit_message.py:96-110"
+
+scope:
+  in: "hooks/spec-gate.py (commit-msg mode, gate: git), hooks/install-git-hook.py, tests, context schema and template comment"
+  out: "agent instructions that name the hook (2026-10-27-84f4c); the release (2026-10-27-84f4d)"
+
+decisions:
+  - key: "commit-msg, not pre-commit: only commit-msg sees the final message with the spec id, and it can still block"
+  - key: "gate: git owns the gate; the Claude Code hook steps aside for it, and the git hook steps aside unless it is declared, so one gate runs"
+  - key: "The installer writes the hook pointing at this spec-gate.py and refuses to overwrite a foreign commit-msg hook"
+
+steps:
+  - id: mode
+    action: "Add a --commit-msg <file> entry: tree from git rev-parse in the cwd, message from the file without # lines, notices to stderr"
+  - id: owner
+    action: "Add git to GATE_OWNERS; the PreToolUse hook steps aside for git, the commit-msg hook runs only for git and says so otherwise"
+  - id: installer
+    action: "Add hooks/install-git-hook.py: resolve core.hooksPath or the common dir's hooks/, write commit-msg, refuse a foreign one"
+    new:
+      - "install-git-hook.py: one stdlib script, exit codes in its docstring"
+  - id: schema
+    action: "Allow gate: git in context.schema.json and describe it in the context template comment"
+  - id: tests
+    action: "Add hooks/test_git_hook.py with the fixtures: passed, blocked, not declared, unmarked, installer refuses a foreign hook"
+
+upgrade_impact: "opt-in: nothing changes until a context declares gate: git and the hook is installed"
+proven_live: "a real git commit in a throwaway repo, through the installed hook, blocks on a red stage and passes on green"
+
+tests:
+  - "GitHook_GreenStages_CommitLandsAndLedgerSaysPassed"
+  - "GitHook_RedStage_CommitIsBlocked"
+  - "GitHook_GateNotDeclaredGit_StepsAsideWithANotice"
+  - "GitHook_MessageWithoutMarker_PassesSilently"
+  - "PreToolUse_GateGit_StepsAside"
+  - "Installer_ForeignCommitMsgHook_Refuses"
+
+done:
+  - "a commit typed in a terminal in a gate: git project is gated by the hook"
+  - "with gate: git the Claude Code hook steps aside, so one gate runs"
+  - "all hook tests pass"
