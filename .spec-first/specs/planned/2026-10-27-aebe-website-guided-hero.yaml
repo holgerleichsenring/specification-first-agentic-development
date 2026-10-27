@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-27-aebe
+goal: "spec-first.dev opens on a VS Code scene that builds a todo app through the four commands, with step bubbles; the series board moves to its own section and the record drops contexts."
+
+applies_to: "website"
+
+requires: ["2026-10-27-8d39b"]
+
+facts:
+  - claim: "The hero holds the headline, lede, install line and the series board"
+    evidence: "website/src/index.njk:6-37"
+  - claim: "Sections are clause-numbered §1 to §7, §1 is the six properties"
+    evidence: "website/src/index.njk:47-50"
+  - claim: "The record lists contexts/ beside specs/, decisions/ and memory/"
+    evidence: "website/src/index.njk:84-89"
+  - claim: "The board animation keys on .row[data-s] and the b-state, b-foot, b-pr ids, wherever the board sits"
+    evidence: "website/src/static/main.js:19-51"
+  - claim: "The README loop graphic shows contexts/ as the first record card"
+    evidence: "docs/assets/loop.svg:49-62"
+  - claim: "Contexts are written once, when bootstrap-project sets a project up"
+    evidence: "skills/bootstrap-project/SKILL.md:1-4"
+  - claim: "The operator approved the scene, motion and layout as a published mock"
+    evidence: "observed: 2026-10-27 artifact mock version 7, approved in conversation"
+
+scope:
+  in: "website hero, a new series section, the record in the loop section, section numbering, styles and script for the scene, README loop.svg and its alt text"
+  out: "copy of the other sections; plugin skills and templates"
+
+decisions:
+  - key: "Headline 'Vibe coding is dead. Talk it through, the rest is guided.' (operator); parallel and verified move into the lede"
+  - key: "Background work is shown as Claude Code tool rows in the chat, not a separate panel (operator: as in VS Code)"
+  - key: "The scene is HTML with a step timeline in main.js; without JS or with reduced motion it rests on the review step"
+  - key: "The record shows what grows per spec; contexts become one line naming bootstrap-project"
+
+steps:
+  - id: hero
+    action: "Replace the hero in index.njk with kicker, headline, two-column lede and install, step pills, bubbles and the VS Code window"
+  - id: series
+    action: "Move the series board into a new section §2 after the six properties; renumber the following clauses"
+  - id: record
+    action: "Record shows specs/, decisions/, memory/ plus a note that bootstrap-project writes the context once"
+  - id: style
+    action: "Add the scene, bubble, motion and simple-browser styles to styles.css with the 375 px rules"
+  - id: script
+    action: "Add the scene timeline to main.js: typing, running tool rows, files written line by line, review marks, app tick, pills, loop"
+  - id: readme
+    action: "loop.svg record cards become specs/, decisions/, memory/; update the README alt text"
+
+upgrade_impact: "nothing to change: site and README only"
+proven_live: "rendered in Chrome at 1440x900 across all five steps and at 375 px; live once Vercel deploys main"
+
+tests:
+  - "npm run build passes, link check included"
+
+done:
+  - "the first screen at 1440x900 shows the headline and the top of the VS Code window"
+  - "the scene plays all five steps and loops; a pill jumps to its step"
+  - "without JS the scene shows the review step complete"
+  - "no horizontal scroll at 375 px"
+  - "no contexts/ card in the site record or in loop.svg"
+  - "the website verify stage passes"

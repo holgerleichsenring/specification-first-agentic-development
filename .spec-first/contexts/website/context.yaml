@@ -31,4 +31,5 @@ state:
   done:
     2026-10-27-8d39b: "spec-first.dev: one Eleventy page under website/ from the approved mock, llms.txt, og image, website verify stage -> .spec-first/specs/done/2026-10-27-8d39b-website-spec-first-dev.yaml"
   active: {}
-  planned: {}
+  planned:
+    2026-10-27-aebe: "spec-first.dev hero becomes the guided VS Code scene -> .spec-first/specs/planned/2026-10-27-aebe-website-guided-hero.yaml"
