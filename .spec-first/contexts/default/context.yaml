@@ -48,5 +48,4 @@ state:
     2026-10-27-8d39a: "The plugin repo runs its own method: .spec-first/ with contexts, verify stages, migrated p0001 and decisions, CLAUDE.md -> .spec-first/specs/done/2026-10-27-8d39a-methodology-self-hosting.yaml"
     p0001: "v2.0 layout: contexts/<name>/ per stack, one YAML decision file per spec -> .spec-first/specs/done/p0001-contexts-and-yaml-decisions.yaml"
   active: {}
-  planned:
-    2026-10-27-8d39b: "spec-first.dev, a one-page website under website/ -> .spec-first/specs/planned/2026-10-27-8d39b-website-spec-first-dev.yaml"
+  planned: {}

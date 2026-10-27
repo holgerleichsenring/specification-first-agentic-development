@@ -7,7 +7,7 @@ A small set of files and habits for working with AI coding agents. Every piece o
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Plugin version](https://img.shields.io/badge/plugin-2.7.0-blue.svg)
 
-**Background reading:** [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/) · [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
+**Website:** [spec-first.dev](https://spec-first.dev) · **Background reading:** [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/) · [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
 
 ---
 
@@ -34,9 +34,9 @@ Restart your machine, restart the agent, open `context.yaml`, and you're back wh
 
 ## Built with it
 
-<a href="https://github.com/holgerleichsenring/agent-smith"><img src="docs/assets/agent-smith.svg" alt="Agent Smith, built spec-first: more than 1,300 specs done, 1,190+ decision files, 94% of all changed lines came in through a spec, 800+ spec commits through the gate." width="100%"></a>
+<a href="https://github.com/holgerleichsenring/agent-smith"><img src="docs/assets/agent-smith.svg" alt="Agent Smith, entirely built spec-first: more than 1,300 specs done, 1,190+ decision files, 650+ specs through the gate." width="100%"></a>
 
-[Agent Smith](https://github.com/holgerleichsenring/agent-smith) is an open source agentic software factory: you drop a ticket into your tracker, and a verified pull request comes back with its reasoning and its cost. Agent Smith is built with this method, and the method came out of that project. Its specs, decisions and gate are the long-run test for everything in this plugin; the plugin's commit gate is ported from Agent Smith's own.
+[Agent Smith](https://github.com/holgerleichsenring/agent-smith) is an open source agentic software factory: you drop a ticket into your tracker, and a verified pull request comes back with its reasoning and its cost. Agent Smith is entirely built with this method, and the method came out of that project. Its specs, decisions and gate are the long-run test for everything in this plugin; the plugin's commit gate is ported from Agent Smith's own.
 
 If you'd rather not drive the loop yourself, Agent Smith runs it for you: ticket in, spec derived and reviewed, built in sandboxes, verified criterion by criterion, pull request out.
 

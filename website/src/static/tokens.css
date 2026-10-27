@@ -1,0 +1,102 @@
+/* Design tokens for spec-first.dev. Hand-written; there is no generator. */
+/* Layout: a specification document set for the screen. Clause-numbered sections, a wide reading column,
+   a margin for the "why" notes, and the product shown as documents (spec sheet, verdict, decision, ledger). */
+
+@font-face {
+  font-family: 'Spectral';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/spectral@5.1.1/files/spectral-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Spectral';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/spectral@5.1.1/files/spectral-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Spectral';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/spectral@5.1.1/files/spectral-latin-400-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.1.1/files/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.1.1/files/ibm-plex-sans-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.1.1/files/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.1.1/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.1.1/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.1.1/files/ibm-plex-mono-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f5f6f3;
+  --sheet: #ffffff;
+  --ink: #17212c;
+  --ink-soft: #3a4552;
+  --mute: #66717d;
+  --rule: #d8dcd6;
+  --rule-soft: #e7eae5;
+  --cobalt: #2448b8;
+  --cobalt-wash: #e6ebf8;
+  --ok: #2c7a45;
+  --ok-wash: #e3f1e7;
+  --warn: #9a6512;
+  --warn-wash: #f6ecd8;
+  --stop: #b23a32;
+  --stop-wash: #f6e2df;
+  --night: #121a24;
+  --night-2: #1a2430;
+  --night-fg: #e3e8ee;
+  --night-mute: #9aa6b4;
+  --display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --body: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --wrap: 1160px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #10161e; --sheet: #161e28; --ink: #e6eaef; --ink-soft: #c3cad3; --mute: #8e99a6;
+    --rule: #2a3542; --rule-soft: #212b37; --cobalt: #8fa9ff; --cobalt-wash: #1c2846;
+    --ok: #6cc489; --ok-wash: #16301f; --warn: #e2b260; --warn-wash: #33280f; --stop: #ef8a80; --stop-wash: #3a1c19;
+    --night: #0a0f15; --night-2: #121a24; --night-fg: #e3e8ee; --night-mute: #9aa6b4;
+    color-scheme: dark;
+  }
+}

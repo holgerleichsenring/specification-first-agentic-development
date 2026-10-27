@@ -1,0 +1,314 @@
+---
+layout: layouts/base.njk
+title: "spec-first · Specification-First Agentic Development"
+description: "Hand your agents a series of specs and get back verified pull requests. Each spec is reviewed against your code before it is built, runs in its own worktree, and lands only through a gate that runs your checks."
+---
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="kicker">Specification-First Agentic Development</p>
+      <h1>Hand your agents a series of specs. Get back <em>verified</em> pull requests.</h1>
+      <p class="lede">Each spec is checked against your code before anyone builds it. Each gets its own branch and worktree, so agents work side by side without colliding. A spec commit lands only when your checks pass, and the reasoning ends up on record along the way.</p>
+      <div class="cmd">
+        <code id="cmd1"><span>/plugin marketplace add</span> holgerleichsenring/specification-first-agentic-development</code>
+        <button class="copy" type="button" data-copy="cmd1">Copy</button>
+      </div>
+      <div class="cta">
+        <a class="btn btn-ink" href="#install">Install</a>
+        <a class="btn btn-line" href="#method">See how it works</a>
+      </div>
+      <div class="facts"><span>MIT licensed</span><span>Plain YAML and Markdown in your repo</span><span>Claude Code plugin, or any agent</span></div>
+    </div>
+
+    <div>
+      <div class="board" aria-label="Example: a series of five specs delivered as one pull request">
+        <div class="board-head"><b>deliver-series 2026-10-27-8a3f</b><span>5 specs · 3 groups</span><span class="pill ok" id="b-state">building</span></div>
+        <div class="cols" aria-hidden="true"><span></span><span>Spec</span><span>Group</span><span class="stg"><span>review</span><span>build</span><span>gate</span><span>merge</span></span></div>
+        <div class="row" data-s="a"><span class="id">a</span><span class="t"><b>tickets-provider-contract</b><small>requires nothing</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="b"><span class="id">b</span><span class="t"><b>tickets-github-provider</b><small>requires a</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="c"><span class="id">c</span><span class="t"><b>tickets-jira-provider</b><small>requires a</small></span><span class="lane g1"><i></i>1</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="d"><span class="id">d</span><span class="t"><b>settings-provider-page</b><small>requires nothing</small></span><span class="lane g2"><i></i>2</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="row" data-s="e"><span class="id">e</span><span class="t"><b>ci-restore-cache</b><small>requires nothing</small></span><span class="lane g3"><i></i>3</span><span class="track"><i></i><i></i><i></i><i></i></span></div>
+        <div class="board-foot"><p id="b-foot"><b>3 worktrees</b> building in parallel · every spec commit through the gate</p><span class="pr" id="b-pr">PR #42</span></div>
+      </div>
+      <p class="board-note">An example run of <code>/spec-first:deliver-series</code>. Specs that share no file are built at the same time; specs that depend on each other share a group.</p>
+    </div>
+  </div>
+</header>
+
+
+<div class="strip" aria-label="What is in the box">
+  <div class="wrap">
+    <span><b>9</b> skills</span><span><b>1</b> commit gate</span><span>a worktree per spec</span><span>ids minted offline, safe in parallel</span><span>Claude Code · Codex · Cursor · Copilot</span>
+  </div>
+</div>
+
+<main>
+  <section id="why">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>1</div>
+        <div>
+          <h2>What changes when agents work from specs</h2>
+          <p>This is how Agent Smith is built every day, across more than a thousand specs.</p>
+        </div>
+      </div>
+      <div class="six body-grid">
+        <div><h3>Verified</h3><p>A fresh reviewer checks the spec against the code before the build. A gate runs your checks before the commit.</p></div>
+        <div><h3>Parallel</h3><p>One branch and worktree per spec. Ids come from the clock, so two agents never take the same one.</p></div>
+        <div><h3>Uninterrupted</h3><p>A reviewed spec has already answered the open questions, so the agent builds to its done criteria instead of coming back to ask.</p></div>
+        <div><h3>Structured</h3><p>One spec, one branch, one commit. A pull request carries one spec or a whole series, and every change has the same shape.</p></div>
+        <div><h3>Resumable</h3><p>State lives in <code>context.yaml</code>. Restart the machine or the agent and the work picks up where it stopped.</p></div>
+        <div><h3>Explained<span class="side">, as a side effect</span></h3><p>Each choice is logged with what it beat and why, so the reasoning stays next to the code.</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="method">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>2</div>
+        <div>
+          <h2>One spec, from idea to pull request</h2>
+          <p>Four skills take a piece of work through its own branch and worktree. Each one leaves a file behind for the next step and for whoever reads the history later.</p>
+        </div>
+      </div>
+      <div class="body-grid">
+        <div class="loop">
+          <div class="step"><h3>create-spec</h3><p>Goal, steps, facts with file and line, what done means. No code yet.</p><div class="out">specs/planned/{id}.yaml</div></div>
+          <div class="step"><h3>review-spec</h3><p>Every citation resolved, then a reviewer who never saw the chat attacks it.</p><div class="out">BUILD · CUTS · REFUSE</div></div>
+          <div class="step"><h3>apply-spec</h3><p>Contracts, code, wiring, tests, following the project's own rules.</p><div class="out">decisions/{id}.yaml</div></div>
+          <div class="step"><h3>deliver-spec</h3><p>One commit through the gate, pushed, pull request opened.</p><div class="out">feat: … ({id})</div></div>
+        </div>
+        <div class="record">
+          <div class="cap"><b>The record</b>read before every step, written back after</div>
+          <div class="rec"><code>contexts/</code><p>Stack, architecture, limits and verify stages, per stack.</p></div>
+          <div class="rec"><code>specs/ + decisions/</code><p>Every spec, and what it chose over what, and why.</p></div>
+          <div class="rec"><code>memory/</code><p>Facts the next session needs that git can't tell it.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="review">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>3</div>
+        <div>
+          <h2>A spec is reviewed before anyone builds it</h2>
+          <p>A REFUSE costs you one spec. Without the review, the same mistake would have cost you the branch.</p>
+        </div>
+      </div>
+      <div class="body-grid">
+        <div class="pair">
+          <article class="sheet" aria-label="Example spec">
+      <div class="tb">
+        <div><small>Spec</small><b>2026-10-27-8a3f</b></div>
+        <div><small>Applies to</small><b>server</b></div>
+        <div><small>Branch</small><b>spec/8a3f</b></div>
+      </div>
+      <div class="sheet-body">
+        <div class="field"><span class="label">Goal</span><p class="goal">Ticket providers so pipelines can pull work from GitHub and Jira.</p></div>
+        <div class="field">
+          <span class="label">Facts, read in the code</span>
+          <div class="fact"><span>Pipelines take work only from the CLI today</span><code>Program.cs:40-58</code></div>
+          <div class="fact"><span>Config already carries a tracker section</span><code>AppConfig.cs:12-19</code></div>
+        </div>
+        <div class="field">
+          <span class="label">Decision</span>
+          <p style="color:var(--ink-soft)">Adapter over repository: read-mostly data, no unit of work needed.</p>
+        </div>
+        <div class="field">
+          <span class="label">Done when</span>
+          <ul class="done"><li>GitHub provider returns tickets end to end</li><li>Jira provider behind the same interface</li><li>verify: stages green</li></ul>
+        </div>
+      </div>
+      <div class="stamp">REVIEWED · BUILD<small>fresh reviewer · 27 OCT</small></div>
+    </article>
+          <div class="panel" aria-label="Example review">
+          <div class="panel-head">review-spec · 2026-10-27-8a3f<span class="pill warn">2 cuts</span></div>
+          <div class="panel-body">
+            <div class="lines">
+              <div class="y">✓ src/Host/Program.cs:40-58 resolves</div>
+              <div class="y">✓ src/Config/AppConfig.cs:12-19 resolves</div>
+              <div class="m">evidence resolves: 1 spec</div>
+            </div>
+            <div class="verdict"><b>BUILD WITH CUTS</b><span>the spec holds once two steps change</span></div>
+            <div class="finding"><span class="k">CUT 1</span><p>Step <code>jira</code> needs a second auth mode the config can't hold yet. <code>AppConfig.cs:15</code> Move it to its own spec.</p></div>
+            <div class="finding"><span class="k">CUT 2</span><p>Paging is missing: GitHub returns 30 issues per page. <code>GitHubClient.cs:88</code> Add a done criterion.</p></div>
+          </div>
+        </div>
+        <div class="three-pts">
+          <div><h3>Every citation is checked</h3><p>A script opens each file and line the spec cites. A claim nobody checked in the code has to be listed as an assumption.</p></div>
+          <div><h3>The reviewer starts fresh</h3><p>A new agent with no conversation history reads the code as it is, not as the spec says it is.</p></div>
+          <div><h3>One verdict, with cuts named</h3><p>BUILD, BUILD WITH CUTS or REFUSE, and every finding names a file and a line.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="decisions">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>4</div>
+        <div>
+          <h2>The reasoning comes along for free</h2>
+          <p>Nobody has to write documentation afterwards. While it builds, the agent logs each choice that wasn't obvious: what it chose, what it chose over, and why. One file per spec, next to the code.</p>
+        </div>
+      </div>
+      <div class="feature body-grid">
+        <div class="panel" aria-label="Example decision file">
+          <div class="panel-head">decisions/2026-10-27-8a3f.yaml</div>
+<pre class="yaml"><span class="k">spec:</span> 2026-10-27-8a3f
+<span class="k">decisions:</span>
+  - <span class="k">category:</span> TradeOff
+    <span class="k">chose:</span> <span class="s">"Raw HttpClient for the GitHub API"</span>
+    <span class="k">over:</span> <span class="s">"Octokit"</span>
+    <span class="k">reason:</span> <span class="s">"Three megabytes of dependencies
+      for four calls."</span>
+  - <span class="k">category:</span> Architecture
+    <span class="k">chose:</span> <span class="s">"One ITicketProvider per tracker"</span>
+    <span class="k">over:</span> <span class="s">"A generic REST mapper"</span>
+    <span class="k">reason:</span> <span class="s">"Each tracker pages and authenticates
+      differently; the mapper would leak it."</span></pre>
+        </div>
+        <div class="points">
+          <div><h3>No wiki to keep alive</h3><p><code>cat decisions/*.yaml</code> is the project's reasoning, spec by spec, in the same history as the code it explains.</p></div>
+          <div><h3>Memory for what git can't tell</h3><p>How the operator wants things done, a constraint outside the repo, a pointer elsewhere. One fact per file, one line in an index.</p></div>
+          <div><h3>Back in thirty seconds</h3><p>Restart the machine, restart the agent, open <code>context.yaml</code>. It knows what is done, what is active and what comes next.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gate">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>5</div>
+        <div>
+          <h2>Nothing lands past a red stage</h2>
+          <p>The plugin's commit gate runs every verify stage your contexts declare when a commit names its spec. All green, it commits. The first red stage blocks it, and its output goes back to the agent.</p>
+        </div>
+      </div>
+      <div class="body-grid">
+        <div class="gate">
+          <div class="panel">
+            <div class="panel-head">the commit</div>
+<pre class="yaml">git commit -m "feat: ticket
+  providers <span class="k">(2026-10-27-8a3f)</span>"</pre>
+            <div class="panel-body" style="padding-top:0"><p style="color:var(--ink-soft);font-size:14px">The id in parentheses triggers it. <code>-F &lt;file&gt;</code>, <code>-C</code> and <code>--amend --no-edit</code> are gated too.</p></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">verify: stages</div>
+            <div class="panel-body" style="gap:0">
+              <div class="stage"><i>✓</i><b>build</b><code>dotnet build</code></div>
+              <div class="stage"><i>✓</i><b>tests</b><code>dotnet test</code></div>
+              <div class="stage"><i class="x">✕</i><b>web</b><code>cd web &amp;&amp; npm test</code></div>
+            </div>
+          </div>
+          <div class="outs">
+            <div class="out-card"><span class="pill ok">PASSED</span><h3>Committed</h3><p>every stage green</p></div>
+            <div class="out-card"><span class="pill stop">BLOCKED</span><h3>Not committed</h3><p>the first red stage stops it, and its output goes back to the agent</p></div>
+          </div>
+        </div>
+        <div class="ledger" aria-label="Gate ledger">
+          <div class="m"># spec-first-gate.log · one line per spec commit</div>
+          <div>2026-10-27T09:14:02Z  <span class="st">blocked</span>  2026-10-27-8a3f  /work/repo  a1b2c3d  web</div>
+          <div>2026-10-27T09:31:47Z  <span class="ok">passed</span>   2026-10-27-8a3f  /work/repo  a1b2c3d  build,tests,web</div>
+        </div>
+        <p class="note">A spec commit with no line in the ledger never met the gate. A project with its own gate says <code>gate: project</code>, and the plugin steps aside.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="band" id="built">
+    <div class="wrap">
+      <div>
+        <div class="label">Built this way</div>
+        <h2>Agent Smith</h2>
+        <p>The open source agentic software factory: a ticket goes in, a verified pull request comes out. Agent Smith is entirely built with this method, and the method grew out of building it. Everything in the plugin ran there first.</p>
+        <a class="more" href="{{ site.agentSmithUrl }}">Agent Smith runs the loop for you →</a>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><b>1,300+</b><span>specs done</span></div>
+          <div class="stat"><b>1,190+</b><span>decision files: chose, over, why</span></div>
+                    <div class="stat"><b>650+</b><span>specs through the gate</span></div>
+        </div>
+        <small>Counted in the Agent Smith repository, October 2026.</small>
+      </div>
+    </div>
+  </div>
+
+  <section id="install">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>6</div>
+        <div>
+          <h2>Install</h2>
+          <p>In Claude Code the plugin does the bookkeeping and runs the gate. Other agents follow the same files through <code>AGENTS.md</code>, and you run the checks.</p>
+        </div>
+      </div>
+      <div class="body-grid">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" id="t-cc" aria-selected="true" aria-controls="p-cc">Claude Code</button>
+          <button type="button" role="tab" id="t-any" aria-selected="false" aria-controls="p-any">Codex, Cursor, Copilot and others</button>
+        </div>
+        <div class="tab-body" id="p-cc" role="tabpanel" aria-labelledby="t-cc">
+          <div class="cmd" style="margin-top:0;max-width:none">
+            <code id="cmd2"><span>/plugin marketplace add</span> holgerleichsenring/specification-first-agentic-development</code>
+            <button class="copy" type="button" data-copy="cmd2">Copy</button>
+          </div>
+          <div class="cmd" style="margin-top:0;max-width:none">
+            <code id="cmd3"><span>/plugin install</span> spec-first@specification-first-agentic-development</code>
+            <button class="copy" type="button" data-copy="cmd3">Copy</button>
+          </div>
+          <p style="color:var(--ink-soft)">Then run <code>/spec-first:bootstrap-project</code>. It reads your code and writes the contexts and rules from what it finds.</p>
+          <div class="tablewrap">
+            <table class="skills">
+              <tr><td>create-spec</td><td>Writes the spec on its own branch and worktree</td></tr>
+              <tr><td>review-spec</td><td>Evidence check, then a fresh reviewer's verdict</td></tr>
+              <tr><td>apply-spec</td><td>Builds the spec up to its done criteria</td></tr>
+              <tr><td>deliver-spec</td><td>Commits through the gate and opens the pull request</td></tr>
+              <tr><td>deliver-series</td><td>Takes a whole series of specs to one pull request</td></tr>
+              <tr><td>log-decision · update-project · bootstrap-project</td><td>Decisions, upgrades, setup</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="tab-body" id="p-any" role="tabpanel" aria-labelledby="t-any" hidden>
+          <div class="steps-any">
+            <div><div class="inner"><h3>Let your agent set it up</h3><p>Paste this into Codex, Cursor, Copilot or any agent that can read and write your repository.</p>
+<pre class="prompt" id="cmd4">Set up specification-first agentic development in this repository,
+following the templates at
+https://github.com/{{ site.githubRepo }}/tree/main/templates
+
+1. Create .{project}/contexts/default/context.yaml and coding-principles.md.
+   Fill them from the code as it is: stack, architecture, limits, conventions,
+   and the commands that build and test it as verify: stages. Invent nothing.
+2. Create .{project}/specs/planned, active and done, .{project}/decisions/
+   and .{project}/memory/MEMORY.md.
+3. Write AGENTS.md from templates/prompt.md, with .{project}/ filled in.</pre>
+              <div><button class="copy" type="button" data-copy="cmd4">Copy prompt</button></div></div></div>
+            <div><div class="inner"><h3>AGENTS.md carries the method</h3><p>Codex, Cursor and Copilot read <code>AGENTS.md</code> when a session starts. It holds the read order and the workflow, so every session starts from the record. Where it names a skill, such as review-spec, you do that step by hand.</p></div></div>
+            <div><div class="inner"><h3>Run the checks yourself</h3><p>The evidence check is a Python script in the repository, <code>skills/review-spec/scripts/check-evidence.py &lt;spec&gt;</code>, and needs PyYAML (<code>pip install pyyaml</code>). Run your <code>verify:</code> commands before each spec commit. The skills and the automatic gate exist only in the Claude Code plugin today.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="reading">
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>7</div>
+        <div><h2>Where it comes from</h2></div>
+      </div>
+      <div class="reading body-grid">
+        <a href="https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/"><span class="label">Essay</span><h3>The Why Never Gets Written Down</h3><p>codingsoul.org · April 2026</p></a>
+        <a href="https://codingsoul.org/2026/04/21/next-level-vibe-coding/"><span class="label">Essay</span><h3>Next Level Vibe Coding</h3><p>codingsoul.org · April 2026</p></a>
+      </div>
+    </div>
+  </section>
+</main>

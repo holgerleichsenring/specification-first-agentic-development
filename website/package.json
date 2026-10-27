@@ -1,0 +1,14 @@
+{
+  "name": "spec-first-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx @11ty/eleventy --serve",
+    "build": "npx @11ty/eleventy",
+    "postbuild": "node check-links.mjs",
+    "check:links": "node check-links.mjs"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.5"
+  }
+}

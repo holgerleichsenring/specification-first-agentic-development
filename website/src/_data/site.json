@@ -1,0 +1,11 @@
+{
+  "title": "spec-first",
+  "tagline": "Specification-First Agentic Development",
+  "description": "Hand your agents a series of specs and get back verified pull requests. Each spec is reviewed against your code before it is built, runs in its own worktree, and lands only through a gate that runs your checks.",
+  "url": "https://spec-first.dev",
+  "author": "Holger Leichsenring",
+  "authorUrl": "https://github.com/holgerleichsenring",
+  "githubRepo": "holgerleichsenring/specification-first-agentic-development",
+  "agentSmithUrl": "https://agent-smith.org",
+  "blogUrl": "https://codingsoul.org"
+}
