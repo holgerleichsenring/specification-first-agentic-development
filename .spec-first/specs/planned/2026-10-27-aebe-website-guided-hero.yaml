@@ -36,8 +36,8 @@ decisions:
   - key: "The scene is HTML with a step timeline in main.js; without JS or with reduced motion it rests on the review step"
   - key: "The record shows what grows per spec; a note says bootstrap-project writes the contexts and each spec adds a state line"
   - key: "The scene keeps a fixed VS Code palette as custom properties on .vsc, like .ledger and .band: it is dark in both themes"
-  - key: "Scene shows only what the skills do: spec written before the worktree, planned to active to done, npm run dev before the browser"
-  - key: "Step pills are buttons with aria-pressed, not tabs; the install tab handler is scoped to .tabs"
+  - key: "Scene shows what the skills do: spec written, you approve, then the worktree; plan approved before code; planned, active, done; npm run dev"
+  - key: "Pills are aria-pressed buttons in a role=group, short names; the chat shows the runnable /spec-first:… form; tab handler scoped to .tabs"
 
 steps:
   - id: hero
@@ -47,7 +47,7 @@ steps:
   - id: record
     action: "Record shows specs/, decisions/, memory/ plus a note: bootstrap-project writes the contexts from your code, each spec adds one state line"
   - id: style
-    action: "Add the scene, bubble, motion and simple-browser styles to styles.css; bubble space only above 760 px; no dead or duplicate rules"
+    action: "Add scene styles; bubble space above 760 px only; drop rules the old hero alone used (.cta, .btn-line) and stale comments"
   - id: script
     action: "Add the scene timeline to main.js (typing, tool rows, files line by line, review marks, app tick, pills, loop); scope the install tab handler to .tabs"
   - id: readme
