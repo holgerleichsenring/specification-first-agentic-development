@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-27-aebe
+
+decisions:
+  - category: Architecture
+    chose: "The scene is plain HTML driven by a step timeline in main.js"
+    over: "A recorded video or GIF of a real session"
+    reason: |
+      Text stays sharp and selectable, the page rests on a complete review step without
+      JavaScript or with reduced motion, and the pills can jump to any step. A video would
+      need a real recording and could not show the bubbles in step with it.
+
+  - category: TradeOff
+    chose: "The scene follows what the skills really do, including both approval stops"
+    over: "The shorter flow of the approved mock"
+    reason: |
+      Two reviews found the mock skipped create-spec's and apply-spec's approvals, put the
+      worktree before the spec was written, left the spec in planned/, and opened the app with
+      no dev server. A page about verified work cannot show steps the skills don't take.
+
+  - category: Architecture
+    chose: "Step pills are aria-pressed buttons in a group, and the install tab handler is scoped to .tabs"
+    over: "role=tab pills"
+    reason: |
+      The page-wide [role=tab] handler would have thrown on pills without aria-controls and
+      left the install tabs dead. The pills have no tab panels, so they are not tabs.
+
+  - category: Tooling
+    chose: "The VS Code palette is fixed as custom properties on .vsc"
+    over: "Theme tokens for the scene"
+    reason: |
+      The scene shows VS Code's dark theme in both page themes, as .ledger and .band do.
+      Scoping the values to .vsc keeps them out of the page tokens.

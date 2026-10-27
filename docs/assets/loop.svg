@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 920" role="img" aria-labelledby="t d">
   <title id="t">From idea to pull request, one spec at a time</title>
-  <desc id="d">The record in your repository (contexts, specs and decisions, memory) is read before every step. The loop runs create-spec, review-spec, apply-spec and deliver-spec in the spec's own worktree. A REFUSE sends the spec back to be rewritten. deliver-spec opens the pull request and writes decisions, spec state and memory back to the record.</desc>
+  <desc id="d">The record in your repository (specs, decisions, memory) is read before every step. The loop runs create-spec, review-spec, apply-spec and deliver-spec in the spec's own worktree. A REFUSE sends the spec back to be rewritten. deliver-spec opens the pull request and writes decisions, spec state and memory back to the record.</desc>
 
   <defs>
     <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -46,19 +46,19 @@
   <rect x="64" y="402" width="6" height="150" rx="3" fill="#2f7d6d"/>
   <rect x="64" y="576" width="6" height="150" rx="3" fill="#2f7d6d"/>
 
-  <text x="96" y="272" class="ct">contexts/</text>
-  <text x="96" y="304" class="cb">Stack, architecture, quality limits</text>
-  <text x="96" y="327" class="cb">and verify: stages, per stack</text>
-  <text x="96" y="358" class="tag">context.yaml · coding-principles.md</text>
+  <text x="96" y="272" class="ct">specs/</text>
+  <text x="96" y="304" class="cb">Every spec, from planned to done,</text>
+  <text x="96" y="327" class="cb">with its facts and done criteria</text>
+  <text x="96" y="358" class="tag">planned · active · done</text>
 
-  <text x="96" y="446" class="ct">specs/ + decisions/</text>
-  <text x="96" y="478" class="cb">Every spec, and every choice it made:</text>
+  <text x="96" y="446" class="ct">decisions/</text>
+  <text x="96" y="478" class="cb">Every choice a spec made:</text>
   <text x="96" y="501" class="cb">what was chosen, over what, and why</text>
-  <text x="96" y="532" class="tag">planned · active · done</text>
+  <text x="96" y="532" class="tag">one file per spec</text>
 
   <text x="96" y="620" class="ct">memory/</text>
-  <text x="96" y="652" class="cb">Facts the next session needs that</text>
-  <text x="96" y="675" class="cb">code and git can't tell it</text>
+  <text x="96" y="652" class="cb">What you told the agent once,</text>
+  <text x="96" y="675" class="cb">so you don't say it twice</text>
   <text x="96" y="706" class="tag">one fact per file · one index line</text>
 
   <!-- read first -->
