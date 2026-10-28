@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.8.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.8.1`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,19 +36,20 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.8.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j |
-| 1.x.x   | 2.8.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j |
-| 2.0.x   | 2.8.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j |
-| 2.1.x   | 2.8.0  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j |
-| 2.2.x   | 2.8.0  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j |
-| 2.3.x   | 2.8.0  | 3f, 3g, 3h, 3i, then 3j |
-| 2.4.x   | 2.8.0  | 3g, 3h, 3i, then 3j |
-| 2.5.x   | 2.8.0  | 3h, 3i, then 3j |
-| 2.6.x   | 2.8.0  | 3i, then 3j                                                           |
-| 2.7.x   | 2.8.0  | 3j                                                                    |
+| 0.0.0   | 2.8.1  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k |
+| 1.x.x   | 2.8.1  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k |
+| 2.0.x   | 2.8.1  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j, 3k |
+| 2.1.x   | 2.8.1  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k |
+| 2.2.x   | 2.8.1  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k |
+| 2.3.x   | 2.8.1  | 3f, 3g, 3h, 3i, then 3j, 3k |
+| 2.4.x   | 2.8.1  | 3g, 3h, 3i, then 3j, 3k |
+| 2.5.x   | 2.8.1  | 3h, 3i, then 3j, 3k |
+| 2.6.x   | 2.8.1  | 3i, then 3j, 3k                                                       |
+| 2.7.x   | 2.8.1  | 3j, then 3k                                                           |
+| 2.8.0   | 2.8.1  | 3k                                                                    |
 | 2.8.x   | 2.y.y  | additive/diff merge (no migration)                                    |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h, 3i and 3j. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h, 3i and 3j. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h, 3i and 3j. For 2.2.x run 3e, 3f, 3b, 3g, 3h, 3i and 3j. For 2.3.x run 3f, 3g, 3h, 3i and 3j. For 2.4.x run 3g, 3h, 3i and 3j. For 2.5.x run 3h, 3i and 3j. For 2.6.x run 3i and 3j. For 2.7.x run 3j. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h, 3i, 3j and 3k. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h, 3i, 3j and 3k. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h, 3i, 3j and 3k. For 2.2.x run 3e, 3f, 3b, 3g, 3h, 3i, 3j and 3k. For 2.3.x run 3f, 3g, 3h, 3i, 3j and 3k. For 2.4.x run 3g, 3h, 3i, 3j and 3k. For 2.5.x run 3h, 3i, 3j and 3k. For 2.6.x run 3i, 3j and 3k. For 2.7.x run 3j and 3k. For 2.8.0 run 3k. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -171,7 +172,7 @@ A project bootstrapped before 2.1.0 typically still carries the v1 read order in
 
 - Locate the context-file read-order block in the project's root `CLAUDE.md`.
 - Replace ONLY that block with the v2 order (as in `templates/prompt.md`):
-  1. glob `contexts/*/context.yaml`
+  1. glob `contexts/*/context.yaml`, read down to `state:`, search `state.done` instead of reading it
   2. each context's `coding-principles.md`
   3. `specs/active/*.yaml`
   4. `decisions/*.yaml`
@@ -229,6 +230,10 @@ From 2.8.0 the instructions are agent-neutral and the commit gate can also run a
 2. **AGENTS.md.** Offer to move the root `CLAUDE.md`'s project instructions into a new root `AGENTS.md` based on `templates/prompt.md` (each step names its plugin command and says how to do it by hand, the review brief included), and to make `CLAUDE.md` start with `@AGENTS.md`, keeping only what holds for Claude Code alone. An existing `AGENTS.md` is merged, never overwritten. Show the before/after of both files and apply after approval, as in 3c.2. From here on, 3b, 3c.2 and 3i's step 4 edit `AGENTS.md`.
 3. **gate: git, only if the team uses other agents or commits by hand.** Before any context declares it, every teammate must be on plugin 2.8.0 or later: a 2.7.0 plugin reads `gate: git` as unknown and blocks every spec commit. Then add `gate: git` to ONE context and run `python3 <plugin>/hooks/install-git-hook.py` in every clone; re-run it after every plugin upgrade, so the copied gate stays current. The hook needs `python3` and PyYAML in each clone and runs on POSIX systems only. Under Claude Code its stages run inside one Bash call, so they must finish in 570 s; a project with a longer suite keeps the plugin's gate. Where a clone has no hook, or a commit uses `--no-verify`, the plugin's hook still gates Claude Code's commits.
 4. **Existing commit-msg hooks.** The installer refuses to replace a commit-msg hook it did not write (a git-secrets hook from a global git template is common). Merge the two by hand, or leave `gate:` on the plugin.
+
+### 3k. 2.8.1: search the spec index, don't read it
+
+A project's `state.done` grows by one line per spec and at a thousand specs runs to a hundred thousand tokens. From 2.8.1 the read order says to read each `context.yaml` down to `state:` and to search `state.done` for the area at hand. Replace item 1 of the read-order block in the root `AGENTS.md`, or `CLAUDE.md` where there is none, with the line from `templates/prompt.md`. The file lives outside the methodology directory, so show the before/after and apply only after the operator approves, as in 3c.2.
 
 ### 4. Ask approval
 

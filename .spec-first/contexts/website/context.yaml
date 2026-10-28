@@ -6,7 +6,7 @@ meta:
   workdir: "website"
 
 methodology:
-  version: "2.8.0"
+  version: "2.8.1"
 
 stack:
   runtime: Node 20+

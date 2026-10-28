@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-28-4dec
+goal: "Agents read a context.yaml down to state: and search state.done for the area they touch, so the spec index stays cheap however many specs a project has."
+
+applies_to: "default"
+
+facts:
+  - claim: "The instructions template tells the agent to read every context.yaml, spec status included"
+    evidence: "templates/prompt.md:9"
+  - claim: "This repo's AGENTS.md carries the same read-order line"
+    evidence: "AGENTS.md:9"
+  - claim: "The workflow skill carries the same read-order line"
+    evidence: "skills/spec-first-workflow/SKILL.md:45"
+  - claim: "apply-spec tells the agent to read each context to know what has been built"
+    evidence: "skills/apply-spec/SKILL.md:14"
+  - claim: "bootstrap-project writes the read order into AGENTS.md"
+    evidence: "skills/bootstrap-project/SKILL.md:146"
+  - claim: "update-project's read-order patch lists the context glob as item 1"
+    evidence: "skills/update-project/SKILL.md:174"
+  - claim: "The README says the agent reads every context.yaml first"
+    evidence: "README.md:30"
+  - claim: "The template's state.done is a list of one line per finished spec"
+    evidence: "templates/contexts/default/context.yaml:66-68"
+  - claim: "The migration table routes every version to 2.8.0"
+    evidence: "skills/update-project/SKILL.md:36-48"
+
+scope:
+  in: "the read-order line in the template, AGENTS.md, the workflow skill, apply-spec, bootstrap-project, update-project and the README; release 2.8.1"
+  out: "splitting state.done into its own file; the schema of context.yaml"
+
+decisions:
+  - key: "State the reading, not a size limit: a project with ten specs and one with 1300 read the same way"
+  - key: "Patch release 2.8.1 with its own update-project step, since AGENTS.md sits outside the methodology directory and needs the operator's approval"
+
+steps:
+  - id: wording
+    action: "Read-order item 1 in templates/prompt.md, AGENTS.md and spec-first-workflow: read down to state:, search state.done, never read it front to back"
+  - id: skills
+    action: "apply-spec, bootstrap-project and update-project 3c.2 say the same; README line 30 too"
+  - id: release
+    action: "Version 2.8.1 in plugin.json, marketplace.json, the context template, bootstrap-project, this repo's contexts and README badge; update-project step 3k and the table"
+
+upgrade_impact: "nothing breaks: update-project 3k offers the new line for AGENTS.md or CLAUDE.md after approval"
+proven_live: "an agent session following the new line is not run here; the wording is checked by reading it"
+
+tests:
+  - "every verify stage passes"
+
+done:
+  - "no read-order line tells an agent to read state.done in full"
+  - "update-project offers the change to existing projects"
+  - "every version field says 2.8.1"

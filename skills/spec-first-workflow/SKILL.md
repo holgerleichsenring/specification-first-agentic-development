@@ -42,7 +42,7 @@ Single-stack projects have one context: `contexts/default/`. Monorepos add sibli
 
 Before starting any work, read these files in order:
 
-1. **Every** `.yourproject/contexts/<name>/context.yaml` (glob `contexts/*/context.yaml`) — architecture, stack, integrations, spec status PER stack.
+1. **Every** `.yourproject/contexts/<name>/context.yaml` (glob `contexts/*/context.yaml`) — read it down to `state:` for architecture, stack and integrations PER stack. `state.done` is an index, one line per finished spec with a pointer to it: search it for the area you touch, never read it front to back.
 2. **Every** `.yourproject/contexts/<name>/coding-principles.md` — code quality rules per stack (ALWAYS follow). Different contexts can have different conventions.
 3. `.yourproject/specs/active/` — the current spec. Note its `applies_to:` field — it tells you which context's principles dominate when conflicts arise.
 4. Relevant `.yourproject/decisions/<spec-id>-*.yaml` files — past decisions for the active spec and its `requires:` chain. Glob broader if you need historical context.
