@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-28-eff7
+
+decisions:
+  - category: Architecture
+    chose: "What it is, install, use, then why; details and reference below"
+    over: "Why first, install after How it works and Built with it"
+    reason: |
+      A visitor decides in the first screen. They need to know what it is and how to get it
+      before the argument for it; the reference material is for people who already decided.
+
+  - category: Architecture
+    chose: "Two simple images, the workflow and what builds up over time, in place of loop.svg"
+    over: "One loop picture with the record, four skills and the write-back"
+    reason: |
+      The loop picture needed explaining. One image per question (what do I do, what do I get
+      if I keep doing it) reads without help. loop.svg stays in the tree because a done spec cites it.
+
+  - category: TradeOff
+    chose: "GitHub's own palette in light and dark variants behind <picture>"
+    over: "The website's paper and cobalt colours in one image"
+    reason: |
+      GitHub picks the variant from the reader's theme, so the images sit in the page instead of
+      on it. The banner keeps a serif headline and SMIL animation, which GitHub renders in an img.
+
+  - category: TradeOff
+    chose: "Commit the SVGs as files, like loop.svg and gate.svg"
+    over: "A generator script for the light and dark variants"
+    reason: |
+      The repository has no generator for its other images, and a script would need tests beside
+      it under the context's principles for six files that change rarely.
+
+  - category: Pattern
+    chose: "The series example gets its own base id, 2026-10-27-5c1e"
+    over: "Reusing 2026-10-27-8a3f, which the single-spec examples use"
+    reason: |
+      Reviewer cut: the base of a series is not itself a spec, and the README explains that rule
+      next to the examples.

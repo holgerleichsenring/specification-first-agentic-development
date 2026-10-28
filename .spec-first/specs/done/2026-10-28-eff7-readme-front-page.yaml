@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-28-eff7
+goal: "The README says what spec-first is, how to install and use it before why, carries the website's content, and shows the workflow and what builds up in two GitHub-themed images."
+
+applies_to: "default"
+
+facts:
+  - claim: "The README opens with a title, a quote and a prose paragraph, with Why before install"
+    evidence: "README.md:1-14"
+  - claim: "Install sits below Why, How it works and Built with it"
+    evidence: "README.md:47"
+  - claim: "How it works shows loop.svg, which packs the record, the four skills and the write-back into one picture"
+    evidence: "README.md:24-26"
+  - claim: "The website carries six benefits, a review excerpt, a decision file, a series board, Agent Smith figures, an agent prompt and an FAQ the README lacks"
+    evidence: "website/src/index.njk:191-460"
+  - claim: "The FAQ text lives in faq.json"
+    evidence: "website/src/_data/faq.json"
+  - claim: "The repository homepage pointed at a vercel.app address"
+    evidence: "observed: 2026-10-28 gh repo view --json homepageUrl; set to https://spec-first.dev on the operator's request"
+
+scope:
+  in: "README.md order and content; banner, workflow and over-time images in light and dark; repository description and topics"
+  out: "the website; loop.svg itself (a done spec cites it); the agent-smith README"
+
+decisions:
+  - key: "Order is what it is, install, use, why; details and reference follow"
+  - key: "Images use GitHub's own palette in light and dark variants behind <picture>"
+  - key: "loop.svg leaves the README for the two simpler images; the file stays because a done spec cites it"
+  - key: "The SVGs are committed as files like loop.svg and gate.svg, with no generator in the repository"
+
+steps:
+  - id: images
+    action: "docs/assets/: banner-{light,dark}.svg (SMIL, system serif), workflow-{light,dark}.svg, over-time-{light,dark}.svg"
+  - id: readme
+    action: "README.md: header with picture, badges, nav; What it is; Install; Use it; Why with over-time image and six benefits; How it works (review, reasoning, gate, series); Agent Smith with counted figures; Without Claude Code with the agent prompt; Reference; FAQ from faq.json; Further reading"
+  - id: repo-meta
+    action: "gh repo edit: short description and topics; the homepage already points at spec-first.dev"
+
+upgrade_impact: "none: documentation and repository metadata only"
+proven_live: "README on main renders on github.com in light and dark with both images and the banner animating"
+
+tests:
+  - "plugin verify stages pass (hook-tests, evidence-tests, migrate-tests)"
+  - "every relative link and image path in README.md resolves to a file in the tree"
+  - "every #anchor in README.md matches a heading"
+
+done:
+  - "a reader sees what it is and the install commands without scrolling past Why"
+  - "both new images exist in light and dark and are referenced through <picture>"
+  - "figures match the field report counted on 2026-10-28"
+  - "the FAQ carries all eleven entries of faq.json"
+  - "gh repo view shows the new description, the topics and https://spec-first.dev as homepage"

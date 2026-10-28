@@ -45,6 +45,7 @@ evidence_roots:
 
 state:
   done:
+    2026-10-28-eff7: "README front page: what it is, install and use before why; workflow and over-time images and banner in GitHub light/dark; website content (benefits, review, series, Agent Smith figures, agent prompt, FAQ); repo description and topics -> .spec-first/specs/done/2026-10-28-eff7-readme-front-page.yaml"
     2026-10-28-4dec: "Release 2.8.1: agents read each context.yaml down to state: and search state.done instead of reading it; template, AGENTS.md, skills, README; update-project 3k -> .spec-first/specs/done/2026-10-28-4dec-read-order-index-search.yaml"
     2026-10-27-84f4d: "Release 2.8.0: every version field, update-project 3j offering AGENTS.md and gate: git with the installer, migration table and paths end in 3j -> .spec-first/specs/done/2026-10-27-84f4d-release-2-8-0.yaml"
     2026-10-27-84f4c: "AGENTS.md is the agent-neutral instructions file, CLAUDE.md imports it; every step says how to do it by hand; bootstrap writes both; README and site name the git hook -> .spec-first/specs/done/2026-10-27-84f4c-agents-md-instructions.yaml"

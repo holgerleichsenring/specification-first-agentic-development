@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="t d">
+  <title id="t">Spec-first agentic development</title>
+  <desc id="d">Vibe coding is dead. Talk it through, the rest is guided. Five steps: describe, create-spec, review-spec, apply-spec, deliver-spec. A spec sheet changes state with each step, from a planned spec to a pull request.</desc>
+  <style>
+    .serif { font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+    .sans { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    @media (prefers-reduced-motion: reduce) { animate, animateMotion { display: none; } }
+  </style>
+  <rect width="1200" height="420" rx="14" fill="#f6f8fa"/>
+  <rect x="0.5" y="0.5" width="1199" height="419" rx="14" fill="none" stroke="#d1d9e0"/>
+
+  <!-- left: the site's hero voice -->
+  <g transform="translate(56 0)">
+    <rect y="58" width="30" height="30" rx="6" fill="none" stroke="#1f2328" stroke-width="1.6"/>
+    <text x="15" y="80" text-anchor="middle" class="serif" font-size="19" font-weight="600" fill="#1f2328">§</text>
+    <text x="44" y="79" class="mono" font-size="15" font-weight="600" fill="#1f2328">spec-first</text>
+    <text y="142" class="serif" font-style="italic" font-size="19" fill="#0969da">Spec-first agentic development</text>
+    <text y="196" class="serif" font-size="44" fill="#1f2328">Vibe coding is dead.</text>
+    <text y="248" class="serif" font-style="italic" font-size="44" fill="#0969da">Talk it through,</text>
+    <text y="300" class="serif" font-style="italic" font-size="44" fill="#0969da">the rest is guided.</text>
+    <text y="350" class="sans" font-size="15" fill="#424a53">Specs checked against your code. Built in worktrees.</text>
+    <text y="372" class="sans" font-size="15" fill="#424a53">Delivered through your gate. Claude Code plugin, or any agent.</text>
+  </g>
+
+  <!-- right: the spec sheet that moves through the five commands -->
+  <g transform="translate(640 46)">
+    <rect width="504" height="328" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+    <!-- step strip -->
+    <g class="mono" font-size="12.5">
+      <g id="s0"><rect x="16" y="16" width="80" height="28" rx="6" fill="#ddf4ff" opacity="0"><animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.19;0.2;1" dur="10s" repeatCount="indefinite"/></rect><text x="56" y="35" text-anchor="middle" fill="#1f2328">describe</text></g>
+      <g><rect x="102" y="16" width="96" height="28" rx="6" fill="#ddf4ff" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.2;0.2;0.39;0.4;1" dur="10s" repeatCount="indefinite"/></rect><text x="150" y="35" text-anchor="middle" fill="#1f2328">/create-spec</text></g>
+      <g><rect x="204" y="16" width="96" height="28" rx="6" fill="#ddf4ff" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4;0.4;0.59;0.6;1" dur="10s" repeatCount="indefinite"/></rect><text x="252" y="35" text-anchor="middle" fill="#1f2328">/review-spec</text></g>
+      <g><rect x="306" y="16" width="90" height="28" rx="6" fill="#ddf4ff" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6;0.6;0.79;0.8;1" dur="10s" repeatCount="indefinite"/></rect><text x="351" y="35" text-anchor="middle" fill="#1f2328">/apply-spec</text></g>
+      <g><rect x="402" y="16" width="90" height="28" rx="6" fill="#ddf4ff" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.8;0.8;1" dur="10s" repeatCount="indefinite"/></rect><text x="447" y="35" text-anchor="middle" fill="#1f2328">/deliver-spec</text></g>
+    </g>
+    <line x1="16" y1="58" x2="488" y2="58" stroke="#d8dee4"/>
+    <!-- the spec file, always visible -->
+    <g class="mono" font-size="13.5" fill="#424a53">
+      <text x="24" y="86"><tspan fill="#59636e">spec:</tspan> 2026-10-27-7b2d</text>
+      <text x="24" y="110"><tspan fill="#59636e">goal:</tspan> A todo list that keeps its items.</text>
+      <text x="24" y="134"><tspan fill="#59636e">facts:</tspan> src/main.ts:12 mounts the app</text>
+      <text x="24" y="158"><tspan fill="#59636e">done:</tspan> todos survive a reload</text>
+    </g>
+    <line x1="16" y1="178" x2="488" y2="178" stroke="#d8dee4"/>
+    <!-- the changing state line, one per step -->
+    <g class="sans" font-size="15">
+      <g opacity="0"><animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.19;0.2;1" dur="10s" repeatCount="indefinite"/>
+        <text x="24" y="210" fill="#1f2328">"I want a todo list that remembers my items."</text>
+        <text x="24" y="236" fill="#59636e" font-size="13.5">The agent reads memory and the repo first, then asks only what's left.</text></g>
+      <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.2;0.2;0.39;0.4;1" dur="10s" repeatCount="indefinite"/>
+        <rect x="24" y="194" width="70" height="24" rx="5" fill="#ddf4ff"/><text x="59" y="211" text-anchor="middle" class="mono" font-size="12.5" fill="#0969da">planned</text>
+        <text x="24" y="246" fill="#59636e" font-size="13.5">Goal, facts with file and line, steps, done. No code yet.</text></g>
+      <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4;0.4;0.59;0.6;1" dur="10s" repeatCount="indefinite"/>
+        <rect x="24" y="194" width="62" height="24" rx="5" fill="#dafbe1"/><text x="55" y="211" text-anchor="middle" class="mono" font-size="12.5" fill="#1a7f37">BUILD</text>
+        <text x="96" y="211" class="mono" font-size="12.5" fill="#59636e">4 of 4 citations resolve</text>
+        <text x="24" y="246" fill="#59636e" font-size="13.5">A fresh agent with no chat history attacks the spec against the code.</text></g>
+      <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6;0.6;0.79;0.8;1" dur="10s" repeatCount="indefinite"/>
+        <rect x="24" y="194" width="74" height="24" rx="5" fill="#fff8c5"/><text x="61" y="211" text-anchor="middle" class="mono" font-size="12.5" fill="#9a6700">building</text>
+        <text x="108" y="211" class="mono" font-size="12.5" fill="#59636e">worktree spec/2026-10-27-7b2d</text>
+        <text x="24" y="246" fill="#59636e" font-size="13.5">Each choice that wasn't obvious goes into decisions/.</text></g>
+      <g opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.8;0.8;1" dur="10s" repeatCount="indefinite"/>
+        <rect x="24" y="194" width="96" height="24" rx="5" fill="#dafbe1"/><text x="72" y="211" text-anchor="middle" class="mono" font-size="12.5" fill="#1a7f37">gate passed</text>
+        <text x="130" y="211" class="mono" font-size="12.5" fill="#59636e">→ pull request opened</text>
+        <text x="24" y="246" fill="#59636e" font-size="13.5">One commit, every verify stage green, one line in the ledger.</text></g>
+    </g>
+    <!-- progress rail -->
+    <rect x="24" y="290" width="456" height="4" rx="2" fill="#d8dee4"/>
+    <rect x="24" y="290" width="0" height="4" rx="2" fill="#0969da"><animate attributeName="width" values="0;456" dur="10s" repeatCount="indefinite"/></rect>
+    <text x="24" y="314" class="mono" font-size="11.5" fill="#59636e">.spec-first/specs/ · decisions/ · memory/: plain files in your repo</text>
+  </g>
+</svg>
