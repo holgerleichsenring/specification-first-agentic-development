@@ -16,6 +16,18 @@
 
 </div>
 
+## Contents
+
+| Get started | Understand it | Look it up |
+|---|---|---|
+| [What it is](#what-it-is) | [Why](#why) | [Skills](#skills) |
+| [Install](#install) | [What changes](#what-changes-when-agents-work-from-specs) | [The files](#the-files) |
+| [Use it](#use-it) | [The review](#the-review-checked-before-anyone-builds-it) | [A spec](#a-spec) |
+| [Without Claude Code](#without-claude-code) | [The reasoning](#the-reasoning-it-comes-along-for-free) | [Memory](#memory) |
+|  | [The gate](#the-gate-nothing-lands-past-a-red-stage) | [Templates](#templates) |
+|  | [A whole series](#a-whole-series-side-by-side) | [Questions](#questions) |
+|  | [Agent Smith](#built-with-it-agent-smith) | [Further reading](#further-reading) |
+
 ## What it is
 
 spec-first is a way of working with AI coding agents, and a Claude Code plugin that runs it. Before the agent writes any code, it writes a **spec**: what to build, which code it rests on, and when it's done. A second agent that never saw your conversation checks that spec against your code. Then the agent builds it on a branch of its own, and the commit only lands when your build and tests pass. Every choice it makes along the way goes into plain files in your repository.

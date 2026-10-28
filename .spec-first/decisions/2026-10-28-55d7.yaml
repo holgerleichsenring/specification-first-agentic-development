@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-28-55d7
+
+decisions:
+  - category: TradeOff
+    chose: "A three-column table: get started, understand it, look it up"
+    over: "A bulleted list of every heading"
+    reason: |
+      Twenty links in a list push What it is a screen down. Seven rows keep it on the first screen,
+      and the column names tell a reader where to start. How it works and Reference are left out
+      because their subsections are linked directly.
