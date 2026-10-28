@@ -291,7 +291,7 @@ pre.prompt { margin: 0; padding: 16px 18px; background: var(--paper); border: 1p
 .lesson .k.fix { color: var(--ok); margin-top: 10px; }
 .lesson p { margin: 0; font-size: 16px; }
 .cmp-wrap { overflow-x: auto; margin: 8px 0 10px; }
-.cmp { width: 100%; min-width: 640px; border-collapse: collapse; background: var(--sheet); font-size: 15px; }
+.cmp { width: 100%; min-width: 820px; border-collapse: collapse; background: var(--sheet); font-size: 15px; }
 .cmp th, .cmp td { border: 1px solid var(--rule); padding: 10px 12px; text-align: left; vertical-align: top; }
 .cmp thead th { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); background: var(--paper); }
 .cmp tbody th { font-weight: 500; color: var(--ink); width: 24%; }
