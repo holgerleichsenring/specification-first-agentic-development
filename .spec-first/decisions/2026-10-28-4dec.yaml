@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-28-4dec
+
+decisions:
+  - category: Architecture
+    chose: "The read order says to read a context.yaml down to state: and search state.done"
+    over: "Moving state.done into a file of its own"
+    reason: |
+      An agent already controls how much it reads; the instruction was what told it to read
+      everything. Changing the sentence fixes the cost without moving any project's index,
+      and every pointer that names context.yaml stays valid.
+
+  - category: TradeOff
+    chose: "Patch release 2.8.1 with update-project step 3k"
+    over: "Changing the template silently and letting the additive merge find it"
+    reason: |
+      The read order lives in AGENTS.md or CLAUDE.md at the project root, outside the
+      methodology directory the additive merge compares, so an existing project would never
+      see the new line. 3k offers it with a before/after, as 3c.2 does.

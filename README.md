@@ -5,7 +5,7 @@
 Spec-first agentic development, or specification-driven agentic development: a small set of files and habits for working with AI coding agents. Every piece of work starts as a spec, gets checked against the real code before anyone builds it, and ends as one commit and one pull request with its decisions on record. The files are YAML and Markdown and live in your repository. Any agent can follow the method. The Claude Code plugin takes care of the bookkeeping.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Plugin version](https://img.shields.io/badge/plugin-2.8.0-blue.svg)
+![Plugin version](https://img.shields.io/badge/plugin-2.8.1-blue.svg)
 
 **Website:** [spec-first.dev](https://spec-first.dev), spec-first agentic development explained · **Background reading:** [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/) · [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/)
 
@@ -27,7 +27,7 @@ Spec-first fixes all three by making the record part of the work. The agent read
 
 1. **The spec comes before the code.** It holds the goal, the steps, what the spec rests on (with file and line evidence), what an upgrade costs an operator, and what "done" means. No code until it exists.
 2. **The spec is reviewed before anyone builds it.** A script resolves every file and line the spec cites. A fresh subagent that never saw the conversation then attacks the spec against the code as it is, and gives one verdict: BUILD, BUILD WITH CUTS or REFUSE. A REFUSE costs you a spec. Without the review, the same mistake would have cost you the branch.
-3. **The build follows the rules.** The agent reads every `context.yaml` and `coding-principles.md` first. It builds in the spec's own worktree and logs each non-obvious choice: what it chose, what it chose over, and why.
+3. **The build follows the rules.** The agent reads every `context.yaml` down to its spec index and every `coding-principles.md` first, and searches the index for earlier specs in the area it touches. It builds in the spec's own worktree and logs each non-obvious choice: what it chose, what it chose over, and why.
 4. **Delivery goes through a gate.** One commit, `feat: … ({id})`. A hook runs every `verify:` stage your contexts declare and blocks the commit on the first red one. Every gated commit leaves one line in a ledger, so a spec commit without a line never met the gate.
 
 Restart your machine, restart the agent, open `context.yaml`, and you're back where you left off.

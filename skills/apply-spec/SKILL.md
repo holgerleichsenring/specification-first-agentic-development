@@ -11,7 +11,7 @@ Implement the currently active spec following the Specification-First workflow. 
 ## Before You Start
 
 1. Read context files in order:
-   - **Every** `.{project}/contexts/<name>/context.yaml` — glob `contexts/*/context.yaml`. Each context describes one stack (single-stack projects have just `contexts/default/`). Read each one to know the architecture, stack, and what's been built per sub-tree.
+   - **Every** `.{project}/contexts/<name>/context.yaml` — glob `contexts/*/context.yaml`. Each context describes one stack (single-stack projects have just `contexts/default/`). Read each one down to `state:` to know the architecture and stack. `state.done` is an index of what's been built, one line per spec: search it for the area the active spec touches, never read it front to back.
    - **Every** `.{project}/contexts/<name>/coding-principles.md` — these are constraints per stack, not suggestions. Different contexts can have different conventions (C# vs. TypeScript).
    - The active spec in `specs/active/`.
    - Relevant past decisions: `decisions/<spec-id>.yaml` for the active spec and for any spec listed in `requires:`. Glob `decisions/*.yaml` if you need to consult the broader history.

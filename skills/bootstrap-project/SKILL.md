@@ -79,7 +79,7 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.8.0"
+  version: "2.8.1"
 stack: {...}
 arch: {...}
 quality: {...}
@@ -143,7 +143,7 @@ policy only after the operator ratifies it.
 ### 9. Write AGENTS.md and CLAUDE.md
 
 Create an `AGENTS.md` at the project root, based on `templates/prompt.md`. If the project already has one, show the user what you would add and merge it in only after they agree; never overwrite it. It carries:
-- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, 2. each context's `coding-principles.md`, 3. `specs/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
+- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, read down to `state:`, search `state.done` instead of reading it, 2. each context's `coding-principles.md`, 3. `specs/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
 - The remember/recall discipline section (memory vs decision boundary, curation rules)
 - The 12-step implementation workflow (spec, worktree, review-spec, …, deliver-spec)
 - Key rules from the contexts' coding-principles
@@ -151,7 +151,7 @@ Create an `AGENTS.md` at the project root, based on `templates/prompt.md`. If th
 
 Then write a `CLAUDE.md` at the root whose first line is `@AGENTS.md` (Claude Code's import), followed by anything that holds for Claude Code alone. An existing `CLAUDE.md` keeps its content: add the import line at the top and remove what `AGENTS.md` now says.
 
-**Who gates spec commits.** Ask whether the team also uses agents other than Claude Code, or commits by hand. If it does, offer `gate: git` in one context: every clone then runs `python3 <plugin>/hooks/install-git-hook.py` once, every teammate needs plugin 2.8.0 or later, and under Claude Code the hook's stages must fit in 570 s (a Bash call is capped at 600 s). Otherwise leave `gate:` out, and the plugin's hook gates.
+**Who gates spec commits.** Ask whether the team also uses agents other than Claude Code, or commits by hand. If it does, offer `gate: git` in one context: every clone then runs `python3 <plugin>/hooks/install-git-hook.py` once, every teammate needs plugin 2.8.1 or later, and under Claude Code the hook's stages must fit in 570 s (a Bash call is capped at 600 s). Otherwise leave `gate:` out, and the plugin's hook gates.
 
 ### 10. Confirm with the user
 

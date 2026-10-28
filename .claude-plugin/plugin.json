@@ -1,6 +1,6 @@
 {
   "name": "spec-first",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Spec-first agentic development (specification-driven agentic development): specs reviewed against your code, built in worktrees, gated commits, decisions on record.",
   "author": {
     "name": "Holger Leichsenring",
