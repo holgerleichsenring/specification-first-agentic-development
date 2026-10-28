@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-28-77b7
+goal: "The comparison page adds GSD as a fourth column on the same seven rows with its source, and every page that names the comparison names GSD too."
+
+applies_to: "website"
+
+facts:
+  - claim: "The comparison table has columns for spec-first, Spec Kit and BMAD and a sources line"
+    evidence: "website/src/compare.njk:21-33"
+  - claim: "The table is held at a minimum width and scrolls inside its wrapper"
+    evidence: "website/src/static/styles.css:293-294"
+  - claim: "GSD's plan checker report is advisory and never blocks planning; ship gates block the pull request; plans are Markdown in phase directories run in parallel waves"
+    evidence: "observed: 2026-10-28 github.com/open-gsd/gsd-core README and docs/COMMANDS.md"
+
+scope:
+  in: "GSD column, sources, when-to-pick text, min-width; the comparison's name in the home page card, FAQ, field report, llms.txt and README"
+  out: "rows that only GSD would need; a trial run of GSD"
+
+decisions:
+  - key: "GSD cells say only what its docs say; silence stays 'Not described'"
+
+steps:
+  - id: column
+    action: "compare.njk: GSD header and seven cells, source link, when-to-pick sentence; .cmp min-width 820px"
+  - id: mentions
+    action: "index.njk card, faq.json, field-report.njk, llms.txt.njk and README name GSD"
+
+upgrade_impact: "none: website and README only"
+proven_live: "spec-first.dev/compare shows four columns after merge"
+
+tests:
+  - "website build, link check and consent check pass"
+
+done:
+  - "every GSD cell traces to its README or docs/COMMANDS.md read on 2026-10-28"
+  - "no page still calls the comparison 'Spec Kit and BMAD' only"

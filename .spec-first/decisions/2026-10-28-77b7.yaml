@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-28-77b7
+
+decisions:
+  - category: TradeOff
+    chose: "Parallel agents marked yes for GSD: plans run in parallel waves in fresh contexts"
+    over: "Marking it partial because worktrees are not described"
+    reason: |
+      The row asks whether agents work in parallel, and GSD's docs say they do. How they are isolated
+      is not described, and the cell says no more than that.
+
+  - category: TradeOff
+    chose: "The commit row is partial for GSD: ship gates block the pull request"
+    over: "Not described"
+    reason: |
+      Its docs describe a gate that blocks, just one step later than the commit. Partial says that
+      more fairly than silence.

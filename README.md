@@ -366,9 +366,9 @@ A plan lives in one session. A spec stays in the repository, is reviewed against
 </details>
 
 <details>
-<summary><b>How does it compare to Spec Kit and BMAD?</b></summary>
+<summary><b>How does it compare to Spec Kit, BMAD and GSD?</b></summary>
 
-All three write a spec before the code. spec-first checks the spec against the code before the build and blocks the commit while a check is red. The [comparison page](https://spec-first.dev/compare) goes through it row by row.
+All of them write a spec or a plan before the code. spec-first checks the spec against the code before the build and blocks the commit while a check is red. The [comparison page](https://spec-first.dev/compare) goes through it row by row.
 </details>
 
 <details>
@@ -380,7 +380,7 @@ Nothing. The method, the templates and the Claude Code plugin are MIT licensed.
 ## Further reading
 
 - [1,300 specs and no hand-written code: what held up](https://spec-first.dev/field-report), field report, October 2026
-- [spec-first, Spec Kit and BMAD](https://spec-first.dev/compare), comparison, October 2026
+- [spec-first, Spec Kit, BMAD and GSD](https://spec-first.dev/compare), comparison, October 2026
 - [The Why Never Gets Written Down](https://codingsoul.org/2026/04/11/the-why-never-gets-written-down/), essay, April 2026
 - [Next Level Vibe Coding](https://codingsoul.org/2026/04/21/next-level-vibe-coding/), essay, April 2026
 
