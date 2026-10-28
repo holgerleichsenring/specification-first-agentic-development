@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-28-cdc5
+
+decisions:
+  - category: TradeOff
+    chose: "Let the table wrapper take the page's content width"
+    over: "Widening .report for the whole page, or shrinking the table's text"
+    reason: |
+      The prose reads best at 46em and the table needs about 1,100px for five columns. Only the
+      element that needs the room gets it; on phones it still scrolls inside its own wrapper.

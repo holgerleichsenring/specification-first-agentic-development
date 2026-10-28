@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-28-cdc5
+goal: "The comparison table uses the full page width, so all five columns show on a desktop screen without scrolling."
+
+applies_to: "website"
+
+facts:
+  - claim: "The report column is held to 46em, narrower than the 820px table, so the GSD column is cut off"
+    evidence: "website/src/static/styles.css:281, website/src/static/styles.css:293-294"
+  - claim: "The page wrapper is var(--wrap) wide with 24px gutters"
+    evidence: "website/src/static/styles.css:13"
+
+scope:
+  in: ".cmp-wrap width and .cmp min-width"
+  out: "the table's content; the report's text width"
+
+decisions:
+  - key: "Only the table breaks out of the 46em text column; the prose keeps its reading width"
+
+steps:
+  - id: width
+    action: ".cmp-wrap takes the wrapper's content width, capped at the viewport less the gutters; .cmp min-width 760px for scrolling on phones"
+
+upgrade_impact: "none: website only"
+proven_live: "spec-first.dev/compare at 1440 and 1100 px shows all five columns"
+
+tests:
+  - "website build, link check and consent check pass"
+  - "headless screenshots at 1440 and 1100 px show the GSD column whole"
+
+done:
+  - "no column of the comparison table is cut off at desktop widths"
