@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 446" role="img" aria-labelledby="t d">
+  <title id="t">The workflow: what you type, what the agent does, what you get</title>
+  <desc id="d">Five steps. You describe the feature in your own words, then run create-spec, review-spec, apply-spec and deliver-spec. You get a spec file on its own branch, a review verdict, code with tests and a decision file, and finally one commit and a pull request.</desc>
+  <style>
+    text { font-family: -apple-system, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+  <rect width="1200" height="446" rx="12" fill="#f6f8fa"/>
+  <rect x="0.5" y="0.5" width="1199" height="445" rx="12" fill="none" stroke="#d1d9e0"/>
+<text x="28" y="44" font-size="20" font-weight="600" fill="#1f2328" text-anchor="start"><tspan x="28" dy="0">The workflow</tspan></text>
+<text x="28" y="68" font-size="14.5" font-weight="400" fill="#59636e" text-anchor="start"><tspan x="28" dy="0">Five steps per piece of work. You do the talking; each command leaves something behind.</tspan></text>
+<text x="28" y="122" class="mono" font-size="13" font-weight="600" fill="#59636e" text-anchor="start"><tspan x="28" dy="0">You type</tspan></text>
+<text x="28" y="214" class="mono" font-size="13" font-weight="600" fill="#59636e" text-anchor="start"><tspan x="28" dy="0">The agent</tspan></text>
+<text x="28" y="318" class="mono" font-size="13" font-weight="600" fill="#59636e" text-anchor="start"><tspan x="28" dy="0">You get</tspan></text>
+<rect x="140" y="92" width="196" height="306" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="162" cy="118" r="11" fill="#ddf4ff"/><text x="162" y="122.5" font-size="12.5" font-weight="600" fill="#0969da" text-anchor="middle"><tspan x="162" dy="0">1</tspan></text>
+<text x="182" y="116" font-size="13.5" font-weight="500" fill="#1f2328" text-anchor="start"><tspan x="182" dy="0">&quot;A todo list that</tspan><tspan x="182" dy="17">keeps its items&quot;</tspan></text>
+<line x1="154" y1="154" x2="322" y2="154" stroke="#d8dee4"/>
+<text x="156" y="186" font-size="13.5" font-weight="400" fill="#424a53" text-anchor="start"><tspan x="156" dy="0">Talks it through with</tspan><tspan x="156" dy="19">you after reading your</tspan><tspan x="156" dy="19">memory and the repo</tspan></text>
+<line x1="154" y1="268" x2="322" y2="268" stroke="#d8dee4"/>
+<text x="156" y="308" font-size="13.5" font-weight="400" fill="#59636e" text-anchor="start"><tspan x="156" dy="0">Answers to the open</tspan><tspan x="156" dy="19">questions. No files yet.</tspan></text>
+<path d="M337 245 l10 0 m-4 -4 l4 4 l-4 4" fill="none" stroke="#59636e" stroke-width="1.5"/>
+<rect x="348" y="92" width="196" height="306" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="370" cy="118" r="11" fill="#ddf4ff"/><text x="370" y="122.5" font-size="12.5" font-weight="600" fill="#0969da" text-anchor="middle"><tspan x="370" dy="0">2</tspan></text>
+<text x="390" y="123" class="mono" font-size="14.5" font-weight="600" fill="#1f2328" text-anchor="start"><tspan x="390" dy="0">/create-spec</tspan></text>
+<line x1="362" y1="154" x2="530" y2="154" stroke="#d8dee4"/>
+<text x="364" y="186" font-size="13.5" font-weight="400" fill="#424a53" text-anchor="start"><tspan x="364" dy="0">Writes the goal, facts</tspan><tspan x="364" dy="19">with file and line, steps</tspan><tspan x="364" dy="19">and done criteria</tspan></text>
+<line x1="362" y1="268" x2="530" y2="268" stroke="#d8dee4"/>
+<rect x="362" y="284" width="168" height="58" rx="7" fill="#ddf4ff"/>
+<text x="374" y="308" class="mono" font-size="13" font-weight="500" fill="#0969da" text-anchor="start"><tspan x="374" dy="0">specs/planned/</tspan><tspan x="374" dy="19">…-todos.yaml</tspan></text>
+<path d="M545 245 l10 0 m-4 -4 l4 4 l-4 4" fill="none" stroke="#59636e" stroke-width="1.5"/>
+<rect x="556" y="92" width="196" height="306" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="578" cy="118" r="11" fill="#ddf4ff"/><text x="578" y="122.5" font-size="12.5" font-weight="600" fill="#0969da" text-anchor="middle"><tspan x="578" dy="0">3</tspan></text>
+<text x="598" y="123" class="mono" font-size="14.5" font-weight="600" fill="#1f2328" text-anchor="start"><tspan x="598" dy="0">/review-spec</tspan></text>
+<line x1="570" y1="154" x2="738" y2="154" stroke="#d8dee4"/>
+<text x="572" y="186" font-size="13.5" font-weight="400" fill="#424a53" text-anchor="start"><tspan x="572" dy="0">A script checks every</tspan><tspan x="572" dy="19">citation, a fresh agent</tspan><tspan x="572" dy="19">attacks the spec</tspan></text>
+<line x1="570" y1="268" x2="738" y2="268" stroke="#d8dee4"/>
+<rect x="570" y="284" width="168" height="58" rx="7" fill="#dafbe1"/>
+<text x="582" y="308" class="mono" font-size="13" font-weight="500" fill="#1a7f37" text-anchor="start"><tspan x="582" dy="0">BUILD, BUILD WITH</tspan><tspan x="582" dy="19">CUTS or REFUSE</tspan></text>
+<path d="M753 245 l10 0 m-4 -4 l4 4 l-4 4" fill="none" stroke="#59636e" stroke-width="1.5"/>
+<rect x="764" y="92" width="196" height="306" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="786" cy="118" r="11" fill="#ddf4ff"/><text x="786" y="122.5" font-size="12.5" font-weight="600" fill="#0969da" text-anchor="middle"><tspan x="786" dy="0">4</tspan></text>
+<text x="806" y="123" class="mono" font-size="14.5" font-weight="600" fill="#1f2328" text-anchor="start"><tspan x="806" dy="0">/apply-spec</tspan></text>
+<line x1="778" y1="154" x2="946" y2="154" stroke="#d8dee4"/>
+<text x="780" y="186" font-size="13.5" font-weight="400" fill="#424a53" text-anchor="start"><tspan x="780" dy="0">Builds step by step in</tspan><tspan x="780" dy="19">its own worktree, writes</tspan><tspan x="780" dy="19">the tests</tspan></text>
+<line x1="778" y1="268" x2="946" y2="268" stroke="#d8dee4"/>
+<rect x="778" y="284" width="168" height="58" rx="7" fill="#fff8c5"/>
+<text x="790" y="308" class="mono" font-size="13" font-weight="500" fill="#9a6700" text-anchor="start"><tspan x="790" dy="0">code + tests +</tspan><tspan x="790" dy="19">decisions/….yaml</tspan></text>
+<path d="M961 245 l10 0 m-4 -4 l4 4 l-4 4" fill="none" stroke="#59636e" stroke-width="1.5"/>
+<rect x="972" y="92" width="196" height="306" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="994" cy="118" r="11" fill="#ddf4ff"/><text x="994" y="122.5" font-size="12.5" font-weight="600" fill="#0969da" text-anchor="middle"><tspan x="994" dy="0">5</tspan></text>
+<text x="1014" y="123" class="mono" font-size="14.5" font-weight="600" fill="#1f2328" text-anchor="start"><tspan x="1014" dy="0">/deliver-spec</tspan></text>
+<line x1="986" y1="154" x2="1154" y2="154" stroke="#d8dee4"/>
+<text x="988" y="186" font-size="13.5" font-weight="400" fill="#424a53" text-anchor="start"><tspan x="988" dy="0">Commits through your</tspan><tspan x="988" dy="19">checks; the first red</tspan><tspan x="988" dy="19">one blocks</tspan></text>
+<line x1="986" y1="268" x2="1154" y2="268" stroke="#d8dee4"/>
+<rect x="986" y="284" width="168" height="58" rx="7" fill="#dafbe1"/>
+<text x="998" y="308" class="mono" font-size="13" font-weight="500" fill="#1a7f37" text-anchor="start"><tspan x="998" dy="0">one commit,</tspan><tspan x="998" dy="19">one pull request</tspan></text>
+<text x="140" y="428" font-size="13" font-weight="400" fill="#59636e" text-anchor="start"><tspan x="140" dy="0">Steps 2 to 5 run on the branch spec/{id} in a worktree of their own, so several specs can be in flight at once.</tspan></text>
+</svg>
