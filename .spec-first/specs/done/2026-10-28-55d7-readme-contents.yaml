@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-28-55d7
+goal: "The README carries a contents table under its header that links every section, grouped as get started, understand it and look it up."
+
+applies_to: "default"
+
+facts:
+  - claim: "The README header ends with the navigation row and goes straight into What it is"
+    evidence: "README.md:15-19"
+  - claim: "The sections are What it is, Install, Use it, Why, How it works, Agent Smith, Without Claude Code, Reference, Questions, Further reading"
+    evidence: "README.md:19-375"
+
+scope:
+  in: "a Contents section in README.md"
+  out: "section order and content; images"
+
+decisions:
+  - key: "Three columns by intent, not one long list, so the table stays seven rows high"
+
+steps:
+  - id: toc
+    action: "README.md: ## Contents between the header and What it is, a three-column table of anchors"
+
+upgrade_impact: "none: documentation only"
+proven_live: "the contents table renders on github.com and its links jump to their sections"
+
+tests:
+  - "every #anchor in README.md matches a heading"
+  - "plugin verify stages pass"
+
+done:
+  - "every ## and ### section below the header except Contents itself, How it works and Reference is linked once"
