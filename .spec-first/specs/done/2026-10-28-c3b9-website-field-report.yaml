@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-10-28-c3b9
+goal: "spec-first.dev carries a field report with counted figures, a comparison with Spec Kit and BMAD, and FAQ answers to the questions raised on Hacker News and Reddit."
+
+applies_to: "website"
+
+facts:
+  - claim: "The site has one page with sections plus privacy and imprint pages"
+    evidence: "website/src/index.njk:192-200"
+  - claim: "The FAQ renders from faq.json and feeds the FAQPage schema"
+    evidence: "website/src/index.njk:480-486"
+  - claim: "The reading section lists two essays"
+    evidence: "website/src/index.njk:491-501"
+  - claim: "The Markdown to YAML conversion of 93 specs went from 830,882 to 170,929 bytes"
+    evidence: "agent-smith:.agentsmith/specs/done/p0075-phase-docs-to-yaml.yaml"
+    observed: "2026-10-28: git show 238a85894 in agent-smith, bytes of deleted .md vs added .yaml"
+
+scope:
+  in: "/field-report/, /compare/, five FAQ entries, nav link, two reading cards, llms.txt, styles"
+  out: "a blog section; translations"
+
+decisions:
+  - key: "Figures are counted from the repository on 2026-10-28 and say so on the page"
+  - key: "The comparison says 'not described' where a project's documentation is silent, never 'no'"
+
+steps:
+  - id: report
+    action: "field-report.njk: setup, figures, seven lessons as what went wrong / what changed, objections, advice"
+  - id: compare
+    action: "compare.njk: table of seven rows with sources, and when to pick which"
+  - id: faq
+    action: "faq.json: five entries from the threads; nav, reading cards, llms.txt"
+
+upgrade_impact: "none: website only"
+proven_live: "checked on the Vercel preview and on spec-first.dev after merge"
+
+tests:
+  - "website build, link check and consent check pass"
+
+done:
+  - "both pages build, are linked from the home page and listed in the sitemap"
+  - "every figure on the field report can be recounted from the agent-smith repository"

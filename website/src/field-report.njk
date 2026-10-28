@@ -1,0 +1,98 @@
+---
+layout: layouts/base.njk
+permalink: /field-report/
+title: "1,300 specs and no hand-written code: what held up · spec-first"
+description: "A field report from building Agent Smith with spec-first agentic development: 1,332 specs, 10,944 tests, the gate that stopped one spec in six, and the mistakes that cost the most."
+---
+<main>
+  <section>
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>R</div>
+        <div>
+          <h2>1,300 specs and no hand-written code: what held up</h2>
+          <p>When I started Agent Smith in February 2026 I set myself one rule: I don't write the code. Eight months later the rule still holds. These are the numbers, and the mistakes that cost the most.</p>
+          <p class="byline">Holger Leichsenring · October 2026 · figures counted from the repository on 28 October 2026</p>
+        </div>
+      </div>
+
+      <div class="report">
+        <div class="figs" role="list">
+          <div role="listitem"><strong>1,332</strong><span>specs done</span></div>
+          <div role="listitem"><strong>6,806</strong><span>decisions on record</span></div>
+          <div role="listitem"><strong>743,663</strong><span>lines of C#</span></div>
+          <div role="listitem"><strong>10,944</strong><span>tests</span></div>
+          <div role="listitem"><strong>1 in 6</strong><span>specs stopped by the gate at least once</span></div>
+        </div>
+
+        <h3>The setup</h3>
+        <p>Agent Smith takes a ticket from Azure DevOps, Jira, GitHub or GitLab, turns it into a spec, builds it in sandboxes and opens a pull request. I build it with Claude Code and the method this site describes. Every change starts as a YAML spec in the repository: a goal, the facts it rests on with file and line, steps, and a definition of done. A script checks every cited file and line, then a fresh agent reviews the spec against the code and answers BUILD, BUILD WITH CUTS or REFUSE. Each spec gets its own git worktree, so several run overnight. A commit hook runs the full suite on every spec commit and blocks it when anything is red.</p>
+        <p>The same method runs inside the product. Agent Smith writes and reviews specs for other people's tickets the way I write them for mine.</p>
+
+        <h3>My job changed</h3>
+        <p>Last year about 80% of my working time went into writing code. This year it's 5 to 10%. The rest goes into deciding what to build, how it should be structured, and what proves that it works. I don't read most of the code. I read specs, review verdicts and the gate's ledger.</p>
+        <p>That works because the checks are mechanical. Since the gate started keeping a ledger on 24 August, 111 of 660 specs were blocked at least once before they could commit. In each case the agent fixed a red test before the commit existed, so the break never reached the branch.</p>
+
+        <h3>What went wrong</h3>
+
+        <div class="lesson">
+          <div class="k">Markdown specs</div>
+          <p>The first specs were Markdown, and Claude filled them with code samples that went stale and prose nobody needed. In April, 93 specs came to 830 KB, about 200k tokens.</p>
+          <div class="k fix">What changed</div>
+          <p>I converted them to YAML with a fixed schema. The same 93 specs came to 171 KB, a fifth of the size. Specs have grown again since, to about 6 KB each, but what they gained is the part a script checks: facts with evidence, scope, done criteria.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="k">Specs written from my plan</div>
+          <p>A spec I wrote from what I believed about the code cited functions that didn't exist or did something else. In two adversarial reviews in September, fifteen rounds in all, every round found at least one stated fact that the code contradicted.</p>
+          <div class="k fix">What changed</div>
+          <p>Specs are written from the code. Every fact carries its evidence, and a script resolves it before a reviewer sees the spec. A spec built on a wrong assumption is refused before a branch exists.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="k">"Update the library if it's worth it"</div>
+          <p>One ticket said exactly that. The agent kept going until the budget was gone, because nothing said when it was done.</p>
+          <div class="k fix">What changed</div>
+          <p>Every spec has a definition of done, and a run ends in one of three states: done, try again, or stop because another attempt won't help. Finding those criteria is the hardest part of the whole approach.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="k">Procedure in a ticket</div>
+          <p>A ticket that said "first do X, then Y" had its steps turned into acceptance criteria. A correct run failed because it took a different, better route.</p>
+          <div class="k fix">What changed</div>
+          <p>A ticket carries what to achieve. How to get there is the spec's job.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="k">Memories that became rules</div>
+          <p>Facts the agent learned were treated as rules. One wrong memory and every later run followed it.</p>
+          <div class="k fix">What changed</div>
+          <p>A memory is a hint. In Agent Smith its standing comes from the runs that relied on it: a run that succeeds confirms it, a contradiction disputes it, and the evidence fades over time. Nobody ratifies a memory by hand.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="k">Counting spec numbers</div>
+          <p>Specs were numbered by counting the existing ones. Two agents working in parallel took the same number.</p>
+          <div class="k fix">What changed</div>
+          <p>An id is today's date plus four random hex digits, minted without asking anyone what is taken.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="k">The index that kept growing</div>
+          <p>Every finished spec leaves one line in an index. At 1,300 specs the file is 425 KB, and the instructions still told every session to read it.</p>
+          <div class="k fix">What changed</div>
+          <p>Sessions read the top of the file for architecture and stack, and search the index for the area they touch. Someone pointed this out on Hacker News; the fix shipped the next day as plugin 2.8.1.</p>
+        </div>
+
+        <h3>The objections</h3>
+        <p><b>"A spec precise enough to generate a program is called code."</b> True, and these specs aren't that precise on purpose. They pin down intent and architecture. The tests and the gate supply the precision.</p>
+        <p><b>"Old specs go stale and pollute the context."</b> A done spec is never updated and isn't read by default. It's a change record, closer to an architecture decision record or a commit with its reasoning attached. Agents read the code to learn what the system does and look in the specs for why.</p>
+        <p><b>"Why not just tell Claude to solve the ticket?"</b> For a small, clear ticket that works. For everything else I tried it, and it didn't give me speed or consistent code.</p>
+
+        <h3>If you start tomorrow</h3>
+        <p>Write the definition of done before anything else, and make it something a test or a script can decide. Make the agent cite file and line for every claim about existing code, and check those citations mechanically. Block the commit, not the merge. And keep the reasoning next to the code: the next agent will want to undo a decision it doesn't know about.</p>
+        <p>The plugin is <a href="/#install">one install away</a>. If you already use Spec Kit or BMAD, <a href="/compare/">this comparison</a> shows where the approaches differ.</p>
+      </div>
+    </div>
+  </section>
+</main>

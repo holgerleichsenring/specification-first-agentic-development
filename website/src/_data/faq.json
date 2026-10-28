@@ -22,5 +22,25 @@
   {
     "q": "What does it cost?",
     "a": "Nothing. The method, the templates and the Claude Code plugin are MIT licensed."
+  },
+  {
+    "q": "Isn't a spec precise enough to generate a program just code?",
+    "a": "Yes, and these specs aren't that precise on purpose. A spec pins down intent and architecture: what to build, why, which code it rests on and what done means. The tests and the commit gate supply the precision."
+  },
+  {
+    "q": "Don't old specs go stale?",
+    "a": "A done spec is never updated and isn't read by default. It's a change record, like a commit with its reasoning attached. Agents read the code to learn what the system does, and search the spec index when they need to know why."
+  },
+  {
+    "q": "Why YAML and not Markdown?",
+    "a": "The values are still plain English. The schema keeps them short and lets a script check every cited file and line. When Agent Smith moved 93 specs from Markdown to YAML, they shrank to a fifth of their size."
+  },
+  {
+    "q": "How is a spec different from an agent's plan?",
+    "a": "A plan lives in one session. A spec stays in the repository, is reviewed against the code before it's built, and its definition of done is checked when the change is committed."
+  },
+  {
+    "q": "How does it compare to Spec Kit and BMAD?",
+    "a": "All three write a spec before the code. spec-first checks the spec against the code before the build and blocks the commit while a check is red. The comparison page at spec-first.dev/compare/ goes through it row by row."
   }
 ]

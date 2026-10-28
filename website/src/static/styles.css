@@ -276,6 +276,29 @@ pre.prompt { margin: 0; padding: 16px 18px; background: var(--paper); border: 1p
 .steps-any h3 { font-family: var(--body); font-size: 16px; font-weight: 600; }
 .steps-any p { color: var(--ink-soft); font-size: 15px; }
 
+/* field report and comparison pages */
+.byline { font-family: var(--mono); font-size: 13px !important; color: var(--mute) !important; }
+.report { max-width: 46em; }
+.report h3 { font-size: 26px; margin: 40px 0 12px; }
+.report p { font-size: 17px; color: var(--ink-soft); margin: 0 0 14px; }
+.report p b { color: var(--ink); font-weight: 500; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); border: 1px solid var(--rule); border-radius: 8px; background: var(--sheet); overflow: hidden; margin-bottom: 8px; }
+.figs div { padding: 14px 16px; border-right: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+.figs strong { display: block; font-family: var(--display); font-size: 30px; font-weight: 500; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--ink); }
+.figs span { font-size: 13px; color: var(--mute); }
+.lesson { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 16px 18px; margin: 0 0 12px; }
+.lesson .k { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--stop); margin-bottom: 4px; }
+.lesson .k.fix { color: var(--ok); margin-top: 10px; }
+.lesson p { margin: 0; font-size: 16px; }
+.cmp-wrap { overflow-x: auto; margin: 8px 0 10px; }
+.cmp { width: 100%; min-width: 640px; border-collapse: collapse; background: var(--sheet); font-size: 15px; }
+.cmp th, .cmp td { border: 1px solid var(--rule); padding: 10px 12px; text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); background: var(--paper); }
+.cmp tbody th { font-weight: 500; color: var(--ink); width: 24%; }
+.cmp .y { color: var(--ok); } .cmp .p { color: var(--warn); } .cmp .n { color: var(--mute); }
+.src { font-family: var(--mono); font-size: 12px !important; color: var(--mute) !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
 @media (max-width: 980px) {
   .hero .wrap, .feature, .band .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .loop { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }

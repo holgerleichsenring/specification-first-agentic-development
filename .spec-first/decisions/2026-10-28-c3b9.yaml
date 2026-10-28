@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-10-28-c3b9
+
+decisions:
+  - category: TradeOff
+    chose: "Report the measured conversion: 93 specs, 830 KB to 171 KB, a fifth"
+    over: "The 250k to 15k tokens quoted from memory in the threads"
+    reason: |
+      The commit that converted the specs is still in history and gives a factor of five.
+      Today's specs are larger again, about 6 KB, because they carry facts and done criteria;
+      the report says so instead of implying the small size held.
+
+  - category: Architecture
+    chose: "Two pages on the existing layout and clause style"
+    over: "A blog section with its own templates"
+    reason: |
+      Two pages don't justify a collection, and the clause layout already reads as a document.
