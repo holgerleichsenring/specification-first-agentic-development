@@ -1,0 +1,42 @@
+---
+layout: layouts/base.njk
+permalink: /compare/
+title: "spec-first, Spec Kit and BMAD compared · spec-first"
+description: "How spec-first agentic development differs from GitHub Spec Kit and the BMAD Method: what is checked before the build, what blocks a commit, decisions, parallel agents and format."
+---
+<main>
+  <section>
+    <div class="wrap">
+      <div class="clause">
+        <div class="no" aria-hidden="true"><i>§</i>C</div>
+        <div>
+          <h2>spec-first, Spec Kit and BMAD</h2>
+          <p>All three write a spec before the code. They differ in what gets checked, and when.</p>
+        </div>
+      </div>
+
+      <div class="report">
+        <div class="cmp-wrap">
+          <table class="cmp">
+            <thead><tr><th scope="col"><span class="sr">Question</span></th><th scope="col">spec-first</th><th scope="col">Spec Kit</th><th scope="col">BMAD</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Spec checked against the code before the build</th><td class="y">A script resolves every cited file and line, then a fresh reviewer answers BUILD, BUILD WITH CUTS or REFUSE</td><td class="p">analyze checks spec, plan and tasks against each other</td><td class="n">Not described</td></tr>
+              <tr><th scope="row">Code checked against the spec after the build</th><td class="y">Done criteria, and the verify stages in the commit gate</td><td class="y">converge compares the code with the spec and adds missing tasks</td><td class="p">BMad Loop builds and verifies an epic unattended</td></tr>
+              <tr><th scope="row">Commit blocked while a check is red</th><td class="y">Built in</td><td class="p">Possible through extensions</td><td class="n">Not described</td></tr>
+              <tr><th scope="row">Decision log per change</th><td class="y">Chose, over, why: one file per spec</td><td class="p">decision.md for assessments</td><td class="p">Decisions carried as durable context</td></tr>
+              <tr><th scope="row">Agents working in parallel</th><td class="y">A worktree per spec; ids from the date plus random hex</td><td class="n">Spec numbers come from counting the existing specs</td><td class="n">Not described</td></tr>
+              <tr><th scope="row">Spec format</th><td>YAML with a schema</td><td>Markdown</td><td>Markdown</td></tr>
+              <tr><th scope="row">Breadth</th><td>A focused method: nine skills and a gate</td><td>Dozens of agent integrations, extensions, presets, bug and assessment processes</td><td>Personas for product, architecture, UX, development and testing, with modules</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="src">From each project's own documentation on 28 October 2026: <a href="https://github.com/github/spec-kit">github/spec-kit</a> and its spec-driven.md, and <a href="https://github.com/bmad-code-org/BMAD-METHOD">bmad-code-org/BMAD-METHOD</a>. "Not described" means their documentation doesn't say, not that the feature can't exist. Corrections are welcome as a GitHub issue.</p>
+
+        <h3>When to pick which</h3>
+        <p>Spec Kit and BMAD cover more ground: more agents, more roles, more process. Pick one of them if you want a broad framework from idea to plan.</p>
+        <p>spec-first is narrower and stricter. Pick it if the failures you see are wrong assumptions about existing code, specs that don't match what was built, and "done" that wasn't. It checks the spec against the code before the build and blocks the commit until your checks pass.</p>
+        <p>Read the <a href="/field-report/">field report</a> for what 1,300 specs of this looked like in practice.</p>
+      </div>
+    </div>
+  </section>
+</main>
