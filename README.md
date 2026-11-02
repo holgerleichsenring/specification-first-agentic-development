@@ -52,9 +52,16 @@ git clone https://github.com/holgerleichsenring/specification-first-agentic-deve
 claude --plugin-dir /path/to/specification-first-agentic-development
 ```
 
-Then run `/spec-first:bootstrap-project` in your repository. It reads your code and writes the setup from what it finds: the stack, the rules, and the commands that build and test it. It does not invent conventions.
+In VS Code with GitHub Copilot, which reads the same plugin format (agent plugins are in preview there):
 
-Codex, Cursor, Copilot or another agent: see [Without Claude Code](#without-claude-code). The method works there too.
+1. Open the Command Palette with `Ctrl+Shift+P` (`Cmd+Shift+P` on macOS) and run **Chat: Install Plugin from Source**.
+2. Enter `https://github.com/holgerleichsenring/specification-first-agentic-development`.
+
+The skills load there as they do in Claude Code. VS Code's hook support is in preview as well, so to be sure every spec commit is gated, also install the git hook from [Without Claude Code](#without-claude-code), step 4.
+
+Then run the bootstrap-project skill in your repository (`/spec-first:bootstrap-project` in Claude Code). It reads your code and writes the setup from what it finds: the stack, the rules, and the commands that build and test it. It does not invent conventions.
+
+Codex, Cursor, the Copilot CLI or another agent: see [Without Claude Code](#without-claude-code). The method works there too.
 
 ## Use it
 
