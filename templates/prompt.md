@@ -6,7 +6,7 @@ step names a spec-first plugin command (Claude Code only), the same step says ho
 
 ## Context Files (read in this order)
 
-1. **Every** `.yourproject/contexts/<name>/context.yaml` (glob `contexts/*/context.yaml`) -- read it down to `state:` for architecture, stack and integrations PER stack. `state.done` is an index, one line per finished spec with a pointer to it: search it for the area you touch, never read it front to back
+1. **Every** `.yourproject/contexts/<name>/context.yaml` (glob `contexts/*/context.yaml`) -- read it down to `state:` for architecture, stack and integrations PER stack. Beside it, `done.md` is the done index, one line per finished spec with a pointer to it: search it for the area you touch, never read it front to back
 2. **Every** `.yourproject/contexts/<name>/coding-principles.md` -- code quality rules per stack (ALWAYS follow)
 3. `.yourproject/specs/active/*.yaml` -- the spec being implemented (its `applies_to:` names the dominant context)
 4. `.yourproject/decisions/*.yaml` -- past decisions, one YAML per spec or run (read the active spec's file and its `requires:` chain)
@@ -53,7 +53,7 @@ one line per memory, content never in the index.
 7. **Build after each step** -- fix errors immediately, don't accumulate them.
 8. **Test what you changed** -- the build and the affected tests while iterating; zero failures before moving on. The full `verify:` stages run once, at the spec commit, by the commit gate: the plugin's hook (`gate: plugin`, the default), the git commit-msg hook in this clone (`gate: git`, for every agent; install it with `python3 <spec-first clone>/hooks/install-git-hook.py`), or the project's own (`gate: project`). Without any of them, run the `verify:` commands by hand before the spec commit.
 9. **Log decisions** -- one YAML per spec at `.yourproject/decisions/{id}.yaml`; each entry: what was chosen, what alternatives existed, and why. (Plugin: `/spec-first:log-decision`.)
-10. **Update state** -- move spec from `planned`/`active` to `done` in the relevant context's `context.yaml`.
+10. **Update state** -- remove the spec from `planned`/`active` in the relevant context's `context.yaml` and add its line to `contexts/<name>/done.md`: `- {id}: {what shipped} -> {pointer}`, newest first. `done.md` and `memory/MEMORY.md` merge with `merge=union` (`.gitattributes`).
 11. **Move to done** -- move the spec file from `active/` to `done/`.
 12. **Deliver** -- one commit `feat: {short description} ({id})` through the gate, its verdict read in `spec-first-gate.log` in the git common directory, then push and open the pull request. (Plugin: `/spec-first:deliver-spec`.) `git commit --no-verify` skips the git hook: don't use it on a spec commit.
 

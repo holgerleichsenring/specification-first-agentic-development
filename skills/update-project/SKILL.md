@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.8.1`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.9.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,20 +36,21 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.8.1  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k |
-| 1.x.x   | 2.8.1  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k |
-| 2.0.x   | 2.8.1  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j, 3k |
-| 2.1.x   | 2.8.1  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k |
-| 2.2.x   | 2.8.1  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k |
-| 2.3.x   | 2.8.1  | 3f, 3g, 3h, 3i, then 3j, 3k |
-| 2.4.x   | 2.8.1  | 3g, 3h, 3i, then 3j, 3k |
-| 2.5.x   | 2.8.1  | 3h, 3i, then 3j, 3k |
-| 2.6.x   | 2.8.1  | 3i, then 3j, 3k                                                       |
-| 2.7.x   | 2.8.1  | 3j, then 3k                                                           |
-| 2.8.0   | 2.8.1  | 3k                                                                    |
-| 2.8.x   | 2.y.y  | additive/diff merge (no migration)                                    |
+| 0.0.0   | 2.9.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 1.x.x   | 2.9.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.0.x   | 2.9.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.1.x   | 2.9.0  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.2.x   | 2.9.0  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.3.x   | 2.9.0  | 3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.4.x   | 2.9.0  | 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.5.x   | 2.9.0  | 3h, 3i, then 3j, 3k, 3l |
+| 2.6.x   | 2.9.0  | 3i, then 3j, 3k, 3l                                                   |
+| 2.7.x   | 2.9.0  | 3j, then 3k, 3l                                                       |
+| 2.8.0   | 2.9.0  | 3k, then 3l                                                           |
+| 2.8.1   | 2.9.0  | 3l                                                                    |
+| 2.9.x   | 2.y.y  | additive/diff merge (no migration)                                    |
 
-For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h, 3i, 3j and 3k. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h, 3i, 3j and 3k. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h, 3i, 3j and 3k. For 2.2.x run 3e, 3f, 3b, 3g, 3h, 3i, 3j and 3k. For 2.3.x run 3f, 3g, 3h, 3i, 3j and 3k. For 2.4.x run 3g, 3h, 3i, 3j and 3k. For 2.5.x run 3h, 3i, 3j and 3k. For 2.6.x run 3i, 3j and 3k. For 2.7.x run 3j and 3k. For 2.8.0 run 3k. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h.
+For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h, 3i, 3j, 3k and 3l. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h, 3i, 3j, 3k and 3l. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h, 3i, 3j, 3k and 3l. For 2.2.x run 3e, 3f, 3b, 3g, 3h, 3i, 3j, 3k and 3l. For 2.3.x run 3f, 3g, 3h, 3i, 3j, 3k and 3l. For 2.4.x run 3g, 3h, 3i, 3j, 3k and 3l. For 2.5.x run 3h, 3i, 3j, 3k and 3l. For 2.6.x run 3i, 3j, 3k and 3l. For 2.7.x run 3j, 3k and 3l. For 2.8.0 run 3k and 3l. For 2.8.1 run 3l. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h; a path through 3l does the same for its script.
 
 ### 3a. v1 → v2 big-bang migration
 
@@ -172,7 +173,7 @@ A project bootstrapped before 2.1.0 typically still carries the v1 read order in
 
 - Locate the context-file read-order block in the project's root `CLAUDE.md`.
 - Replace ONLY that block with the v2 order (as in `templates/prompt.md`):
-  1. glob `contexts/*/context.yaml`, read down to `state:`, search `state.done` instead of reading it
+  1. glob `contexts/*/context.yaml`, read down to `state:`, then search each context's `done.md` instead of reading it
   2. each context's `coding-principles.md`
   3. `specs/active/*.yaml`
   4. `decisions/*.yaml`
@@ -233,7 +234,24 @@ From 2.8.0 the instructions are agent-neutral and the commit gate can also run a
 
 ### 3k. 2.8.1: search the spec index, don't read it
 
-A project's `state.done` grows by one line per spec and at a thousand specs runs to a hundred thousand tokens. From 2.8.1 the read order says to read each `context.yaml` down to `state:` and to search `state.done` for the area at hand. Replace item 1 of the read-order block in the root `AGENTS.md`, or `CLAUDE.md` where there is none, with the line from `templates/prompt.md`. The file lives outside the methodology directory, so show the before/after and apply only after the operator approves, as in 3c.2.
+A project's done index grows by one line per spec and at a thousand specs runs to a hundred thousand tokens. From 2.8.1 the read order says to read each `context.yaml` down to `state:` and to search the done index for the area at hand (`done.md` from 2.9.0, see 3l). Replace item 1 of the read-order block in the root `AGENTS.md`, or `CLAUDE.md` where there is none, with the line from `templates/prompt.md`. The file lives outside the methodology directory, so show the before/after and apply only after the operator approves, as in 3c.2.
+
+### 3l. 2.9.0: the done index moves to done.md
+
+Every spec used to add a line to `state.done` in a `context.yaml`, and two spec branches that each finished one conflicted there on merge. From 2.9.0 the done index is `contexts/<name>/done.md`: a header, then one line per finished spec, newest first (`- {id}: {what shipped} -> {pointer}`). It and `memory/MEMORY.md` are declared `merge=union` in the repository root's `.gitattributes`, so a local `git merge` keeps both sides' lines. A merge on the host (GitHub, GitLab, Azure DevOps) ignores merge drivers and can still report a conflict there; merging the base into the branch locally and pushing resolves it.
+
+1. Commit everything first, so the migration is one reviewable diff.
+2. Run the script on the project's methodology directory (needs PyYAML):
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/migrate-done-index.py" .{project}
+   ```
+
+   It moves every context's `state.done` entries, in order, into that context's `done.md`, splices the block out of `context.yaml` (every other line is kept byte for byte; a `state:` left empty goes too) and adds the two `.gitattributes` lines. Comment lines inside the old block are not carried over.
+3. Show the operator its report verbatim and commit.
+4. Root `AGENTS.md` (or `CLAUDE.md`): offer item 1 of the read order and step 10 from `templates/prompt.md`, with the same before/after approval as 3c.2.
+
+Exit 1 means refused and nothing changed: show the reason. A branch that was cut before the migration and still adds a `state.done` line conflicts with the migrated base in `context.yaml`: move its line into `done.md` by hand.
 
 ### 4. Ask approval
 

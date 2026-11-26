@@ -8,7 +8,7 @@ meta:
                                       # Monorepo example: "src/Server", "client", "docs"
 
 methodology:
-  version: "2.8.1"                    # Spec-First methodology version (used by update-project)
+  version: "2.9.0"                    # Spec-First methodology version (used by update-project)
 
 stack:
   runtime: .NET 8                     # Node 22, Python 3.12, Go 1.22, ...
@@ -62,10 +62,9 @@ quality:
 #   skills: ../my-skills
 
 # Spec tracking -- the AI reads this to know what exists and what's next.
-# Move entries between sections as work progresses.
+# Move entries between sections as work progresses. A finished spec leaves this file:
+# its line goes into done.md beside it, which merges with merge=union (.gitattributes).
 state:
-  done:
-    # p01: "Foundation: solution structure, domain entities, config loader"
   active: {}
   planned:
     # p02: "Feature X -> .yourproject/specs/planned/p02-feature-x.md"

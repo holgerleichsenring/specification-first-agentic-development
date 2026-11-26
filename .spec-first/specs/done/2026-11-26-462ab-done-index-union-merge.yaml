@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-11-26-462ab
+goal: "The done index moves from state.done in context.yaml to contexts/<name>/done.md, merged with merge=union like MEMORY.md, and update-project migrates it; release 2.9.0."
+
+applies_to: "default"
+
+requires: ["2026-10-28-4dec"]
+
+facts:
+  - claim: "apply-spec tells the agent to add the finished spec to state.done"
+    evidence: "skills/apply-spec/SKILL.md:101-105"
+  - claim: "bootstrap-project writes state: done: {} into every new context.yaml"
+    evidence: "skills/bootstrap-project/SKILL.md:70,85-89"
+  - claim: "The context template carries state.done"
+    evidence: "templates/contexts/default/context.yaml:64-68"
+  - claim: "The read-order line in the template, AGENTS.md and the workflow skill names state.done as the index"
+    evidence: "templates/prompt.md:9, AGENTS.md:9, skills/spec-first-workflow/SKILL.md:45"
+  - claim: "Workflow step 10 moves the spec to done in context.yaml"
+    evidence: "templates/prompt.md:56, AGENTS.md:56"
+  - claim: "deliver-series resolves the state: index lines of parallel specs by hand at the merge"
+    evidence: "skills/deliver-series/SKILL.md:37,78"
+  - claim: "update-project's last step is 3k for 2.8.1 and every table row targets 2.8.1"
+    evidence: "skills/update-project/SKILL.md:39-50,234-236"
+  - claim: "The plugin's context schema declares no state section, so nothing in it requires state.done"
+    evidence: "templates/context.schema.json"
+  - claim: "Every version field says 2.8.1"
+    evidence: ".claude-plugin/plugin.json:3, .claude-plugin/marketplace.json:9,19, templates/contexts/default/context.yaml:11, skills/bootstrap-project/SKILL.md:82, README.md:11"
+
+scope:
+  in: "done.md template and format, .gitattributes lines in bootstrap, the read order and step 10 in prompt.md/AGENTS.md/workflow/apply-spec/bootstrap, deliver-series merge notes, update-project step 3l with migrate-done-index.py and its tests, this repo's own migration, release 2.9.0"
+  out: "Host-side merges (GitHub, GitLab, Azure DevOps) ignore merge drivers and are not changed; the field report and historical specs and examples stay as written."
+
+decisions:
+  - key: "done.md beside context.yaml and merge=union for done.md and MEMORY.md (operator); the index stays committed"
+  - key: "update-project migrates with a script, as 3g does; agent-smith's record step writes the same format"
+  - key: "Minor release 2.9.0: a layout change with a migration step"
+
+steps:
+  - id: script
+    action: "migrate-done-index.py: entries in order into done.md, the block spliced out of context.yaml, .gitattributes lines added; tests incl. a real git merge"
+  - id: text
+    action: "apply-spec step 7, bootstrap (done.md, .gitattributes, no state.done), read order and step 10, deliver-series, README layout"
+  - id: update
+    action: "update-project 3l, the table and prose paths end in 3l, a 2.8.1 row; 3c.2 and 3k read-order text names done.md"
+  - id: release
+    action: "2.9.0 in every version field; migrate this repo's contexts; GitHub release v2.9.0"
+
+upgrade_impact: "update-project 3l runs the migration and commits it; a branch cut before the migration that still adds a state.done line conflicts with the migrated base and is moved into done.md by hand."
+proven_live: "the script migrated agent-smith's 1715 entries and this repository's 16; not run on a third party's project"
+
+tests:
+  - "test_migrate_done_index: entries moved in order, context.yaml otherwise byte-identical, emptied state removed, existing done.md first, .gitattributes once, untouched context, two branches' lines merged by git"
+  - "every verify stage passes"
+
+done:
+  - "no skill or template tells an agent to write state.done"
+  - "every version field says 2.9.0 and update-project has step 3l"
