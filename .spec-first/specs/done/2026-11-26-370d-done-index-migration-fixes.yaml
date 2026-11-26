@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=../../../templates/spec.schema.json
+spec: 2026-11-26-370d
+goal: "The done index migration follows symlinks, migrates list-form state.done, reports skipped ids, and every skill says done.md; release 2.9.1."
+
+applies_to: "default"
+
+requires: ["2026-11-26-462ab"]
+
+facts:
+  - claim: "attributes() takes relpath of an abspath against git's resolved top level, so a project reached through a symlink gets a ../ prefix that matches nothing"
+    evidence: "skills/update-project/scripts/migrate-done-index.py:165-167"
+  - claim: "compose() drops an id done.md already carries and the report still counts it"
+    evidence: "skills/update-project/scripts/migrate-done-index.py:147-156"
+  - claim: "A list-form state.done is refused as not a mapping"
+    evidence: "skills/update-project/scripts/migrate-done-index.py:186"
+  - claim: "spec-first-workflow step 10 and deliver-spec still name context.yaml for a finished spec"
+    evidence: "skills/spec-first-workflow/SKILL.md:83 and skills/deliver-spec/SKILL.md:24"
+  - claim: "This repo's done.md says 'Release 2.9.0' for 2026-10-28-4dec, which released 2.8.1"
+    evidence: ".spec-first/contexts/default/done.md:10"
+
+scope:
+  in: "migrate-done-index.py fixes with tests, update-project 3l order note, workflow and deliver-spec wording, the example labelled pre-2.9.0, the 4dec entry, version 2.9.1"
+  out: "Reordering an oldest-first index automatically"
+
+steps:
+  - id: script
+    action: "realpath both sides in attributes() and refuse a path outside the repository; added and skipped counted apart; a list of 'id: entry' strings migrates"
+  - id: docs
+    action: "3l says the order is kept; workflow step 10 and layout, deliver-spec staging, example comment, 4dec entry"
+  - id: versions
+    action: "2.9.1 in plugin.json, marketplace.json, the template, bootstrap, README badge, this repo's meta; update-project current version and a 2.9.0 row"
+
+upgrade_impact: "none: a patch release; a 2.9.0 project needs no migration"
+
+tests:
+  - "test_migrate_done_index.py: symlinked project, project outside the repository, skipped id reported, list-form migrated"
+
+done:
+  - "every verify stage passes"
+  - "every version field says 2.9.1"

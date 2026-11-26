@@ -57,6 +57,7 @@ quality:
     interfaces: I-prefix
   testing: { style: AAA, naming: "{Method}_{Scenario}_{Expected}" }
 
+# The pre-2.9.0 layout: from 2.9.0 the finished specs are lines in done.md beside this file.
 state:
   done:
     p01: "Solution structure, domain entities, contracts, YAML config loader"

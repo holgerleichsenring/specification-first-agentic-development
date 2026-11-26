@@ -21,7 +21,7 @@ If `gh auth status` fails, stop **before pushing** and tell the user: `gh` must 
 
 ## 2. Commit through the gate
 
-Stage the spec's work: code, tests, the spec now in `specs/done/`, `decisions/{id}.yaml`, the `context.yaml` entry. Note HEAD, then commit once, with a literal `-m`:
+Stage the spec's work: code, tests, the spec now in `specs/done/`, `decisions/{id}.yaml`, the `done.md` line and the `context.yaml` state change. Note HEAD, then commit once, with a literal `-m`:
 
 ```bash
 git add -A

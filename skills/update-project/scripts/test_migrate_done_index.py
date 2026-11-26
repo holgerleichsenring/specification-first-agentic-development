@@ -125,6 +125,38 @@ class MigrateDoneIndexTests(unittest.TestCase):
         self.assertEqual(self.read(".demo/contexts/default/context.yaml"), text)
         self.assertFalse(os.path.exists(self.path("contexts", "default", "done.md")))
 
+    def test_a_project_reached_through_a_symlink_gets_attributes_relative_to_the_repository(self):
+        self.put(".demo/contexts/default/context.yaml", CONTEXT)
+        link = os.path.join(tempfile.mkdtemp(), "linked")
+        os.symlink(self.root, link)
+
+        migrate_done_index.migrate([os.path.join(link, ".demo")], out=io.StringIO())
+
+        self.assertEqual(self.read(".gitattributes"), "\n".join(ATTRIBUTES) + "\n")
+
+    def test_a_project_outside_the_repository_is_refused(self):
+        self.assertRaises(migrate_done_index.Refused, migrate_done_index.attributes, self.project, self.root)
+
+    def test_an_id_already_in_done_md_is_reported_as_skipped(self):
+        self.put(".demo/contexts/default/context.yaml", CONTEXT)
+        self.put(".demo/contexts/default/done.md", migrate_done_index.HEADER + "\n- p0002: kept\n")
+        out = io.StringIO()
+
+        migrate_done_index.migrate([self.project], out=out)
+
+        self.assertIn("1 entry added", out.getvalue())
+        self.assertIn("1 skipped (already in done.md)", out.getvalue())
+
+    def test_a_list_form_state_done_is_migrated(self):
+        self.put(".demo/contexts/default/context.yaml",
+                 'meta:\n  workdir: "."\nstate:\n  done:\n    - "p01: first: with a colon"\n    - "p02: second"\n  active: {}\n')
+
+        self.assertEqual(self.run_script(), 0)
+
+        self.assertEqual(migrate_done_index.entries_of(self.read(".demo/contexts/default/done.md")),
+                         [("p01", "first: with a colon"), ("p02", "second")])
+        self.assertEqual(self.read(".demo/contexts/default/context.yaml"), 'meta:\n  workdir: "."\nstate:\n  active: {}\n')
+
     def test_two_branches_adding_different_done_lines_merge_with_both(self):
         self.put(".demo/contexts/default/context.yaml", CONTEXT)
         self.run_script()

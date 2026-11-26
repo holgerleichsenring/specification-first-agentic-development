@@ -145,19 +145,27 @@ def entries_of(done_md):
 
 
 def compose(existing, migrated):
-    """done.md text: the existing file (or the header) with the migrated entries it lacks appended."""
+    """(done.md text, added count, skipped count): the existing file (or the header) with the migrated entries it
+    lacks appended; an id it already carries is skipped."""
     text = existing if existing is not None else HEADER
     have = {spec_id for spec_id, _ in entries_of(text)}
-    added = ["- %s: %s" % (spec_id, entry) for spec_id, entry in migrated if spec_id not in have]
+    added = []
+    for spec_id, entry in migrated:
+        if spec_id not in have:
+            have.add(spec_id)
+            added.append("- %s: %s" % (spec_id, entry))
+    skipped = len(migrated) - len(added)
     if not added:
-        return text
+        return text, 0, skipped
     body = text.rstrip("\n")
     separator = "\n" if entries_of(text) else "\n\n"
-    return body + separator + "\n".join(added) + "\n"
+    return body + separator + "\n".join(added) + "\n", len(added), skipped
 
 
 def attributes(top, project):
-    relative = os.path.relpath(project, top).replace(os.sep, "/")
+    relative = os.path.relpath(os.path.realpath(project), os.path.realpath(top)).replace(os.sep, "/")
+    if relative == ".." or relative.startswith("../"):
+        raise Refused("%s is not inside the repository %s" % (project, top))
     prefix = "" if relative == "." else relative + "/"
     return [prefix + "contexts/*/done.md merge=union", prefix + "memory/MEMORY.md merge=union"]
 
@@ -173,6 +181,18 @@ def ensure_attributes(path, lines):
     return True
 
 
+def list_entries(path, items):
+    """A list-form state.done (`- "id: entry"`) as an ordered mapping, split at the first ': '."""
+    entries = {}
+    for item in items:
+        text = one_line(item)
+        spec_id, sep, entry = text.partition(": ")
+        if not sep or not spec_id.strip() or " " in spec_id.strip():
+            raise Refused("%s: the state.done item %r is not `id: entry`" % (path, text))
+        entries.setdefault(spec_id.strip(), entry)
+    return entries
+
+
 def plan_context(path):
     text = read(path)
     document = yaml.safe_load(text) or {}
@@ -180,6 +200,8 @@ def plan_context(path):
     if not isinstance(state, dict) or "done" not in state:
         return None
     done = state.get("done") or {}
+    if isinstance(done, list):
+        done = list_entries(path, done)
     if not isinstance(done, dict):
         raise Refused("%s: state.done is not a mapping" % path)
     spliced = splice(text)
@@ -208,15 +230,18 @@ def migrate(argv, out=sys.stdout):
         planned = plan_context(context)
         if planned is not None:
             work.append((context, planned))
+    lines = attributes(top, project)
     for context, (spliced, migrated) in work:
         done_md = os.path.join(os.path.dirname(context), "done.md")
-        write(done_md, compose(read(done_md) if os.path.isfile(done_md) else None, migrated))
+        text, added, skipped = compose(read(done_md) if os.path.isfile(done_md) else None, migrated)
+        write(done_md, text)
         write(context, spliced)
-        print("%s: %d entr%s -> %s" % (os.path.relpath(context, top), len(migrated),
-                                       "y" if len(migrated) == 1 else "ies", os.path.relpath(done_md, top)), file=out)
+        print("%s: %d entr%s added to %s%s" % (
+            os.path.relpath(context, top), added, "y" if added == 1 else "ies", os.path.relpath(done_md, top),
+            ", %d skipped (already in done.md)" % skipped if skipped else ""), file=out)
     if not work:
         print("nothing to move: no context.yaml under %s carries state.done" % project, file=out)
-    if ensure_attributes(os.path.join(top, ".gitattributes"), attributes(top, project)):
+    if ensure_attributes(os.path.join(top, ".gitattributes"), lines):
         print(".gitattributes: done.md and MEMORY.md merge with merge=union", file=out)
     return 0
 
