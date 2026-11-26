@@ -34,7 +34,7 @@ A REFUSE sends that spec back to the user. Build the rest only if nothing left d
 
 List the files each spec's `steps` create, modify or delete, and the files its facts say will change. Specs that share a file go in one group and are built one after another, in `requires` order. Specs that share no file go in separate groups and are built at the same time.
 
-Lines that every spec adds to the same index file (the `state:` entries in `context.yaml`, a changelog) do not make two specs share a file: those conflicts are resolved at the merge in step 6.
+Lines that every spec adds to the same index file (`contexts/<name>/done.md`, `memory/MEMORY.md`, a changelog) do not make two specs share a file. `done.md` and `MEMORY.md` merge with `merge=union` in a local `git merge`; any other collision is resolved at the merge in step 6.
 
 Tell the user the groups and why, then go on.
 
@@ -75,7 +75,7 @@ A merge commit carries no spec id in its subject, so the gate does not run on it
 
 On a conflict:
 
-- **Index and state lines** (`context.yaml` `state:` entries, changelogs, lists): keep both sides' lines.
+- **Index and state lines** (`done.md` and `MEMORY.md` lines where a merge ran without the union attribute, for example on the host; `context.yaml` `state:` entries, changelogs, lists): keep both sides' lines.
 - **Anything else**: read both commits first (`git show {sha} -- {file}` for each side), then write the version that does what both specs intended. Record it as a decision in the affected spec's `decisions/{id}.yaml`, starting `Merge note {date} ({branch} into spec/{base}):`, with what each side wanted and how the result serves both.
 
 After all merges, look for the same helper or type added by two branches and keep one copy, in a separate `chore:` commit without a spec id.

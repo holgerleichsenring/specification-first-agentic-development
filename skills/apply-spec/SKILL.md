@@ -11,7 +11,7 @@ Implement the currently active spec following the Specification-First workflow. 
 ## Before You Start
 
 1. Read context files in order:
-   - **Every** `.{project}/contexts/<name>/context.yaml` — glob `contexts/*/context.yaml`. Each context describes one stack (single-stack projects have just `contexts/default/`). Read each one down to `state:` to know the architecture and stack. `state.done` is an index of what's been built, one line per spec: search it for the area the active spec touches, never read it front to back.
+   - **Every** `.{project}/contexts/<name>/context.yaml` — glob `contexts/*/context.yaml`. Each context describes one stack (single-stack projects have just `contexts/default/`). Read each one down to `state:` to know the architecture and stack. Beside it, `done.md` is the index of what's been built, one line per spec: search it for the area the active spec touches, never read it front to back.
    - **Every** `.{project}/contexts/<name>/coding-principles.md` — these are constraints per stack, not suggestions. Different contexts can have different conventions (C# vs. TypeScript).
    - The active spec in `specs/active/`.
    - Relevant past decisions: `decisions/<spec-id>.yaml` for the active spec and for any spec listed in `requires:`. Glob `decisions/*.yaml` if you need to consult the broader history.
@@ -98,13 +98,13 @@ decisions:
 
 Use the `/spec-first:log-decision` skill if you prefer interactive logging — it handles file creation, appending, and YAML formatting.
 
-### Step 7: Update context.yaml
+### Step 7: Update the done index
 
-Move the spec entry in the affected context(s):
-- Remove from `state.active`
-- Add to `state.done` with a one-line summary
+Record the spec in the affected context(s):
+- Remove it from `state.active` in `context.yaml`
+- Add one line to `contexts/<name>/done.md`, above the first entry (newest first): `- {id}: {what shipped, in what area} -> {pointer to the spec}`. Add or replace your own line only; never reorder the others. The file merges with `merge=union` (`.gitattributes`), so two branches' lines do not conflict.
 
-If the spec touched multiple contexts, update each affected context's `context.yaml`. The spec ID is shared across contexts; the spec entry can live in whichever context owns it (often the one named in `applies_to:`).
+If the spec touched multiple contexts, the line can live in whichever context owns it (often the one named in `applies_to:`). A `context.yaml` that still carries `state.done` is on the old layout: run update-project (step 3l) first.
 
 ### Step 8: Move spec file
 

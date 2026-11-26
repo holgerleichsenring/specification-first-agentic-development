@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-11-26-462ab
+
+decisions:
+  - category: Architecture
+    decider: operator
+    chose: "The done index moves to contexts/<name>/done.md, one line per spec; done.md and memory/MEMORY.md are declared merge=union in .gitattributes"
+    over: "Keeping state.done in context.yaml (2026-10-28-4dec), removing the index, or generating it on read"
+    reason: |
+      Parallel spec branches each add a line to the same index and conflict on every merge after the first.
+      Git's union driver keeps both sides' lines, but union-merging YAML is unsafe; a Markdown line list is not.
+      The committed index stays: it gives an agent the one-glance overview. 4dec had kept state.done in place
+      because the read cost was solved by searching; the merge cost was not.
+
+  - category: Architecture
+    decider: operator
+    chose: "Host merges (GitHub, GitLab, Azure DevOps) are left as they are"
+    over: "A host-side mechanism"
+    reason: "Hosts ignore merge drivers; a local merge of the base into the branch, then a push, resolves it, which is how agent-smith refreshes a branch."
+
+  - category: Tooling
+    decider: operator
+    chose: "update-project 3l migrates with a script (migrate-done-index.py), as 3g does"
+    over: "Telling the agent to move the entries by hand, or readers that accept both layouts"
+    reason: |
+      A thousand entries moved by an agent is where lines go missing. The script reads the entries with a YAML
+      parser, splices the block out as text so every other line is byte-identical, and verifies the result parses
+      to the same document minus state.done. A migrated project has only done.md; no reader knows two layouts.
+
+  - category: Implementation
+    chose: "Format `- {id}: {entry}` under a short prose header, newest first, the same as agent-smith's record step writes"
+    over: "A table or one heading per spec"
+    reason: "One line per entry is what union merges cleanly and what grep finds; the header text is shared with agent-smith byte for byte."
+
+  - category: TradeOff
+    chose: "Minor release 2.9.0"
+    over: "A patch release"
+    reason: "The project layout changes and needs a migration step; nothing stops working until update-project runs."
+
+  - category: Review
+    chose: "Self-review of the diff by the implementing agent"
+    over: "A fresh sub-agent review"
+    reason: "This spec was built by a worker that cannot spawn sub-agents; the review of the shared format and script was part of agent-smith's 2026-11-26-462aa spec review."

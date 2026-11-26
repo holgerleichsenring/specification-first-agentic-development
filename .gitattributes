@@ -1,0 +1,2 @@
+.spec-first/contexts/*/done.md merge=union
+.spec-first/memory/MEMORY.md merge=union

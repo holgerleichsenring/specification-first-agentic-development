@@ -8,7 +8,7 @@
 ### Your coding agent writes the code. This makes it write down why, too.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Plugin version](https://img.shields.io/badge/plugin-2.8.1-blue.svg)
+![Plugin version](https://img.shields.io/badge/plugin-2.9.0-blue.svg)
 ![Works with](https://img.shields.io/badge/works_with-Claude_Code_·_any_agent-6f42c1.svg)
 [![Built with it](https://img.shields.io/badge/built_with_it-1%2C300%2B_specs-2c7a45.svg)](#built-with-it-agent-smith)
 
@@ -212,11 +212,12 @@ Set up specification-first agentic development in this repository,
 following the templates at
 https://github.com/holgerleichsenring/specification-first-agentic-development/tree/main/templates
 
-1. Create .{project}/contexts/default/context.yaml and coding-principles.md.
+1. Create .{project}/contexts/default/context.yaml, done.md and coding-principles.md.
    Fill them from the code as it is: stack, architecture, limits, conventions,
    and the commands that build and test it as verify: stages. Invent nothing.
 2. Create .{project}/specs/planned, active and done, .{project}/decisions/
-   and .{project}/memory/MEMORY.md.
+   and .{project}/memory/MEMORY.md. Declare contexts/*/done.md and
+   memory/MEMORY.md merge=union in .gitattributes.
 3. Write AGENTS.md from templates/prompt.md, with .{project}/ filled in.
 4. Add "gate: git" at the top level of that context.yaml.
 ```
@@ -253,6 +254,7 @@ By hand, it's four steps:
   contexts/
     default/                  # one per stack; a monorepo adds server/, client/, docs/ …
       context.yaml            # stack, architecture, quality limits, verify:, state, workdir
+      done.md                 # the done index: one line per finished spec, merge=union
       coding-principles.md    # rules the agent reads every session
   specs/
     planned/  active/  done/  # {id}-{label}.yaml

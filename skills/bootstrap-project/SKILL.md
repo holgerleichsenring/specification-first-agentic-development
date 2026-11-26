@@ -67,7 +67,12 @@ Use the template at `templates/contexts/default/context.yaml` as a starting poin
 - Set `meta.workdir` to that stack's sub-tree path (`.` for single-stack default at the repo root).
 - Set `methodology.version` to the plugin's current version (read from `.claude-plugin/plugin.json`).
 - Fill `stack`, `arch`, `quality` from what step 3 found.
-- Leave `state.{done,active,planned}` empty for greenfield, or seed with what already exists.
+- Leave `state.{active,planned}` empty for greenfield, or seed with what already exists. Finished specs are not listed in `context.yaml`: copy `templates/contexts/default/done.md` (the header alone) beside it as `contexts/<name>/done.md`, the done index, one line per finished spec.
+- Add these two lines to the repository root's `.gitattributes` (create it if missing, keep what it has), with the project's directory name, so two branches' index lines merge without a conflict:
+  ```
+  .{project-name}/contexts/*/done.md merge=union
+  .{project-name}/memory/MEMORY.md merge=union
+  ```
 - Fill `verify:` with the commands that prove a change holds (build, tests, lint — what the project already runs), if any; leave it commented out otherwise. The plugin's commit gate runs them at every spec commit. If the project already runs its own commit gate (a hook of its own), ask the user and add `gate: project` to one context instead, so only one gate runs. Add `evidence_roots:` only when specs will cite another repository.
 
 ```yaml
@@ -79,12 +84,11 @@ meta:
   purpose: "{one-line description}"
   workdir: "."                        # relative path; "." = repo root, "src/Server" = monorepo sub
 methodology:
-  version: "2.8.1"
+  version: "2.9.0"
 stack: {...}
 arch: {...}
 quality: {...}
 state:
-  done: {}
   active: {}
   planned: {}
 ```
@@ -143,7 +147,7 @@ policy only after the operator ratifies it.
 ### 9. Write AGENTS.md and CLAUDE.md
 
 Create an `AGENTS.md` at the project root, based on `templates/prompt.md`. If the project already has one, show the user what you would add and merge it in only after they agree; never overwrite it. It carries:
-- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, read down to `state:`, search `state.done` instead of reading it, 2. each context's `coding-principles.md`, 3. `specs/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
+- Context-file read order pointing at the new layout: 1. glob `contexts/*/context.yaml`, read down to `state:`, then search each context's `done.md` instead of reading it, 2. each context's `coding-principles.md`, 3. `specs/active/*.yaml`, 4. `decisions/*.yaml`, 5. `memory/MEMORY.md` (recall entry detail on demand)
 - The remember/recall discipline section (memory vs decision boundary, curation rules)
 - The 12-step implementation workflow (spec, worktree, review-spec, …, deliver-spec)
 - Key rules from the contexts' coding-principles
