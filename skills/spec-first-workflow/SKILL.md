@@ -19,7 +19,8 @@ Discuss → Write Spec → worktree + commit → review-spec → active/ → bui
 ```
 .yourproject/
   contexts/<name>/
-    context.yaml              # per-stack: stack, arch, quality, state, workdir
+    context.yaml              # per-stack: stack, arch, quality, active/planned state, workdir
+    done.md                   # per-stack: the done index, one line per finished spec (merge=union)
     coding-principles.md      # per-stack: language rules (AI reads every session)
   decisions/
     <spec-id>-<slug>.yaml    # one decision per file; spec ID prefix groups them
@@ -80,7 +81,7 @@ For every spec, follow this order:
 7. **Build after each step** — fix errors immediately, don't accumulate them.
 8. **Test what you changed**: the build and the affected tests while iterating, zero failures before moving on. The full `verify:` stages run once, at the spec commit, by the commit gate.
 9. **Log decisions** — one YAML per spec at `decisions/<spec-id>.yaml`, every non-obvious choice an entry in its `decisions:` list.
-10. **Update state** — move spec from `active` to `done` in the relevant context's `context.yaml`.
+10. **Update state** — remove the spec from `planned`/`active` in the relevant context's `context.yaml` and add its line to `contexts/<name>/done.md`: `- {id}: {what shipped} -> {pointer}`, newest first. `done.md` and `memory/MEMORY.md` merge with `merge=union` (`.gitattributes`).
 11. **Move spec file** — move from `active/` to `done/`.
 12. **Deliver**: `/spec-first:deliver-spec` commits once as `feat: {short description} ({id})`, reads the gate's verdict, pushes and opens the pull request.
 

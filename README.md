@@ -8,7 +8,7 @@
 ### Your coding agent writes the code. This makes it write down why, too.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Plugin version](https://img.shields.io/badge/plugin-2.9.0-blue.svg)
+![Plugin version](https://img.shields.io/badge/plugin-2.9.1-blue.svg)
 ![Works with](https://img.shields.io/badge/works_with-Claude_Code_·_any_agent-6f42c1.svg)
 [![Built with it](https://img.shields.io/badge/built_with_it-1%2C300%2B_specs-2c7a45.svg)](#built-with-it-agent-smith)
 

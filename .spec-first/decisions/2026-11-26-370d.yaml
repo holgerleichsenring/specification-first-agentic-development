@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../templates/decision.schema.json
+spec: 2026-11-26-370d
+
+decisions:
+  - category: Implementation
+    chose: "Resolve both paths with realpath and refuse a project outside the repository"
+    over: "abspath against git's resolved top level"
+    reason: "Review of PR 29: on macOS /tmp is /private/tmp, and the relative prefix became ../, so the union lines matched nothing and the merge driver was silently off."
+  - category: Implementation
+    chose: "Keep the order entries have in context.yaml and say so in 3l"
+    over: "Detecting an oldest-first index and reversing it"
+    reason: "Ids do not sort by time across the counter and date-minted namespaces; a guess could scramble a correct index. The operator reorders by hand if wanted."
+  - category: Implementation
+    chose: "Migrate a list of 'id: entry' strings, split at the first ': '; refuse an item without one"
+    over: "Refusing every list-form state.done"
+    reason: "A refusal gave step 3l no way forward; the list form is one some projects wrote."
+  - category: Scope
+    chose: "Patch release 2.9.1"
+    over: "Folding the fixes into an unreleased 2.9.0"
+    reason: "2.9.0 is already tagged and published."

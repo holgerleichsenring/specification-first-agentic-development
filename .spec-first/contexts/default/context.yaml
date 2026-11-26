@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=../../../templates/context.schema.json
 meta:
   project: specification-first-agentic-development
-  version: 2.9.0
+  version: 2.9.1
   type: [plugin, methodology]
   purpose: "The spec-first method and its Claude Code plugin: skills, a commit gate, templates."
   workdir: "."
 
 methodology:
-  version: "2.9.0"
+  version: "2.9.1"
 
 stack:
   runtime: Python 3 (hooks and scripts), Claude Code plugin runtime

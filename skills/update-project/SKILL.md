@@ -18,7 +18,7 @@ For v1.x → v2.0 this performs a one-shot structural migration: the flat `conte
 
 ## How It Works
 
-The plugin's templates carry an inline methodology version (currently `2.9.0`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
+The plugin's templates carry an inline methodology version (currently `2.9.1`). The user's `context.yaml` has a `methodology.version` field set during bootstrap. When these differ, this skill helps merge the changes.
 
 ## Steps
 
@@ -36,18 +36,19 @@ If they match, tell the user they're up to date. Done.
 
 | From    | To     | Path                                                          |
 |---------|--------|---------------------------------------------------------------|
-| 0.0.0   | 2.9.0  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
-| 1.x.x   | 2.9.0  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
-| 2.0.x   | 2.9.0  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
-| 2.1.x   | 2.9.0  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k, 3l |
-| 2.2.x   | 2.9.0  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k, 3l |
-| 2.3.x   | 2.9.0  | 3f, 3g, 3h, 3i, then 3j, 3k, 3l |
-| 2.4.x   | 2.9.0  | 3g, 3h, 3i, then 3j, 3k, 3l |
-| 2.5.x   | 2.9.0  | 3h, 3i, then 3j, 3k, 3l |
-| 2.6.x   | 2.9.0  | 3i, then 3j, 3k, 3l                                                   |
-| 2.7.x   | 2.9.0  | 3j, then 3k, 3l                                                       |
-| 2.8.0   | 2.9.0  | 3k, then 3l                                                           |
-| 2.8.1   | 2.9.0  | 3l                                                                    |
+| 0.0.0   | 2.9.1  | v1-to-v2 (treat as v1.0.0), the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 1.x.x   | 2.9.1  | v1-to-v2, the 2.1.0 additions, 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.0.x   | 2.9.1  | 2.1.0 additions (3c) + additive merge (3b), 3d-3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.1.x   | 2.9.1  | 3d-3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.2.x   | 2.9.1  | 3e, 3f, additive merge (3b), 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.3.x   | 2.9.1  | 3f, 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.4.x   | 2.9.1  | 3g, 3h, 3i, then 3j, 3k, 3l |
+| 2.5.x   | 2.9.1  | 3h, 3i, then 3j, 3k, 3l |
+| 2.6.x   | 2.9.1  | 3i, then 3j, 3k, 3l                                                   |
+| 2.7.x   | 2.9.1  | 3j, then 3k, 3l                                                       |
+| 2.8.0   | 2.9.1  | 3k, then 3l                                                           |
+| 2.8.1   | 2.9.1  | 3l                                                                    |
+| 2.9.0   | 2.9.1  | additive/diff merge (no migration)                                    |
 | 2.9.x   | 2.y.y  | additive/diff merge (no migration)                                    |
 
 For v1 → v2 run step 3a (the structural migration), step 3c (the 2.1.0 additions), 3d, 3e, 3f, 3g, 3h, 3i, 3j, 3k and 3l. For 2.0.x run 3c, 3b, 3d, 3e, 3f, 3g, 3h, 3i, 3j, 3k and 3l. For 2.1.x run 3d, 3e, 3f, 3b, 3g, 3h, 3i, 3j, 3k and 3l. For 2.2.x run 3e, 3f, 3b, 3g, 3h, 3i, 3j, 3k and 3l. For 2.3.x run 3f, 3g, 3h, 3i, 3j, 3k and 3l. For 2.4.x run 3g, 3h, 3i, 3j, 3k and 3l. For 2.5.x run 3h, 3i, 3j, 3k and 3l. For 2.6.x run 3i, 3j, 3k and 3l. For 2.7.x run 3j, 3k and 3l. For 2.8.0 run 3k and 3l. For 2.8.1 run 3l. For later 2.x → 2.y skip to step 3b (additive merge). A path through 3g commits, runs the script, shows its report and commits before 3h; a path through 3l does the same for its script.
@@ -247,7 +248,7 @@ Every spec used to add a line to `state.done` in a `context.yaml`, and two spec 
    python3 "${CLAUDE_SKILL_DIR}/scripts/migrate-done-index.py" .{project}
    ```
 
-   It moves every context's `state.done` entries, in order, into that context's `done.md`, splices the block out of `context.yaml` (every other line is kept byte for byte; a `state:` left empty goes too) and adds the two `.gitattributes` lines. Comment lines inside the old block are not carried over.
+   It moves every context's `state.done` entries (a mapping, or a list of `"id: entry"` strings) into that context's `done.md`, in the order `context.yaml` has them: an index kept oldest first stays oldest first below any lines `done.md` already holds, and the operator reorders it by hand if wanted. An id `done.md` already carries is skipped and counted as skipped in the report. It splices the block out of `context.yaml` (every other line is kept byte for byte; a `state:` left empty goes too) and adds the two `.gitattributes` lines. Comment lines inside the old block are not carried over.
 3. Show the operator its report verbatim and commit.
 4. Root `AGENTS.md` (or `CLAUDE.md`): offer item 1 of the read order and step 10 from `templates/prompt.md`, with the same before/after approval as 3c.2.
 
